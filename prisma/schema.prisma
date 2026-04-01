@@ -1,0 +1,146 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model MonthlyPerformance {
+  id           String   @id @default(cuid())
+  year         Int
+  monthIndex   Int      // 0=Jan, 1=Feb... 11=Dec
+  monthLabelFr String
+  monthLabelEn String
+  monthLabelAr String
+  lowRisk      Float?   // percentage, null means no data
+  mediumRisk   Float?   // percentage, null means no data
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@unique([year, monthIndex])
+}
+
+model Trade {
+  id        String   @id @default(cuid())
+  year      Int
+  month     Int
+  contract  String   // GOLD, EUR USD, GBP USD, etc.
+  period    String   // "1st week March", "2nd week March"
+  direction String   // BUY or SELL
+  entry     Float
+  exit      Float
+  pips      Int
+  result    String   // W, L, or BE
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Member {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  xmId      String
+  proofFile String?  // path to uploaded proof of deposit screenshot
+  status    String   @default("pending") // pending, active, rejected
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Signal {
+  id         String   @id @default(cuid())
+  instrument String
+  direction  String   // BUY or SELL
+  entry      String
+  takeProfit String?
+  stopLoss   String?
+  result     String   @default("open") // open, +380, -150, etc.
+  date       String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+// ─── TRILINGUAL MODELS ────────────────────────────────────────
+
+model BlogArticle {
+  id         String   @id @default(cuid())
+  titleFr    String
+  titleEn    String
+  titleAr    String
+  excerptFr  String
+  excerptEn  String
+  excerptAr  String
+  contentFr  String   // HTML
+  contentEn  String   // HTML
+  contentAr  String   // HTML
+  category   String   // gold, education, strategie, analyse
+  catLabelFr String
+  catLabelEn String
+  catLabelAr String
+  date       String
+  readTime   String
+  views      Int      @default(0)
+  emoji      String   @default("📊")
+  catColor   String   @default("rgba(16,185,129,.15)")
+  catText    String   @default("#10b981")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Faq {
+  id         String   @id @default(cuid())
+  questionFr String
+  questionEn String
+  questionAr String
+  answerFr   String
+  answerEn   String
+  answerAr   String
+  category   String
+  icon       String   @default("help")
+  order      Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model Testimonial {
+  id         String   @id @default(cuid())
+  name       String
+  initials   String
+  stars      Int      @default(5)
+  titleFr    String
+  titleEn    String
+  titleAr    String
+  textFr     String
+  textEn     String
+  textAr     String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
+
+model SiteSetting {
+  id        String   @id @default(cuid())
+  key       String   @unique
+  value     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AdminUser {
+  id        String   @id @default(cuid())
+  username  String   @unique
+  password  String // bcrypt hash
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CryptoMonthly {
+  id         String   @id @default(cuid())
+  year       Int
+  monthIndex Int      // 0=Jan ... 11=Dec
+  percentage Float    // e.g. +12.34 or -5.98
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([year, monthIndex])
+}

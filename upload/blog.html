@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Forex | ChebbiTrade — Analyses & Conseils Trading</title>
+    <meta name="description" content="Articles, analyses de marché et conseils trading par ChebbiTrade. Apprenez le Forex avec 4 ans d'expérience en live.">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/USEEiyC.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg1:#06090f;--bg2:#0b1018;--card:#111827;--card-h:#1a2332;
+            --brd:#1e293b;--brd-l:#334155;
+            --grn:#10b981;--grn-l:#34d399;--grn-g:rgba(16,185,129,.12);--grn-gs:rgba(16,185,129,.25);
+            --red:#ef4444;--red-g:rgba(239,68,68,.12);
+            --xm:#d42127;--gld:#f59e0b;--gld-g:rgba(245,158,11,.12);--blu:#3b82f6;--yt:#ff0000;
+            --t1:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--w:#fff;
+            --r:16px;--rs:12px;--tr:all .35s cubic-bezier(.4,0,.2,1)
+        }
+        body.light{
+            --bg1:#f0f4f8;--bg2:#e2e8f0;--card:#ffffff;--card-h:#f8fafc;
+            --brd:#cbd5e1;--brd-l:#94a3b8;
+            --t1:#0f172a;--t2:#475569;--t3:#94a3b8;--w:#0f172a;
+        }
+        .theme-toggle{background:rgba(255,255,255,.06);border:1px solid var(--brd);color:var(--t2);width:38px;height:38px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:var(--tr);flex-shrink:0}
+        .theme-toggle:hover{border-color:var(--grn);color:var(--grn)}
+        body.light .theme-toggle{background:rgba(0,0,0,.04)}
+        body.light .nav.scr{background:rgba(240,244,248,.95)}
+        body.light #pCanvas{opacity:.15}
+        html{scroll-behavior:smooth}
+        body{font-family:'Inter',-apple-system,sans-serif;background:var(--bg1);color:var(--t1);line-height:1.7;overflow-x:hidden;transition:background .3s,color .3s}
+        a{text-decoration:none;color:inherit}
+        ul{list-style:none}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+        #pCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.4}
+
+        /* NAVBAR */
+        .nav{position:fixed;top:0;left:0;width:100%;z-index:1000;padding:16px 0;transition:var(--tr)}
+        .nav.scr{background:rgba(6,9,15,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--brd);padding:12px 0}
+        .nav .container{display:flex;align-items:center;justify-content:space-between;gap:20px}
+        .logo{display:flex;align-items:center;gap:12px}
+        .logo-i{width:38px;height:38px;border-radius:10px;overflow:hidden;border:2px solid var(--grn);box-shadow:0 0 15px var(--grn-gs)}
+        .logo-i img{width:100%;height:100%;object-fit:cover}
+        .logo-n{font-size:1.3rem;font-weight:800;color:var(--w)}
+        .logo-n em{font-style:normal;color:var(--grn)}
+        .nm{display:flex;align-items:center;gap:4px}
+        .nm a{padding:8px 14px;border-radius:8px;color:var(--t2);font-size:.88rem;font-weight:500;transition:var(--tr)}
+        .nm a:hover,.nm a.act{color:var(--grn)}
+        .nb{display:flex;align-items:center;gap:12px}
+        .lang-sw{position:relative}
+        .lang-btn{background:rgba(255,255,255,.05);border:1px solid var(--brd);color:var(--t2);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.82rem;font-family:'Inter',sans-serif;transition:var(--tr);display:flex;align-items:center;gap:6px}
+        .lang-btn:hover{border-color:var(--grn);color:var(--grn)}
+        .lang-dd{position:absolute;top:calc(100% + 8px);right:0;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);overflow:hidden;min-width:150px;opacity:0;visibility:hidden;transform:translateY(-8px);transition:var(--tr);z-index:100}
+        .lang-sw:hover .lang-dd{opacity:1;visibility:visible;transform:translateY(0)}
+        .lang-dd a{display:flex;align-items:center;gap:10px;padding:10px 16px;font-size:.85rem;color:var(--t2);transition:var(--tr)}
+        .lang-dd a:hover,.lang-dd a.active{background:var(--grn-g);color:var(--grn)}
+        .nxm{background:var(--xm);color:var(--w);padding:9px 18px;border-radius:8px;font-size:.85rem;font-weight:700;transition:var(--tr);display:flex;align-items:center;gap:7px}
+        .nxm:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(212,33,39,.4)}
+        .ham{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+        .ham span{display:block;width:24px;height:2px;background:var(--t1);border-radius:2px;transition:var(--tr)}
+
+        /* HERO */
+        .page-hero{padding:140px 0 80px;position:relative;z-index:2}
+        .page-hero .container{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+        .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;background:var(--grn-g);border:1px solid rgba(16,185,129,.25);color:var(--grn)}
+        .page-hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;color:var(--w);line-height:1.15;margin:16px 0}
+        .page-hero h1 span{background:linear-gradient(135deg,var(--grn),var(--grn-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .page-hero p{color:var(--t2);font-size:1rem;margin-bottom:24px}
+        .hero-search{position:relative}
+        .hero-search input{width:100%;background:var(--card);border:1px solid var(--brd);color:var(--t1);padding:14px 20px 14px 48px;border-radius:12px;font-size:.9rem;font-family:'Inter',sans-serif;transition:var(--tr);outline:none}
+        .hero-search input:focus{border-color:rgba(16,185,129,.4);box-shadow:0 0 0 4px var(--grn-g)}
+        .hero-search input::placeholder{color:var(--t3)}
+        .hero-search i{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--t3)}
+        .hero-feat{background:var(--card);border:1px solid rgba(16,185,129,.2);border-radius:var(--r);padding:28px;position:relative;overflow:hidden}
+        .hero-feat::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--grn),var(--grn-l))}
+        .hf-tag{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--grn);margin-bottom:8px}
+        .hf-title{font-size:1.2rem;font-weight:800;color:var(--w);margin-bottom:8px;line-height:1.4}
+        .hf-meta{display:flex;align-items:center;gap:12px;font-size:.8rem;color:var(--t3);margin-bottom:12px}
+        .hf-meta span{display:flex;align-items:center;gap:5px}
+        .hf-excerpt{color:var(--t2);font-size:.88rem;line-height:1.7;margin-bottom:16px}
+        .btn-sm{display:inline-flex;align-items:center;gap:6px;padding:9px 18px;border-radius:8px;font-size:.83rem;font-weight:700;background:var(--grn-g);border:1px solid rgba(16,185,129,.25);color:var(--grn);cursor:pointer;transition:var(--tr)}
+        .btn-sm:hover{background:rgba(16,185,129,.2);transform:translateX(4px)}
+
+        /* FILTERS */
+        .blog-filters{position:relative;z-index:2;margin-bottom:40px}
+        .filter-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+        .filter-cats{display:flex;gap:8px;flex-wrap:wrap}
+        .fcat{background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--t3);padding:8px 18px;border-radius:8px;font-size:.83rem;font-weight:600;cursor:pointer;transition:var(--tr);font-family:'Inter',sans-serif}
+        .fcat:hover{border-color:var(--brd-l);color:var(--t2)}
+        .fcat.act{background:var(--grn-g);border-color:rgba(16,185,129,.3);color:var(--grn)}
+        .filter-sort{display:flex;align-items:center;gap:10px;color:var(--t3);font-size:.85rem}
+        .filter-sort select{background:var(--card);border:1px solid var(--brd);color:var(--t2);padding:8px 14px;border-radius:8px;font-family:'Inter',sans-serif;font-size:.83rem;cursor:pointer;outline:none}
+
+        /* BLOG GRID */
+        .blog-body{position:relative;z-index:2;padding-bottom:100px}
+        .blog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:24px;margin-bottom:40px}
+        .post-card{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);overflow:hidden;transition:var(--tr);cursor:pointer;display:flex;flex-direction:column}
+        .post-card:hover{border-color:rgba(16,185,129,.25);transform:translateY(-5px);box-shadow:0 20px 40px rgba(0,0,0,.4)}
+        .post-thumb{height:180px;background:linear-gradient(135deg,var(--card-h),var(--bg2));display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden}
+        .post-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 50%,rgba(6,9,15,.8))}
+        .post-cat-badge{position:absolute;top:14px;left:14px;z-index:1;padding:4px 12px;border-radius:5px;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.8px}
+        .post-body{padding:22px 22px 18px;flex:1;display:flex;flex-direction:column}
+        .post-meta{display:flex;align-items:center;gap:12px;font-size:.76rem;color:var(--t3);margin-bottom:10px}
+        .post-meta span{display:flex;align-items:center;gap:4px}
+        .post-title{font-size:1rem;font-weight:700;color:var(--w);margin-bottom:8px;line-height:1.5;transition:var(--tr)}
+        .post-card:hover .post-title{color:var(--grn)}
+        .post-excerpt{color:var(--t3);font-size:.84rem;line-height:1.7;flex:1;margin-bottom:14px}
+        .post-footer{display:flex;align-items:center;justify-content:space-between;padding-top:14px;border-top:1px solid var(--brd)}
+        .post-author{display:flex;align-items:center;gap:8px;font-size:.8rem;color:var(--t3)}
+        .post-author img{width:24px;height:24px;border-radius:50%;border:1px solid var(--grn)}
+        .read-more{font-size:.8rem;font-weight:700;color:var(--grn);display:flex;align-items:center;gap:5px;transition:var(--tr)}
+        .read-more:hover{gap:8px}
+
+        /* ARTICLE MODAL */
+        .modal-overlay{position:fixed;inset:0;background:rgba(6,9,15,.95);z-index:9000;display:flex;align-items:flex-start;justify-content:center;padding:80px 20px 40px;overflow-y:auto;opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s}
+        .modal-overlay.open{opacity:1;visibility:visible}
+        .modal{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);max-width:760px;width:100%;padding:40px;position:relative}
+        .modal-close{position:absolute;top:16px;right:16px;width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.05);border:1px solid var(--brd);color:var(--t2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:var(--tr);font-family:'Inter',sans-serif}
+        .modal-close:hover{background:var(--red-g);border-color:var(--red);color:var(--red)}
+        .modal-cat{font-size:.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--grn);margin-bottom:10px}
+        .modal-title{font-size:1.8rem;font-weight:800;color:var(--w);line-height:1.3;margin-bottom:16px}
+        .modal-meta{display:flex;align-items:center;gap:16px;font-size:.82rem;color:var(--t3);padding-bottom:20px;border-bottom:1px solid var(--brd);margin-bottom:24px;flex-wrap:wrap}
+        .modal-content{color:var(--t2);line-height:1.9;font-size:.92rem}
+        .modal-content h3{color:var(--w);font-size:1.05rem;font-weight:700;margin:24px 0 10px}
+        .modal-content p{margin-bottom:14px}
+        .modal-content strong{color:var(--t1)}
+        .modal-content ul{margin:10px 0 14px 20px}
+        .modal-content ul li{margin-bottom:6px;list-style:disc}
+        .modal-content .highlight{background:var(--grn-g);border-left:3px solid var(--grn);padding:14px 18px;border-radius:0 8px 8px 0;margin:16px 0}
+        .modal-cta{background:linear-gradient(135deg,rgba(16,185,129,.08),rgba(59,130,246,.05));border:1px solid rgba(16,185,129,.2);border-radius:var(--rs);padding:24px;text-align:center;margin-top:32px}
+        .modal-cta h4{color:var(--w);font-weight:700;margin-bottom:8px}
+        .modal-cta p{color:var(--t2);font-size:.85rem;margin-bottom:16px}
+        .btn-xm{background:var(--xm);color:#fff;padding:12px 24px;border-radius:10px;font-weight:700;font-size:.9rem;display:inline-flex;align-items:center;gap:8px;transition:var(--tr);border:none;cursor:pointer;font-family:'Inter',sans-serif}
+        .btn-xm:hover{transform:translateY(-2px);box-shadow:0 8px 25px rgba(212,33,39,.4)}
+
+        /* NEWSLETTER */
+        .newsletter{background:linear-gradient(135deg,rgba(16,185,129,.06),rgba(59,130,246,.04));border:1px solid rgba(16,185,129,.15);border-radius:var(--r);padding:40px;text-align:center;max-width:640px;margin:0 auto 60px;position:relative;z-index:2}
+        .newsletter h3{font-size:1.4rem;font-weight:800;color:var(--w);margin:8px 0}
+        .newsletter p{color:var(--t2);font-size:.9rem;margin-bottom:24px}
+        .nl-form{display:flex;gap:10px;max-width:420px;margin:0 auto;flex-wrap:wrap}
+        .nl-form input{flex:1;min-width:200px;background:var(--bg2);border:1px solid var(--brd);color:var(--t1);padding:12px 16px;border-radius:10px;font-family:'Inter',sans-serif;font-size:.9rem;outline:none;transition:var(--tr)}
+        .nl-form input:focus{border-color:rgba(16,185,129,.4)}
+        .nl-form input::placeholder{color:var(--t3)}
+        .nl-btn{background:var(--grn);color:var(--bg1);padding:12px 20px;border-radius:10px;font-weight:700;font-size:.9rem;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr);white-space:nowrap}
+        .nl-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px var(--grn-gs)}
+
+        /* FOOTER */
+        footer{background:var(--bg2);border-top:1px solid var(--brd);padding:40px 0;position:relative;z-index:2}
+        .foot-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:20px}
+        .foot-logo-n{font-size:1.1rem;font-weight:800}
+        .foot-logo-n em{font-style:normal;color:var(--grn)}
+        .foot-links{display:flex;gap:24px;flex-wrap:wrap}
+        .foot-links a{color:var(--t3);font-size:.85rem;transition:var(--tr)}
+        .foot-links a:hover{color:var(--grn)}
+        .foot-copy{color:var(--t3);font-size:.8rem}
+
+        .rv{opacity:0;transform:translateY(24px);transition:opacity .7s ease,transform .7s ease}
+        .rv.v{opacity:1;transform:translateY(0)}
+
+        @media(max-width:900px){
+            .page-hero .container{grid-template-columns:1fr}
+            .hero-feat{display:none}
+        }
+        @media(max-width:768px){
+            .nm,.nb .lang-sw,.nxm{display:none}
+            .ham{display:flex}
+            .nm.open{display:flex;flex-direction:column;position:absolute;top:100%;left:0;width:100%;background:var(--bg2);border-bottom:1px solid var(--brd);padding:16px}
+            .page-hero{padding:100px 0 60px}
+            .blog-grid{grid-template-columns:1fr}
+            .modal{padding:24px}
+            .modal-title{font-size:1.4rem}
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="pCanvas"></canvas>
+
+<nav class="nav" id="nav">
+    <div class="container">
+        <a href="chebbi.html" class="logo">
+            <div class="logo-i"><img src="https://i.imgur.com/USEEiyC.png" alt="Logo"></div>
+            <div class="logo-n">Chebbi <em>Trading</em></div>
+        </a>
+        <ul class="nm" id="nM">
+            <li><a href="chebbi.html">Accueil</a></li>
+            <li><a href="chebbi.html#comment">Comment Rejoindre</a></li>
+            <li><a href="resultats.html">Résultats</a></li>
+            <li><a href="blog.html" class="act">Blog</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+        </ul>
+        <div class="nb">
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon" id="themeIcon"></i></button>
+            <div class="lang-sw">
+                <button class="lang-btn"><i class="fas fa-globe"></i> FR</button>
+                <div class="lang-dd">
+                    <a href="blog.html" class="active">🇫🇷 Français</a>
+                    <a href="blog-en.html">🇬🇧 English</a>
+                    <a href="blog-ar.html">🇸🇦 العربية</a>
+                </div>
+            </div>
+            <a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=fr&p=1" target="_blank" class="nxm"><i class="fas fa-user-plus"></i> S'inscrire sur XM</a>
+        </div>
+        <div class="ham" id="ham"><span></span><span></span><span></span></div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="page-hero">
+    <div class="container">
+        <div>
+            <div class="badge rv"><i class="fas fa-pen-nib"></i> Blog ChebbiTrade</div>
+            <h1 class="rv">Analyses & <span>Conseils</span><br>Forex</h1>
+            <p class="rv">Articles éducatifs, analyses de marché et stratégies de trading partagées par ChebbiTrade.</p>
+            <div class="hero-search rv">
+                <i class="fas fa-search"></i>
+                <input type="text" id="blogSearch" placeholder="Rechercher un article...">
+            </div>
+        </div>
+        <div class="hero-feat rv" id="featuredPost"></div>
+    </div>
+</section>
+
+<!-- FILTERS -->
+<div class="container">
+    <div class="blog-filters rv">
+        <div class="filter-row">
+            <div class="filter-cats" id="filterCats">
+                <button class="fcat act" onclick="filterBlog('all',this)">Tous les articles</button>
+                <button class="fcat" onclick="filterBlog('analyse',this)">📊 Analyses</button>
+                <button class="fcat" onclick="filterBlog('education',this)">🎓 Éducation</button>
+                <button class="fcat" onclick="filterBlog('strategie',this)">⚙️ Stratégies</button>
+                <button class="fcat" onclick="filterBlog('gold',this)">🥇 Or / Gold</button>
+            </div>
+            <div class="filter-sort">
+                <i class="fas fa-sort"></i>
+                <select id="sortSelect" onchange="sortPosts(this.value)">
+                    <option value="recent">Plus récents</option>
+                    <option value="popular">Plus populaires</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- BLOG GRID -->
+<div class="blog-body">
+    <div class="container">
+        <div class="blog-grid" id="blogGrid"></div>
+        <div class="newsletter rv">
+            <div style="font-size:1.8rem;margin-bottom:8px">📬</div>
+            <h3>Recevoir les analyses par email</h3>
+            <p>Rejoignez notre newsletter et recevez chaque semaine nos analyses de marché et conseils trading.</p>
+            <div class="nl-form">
+                <input type="email" placeholder="votre@email.com">
+                <button class="nl-btn" onclick="subscribeNL(this)">S'abonner</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ARTICLE MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modalContent"></div>
+</div>
+
+<footer>
+    <div class="container">
+        <div class="foot-inner">
+            <div style="display:flex;align-items:center;gap:10px">
+                <div class="logo-i" style="width:32px;height:32px"><img src="https://i.imgur.com/USEEiyC.png" alt="Logo"></div>
+                <div class="foot-logo-n">Chebbi <em>Trading</em></div>
+            </div>
+            <div class="foot-links">
+                <a href="chebbi.html">Accueil</a>
+                <a href="resultats.html">Résultats</a>
+                <a href="blog.html">Blog</a>
+                <a href="faq.html">FAQ</a>
+                <a href="https://t.me/ChebbiTrading" target="_blank">Telegram</a>
+            </div>
+            <div class="foot-copy">© 2025 Chebbi Trading. Partenaire officiel XM.</div>
+        </div>
+    </div>
+<!-- dashboard link available: dashboard.html --></footer>
+
+<script>
+const posts = [
+    {
+        id:1, cat:'gold', emoji:'🥇',
+        catLabel:'Or / Gold', catColor:'rgba(245,158,11,.15)', catText:'#f59e0b',
+        title:"Pourquoi l'or (XAUUSD) est l'actif préféré de ChebbiTrade",
+        date:'15 Mars 2026', read:'5 min', views:1240,
+        excerpt:"L'or est l'instrument le plus tradé dans notre groupe. Découvrez pourquoi XAUUSD offre les meilleures opportunités en 2026.",
+        content:`
+            <h3>L'or : l'instrument roi du Forex</h3>
+            <p>Depuis 4 ans que ChebbiTrade partage des signaux en live, <strong>l'or (XAUUSD)</strong> reste de loin l'actif le plus tradé dans notre groupe. Et ce n'est pas un hasard.</p>
+            <div class="highlight">💡 En 2025, plus de 80% de nos signaux étaient sur l'or. Résultat : +128% low risk sur l'année.</div>
+            <h3>Pourquoi l'or ?</h3>
+            <p>L'or présente plusieurs avantages majeurs pour un trader actif :</p>
+            <ul>
+                <li><strong>Volatilité prévisible</strong> : L'or réagit fortement aux données macro (inflation, FED, tensions géopolitiques)</li>
+                <li><strong>Tendances longues</strong> : Les mouvements directionnels sur l'or durent souvent plusieurs semaines</li>
+                <li><strong>Liquidité maximale</strong> : Spreads serrés, exécution instantanée sur XM</li>
+                <li><strong>Analyse technique fiable</strong> : Les niveaux S/R fonctionnent très bien sur XAUUSD</li>
+            </ul>
+            <h3>Comment on trade l'or chez ChebbiTrade</h3>
+            <p>Notre approche est simple : <strong>BUY on dips</strong> dans un marché haussier structurel. Avec une gestion du risque stricte à 1% par trade en low risk.</p>
+            <p>Chaque trade est annoncé en live sur YouTube avant l'entrée. Transparent, vérifiable, sans filtre.</p>
+        `
+    },
+    {
+        id:2, cat:'education', emoji:'🎓',
+        catLabel:'Éducation', catColor:'rgba(59,130,246,.15)', catText:'#3b82f6',
+        title:"Comprendre le Risk Management : la clé de la survie en trading",
+        date:'8 Mars 2026', read:'7 min', views:980,
+        excerpt:"Sans une gestion du risque solide, même les meilleurs signaux ne suffiront pas. Voici les bases indispensables pour protéger votre capital.",
+        content:`
+            <h3>Le Risk Management, ce que les débutants ignorent</h3>
+            <p>La majorité des traders débutants perdent leur capital non pas parce qu'ils manquent de signaux, mais parce qu'ils <strong>ne gèrent pas leur risque</strong>.</p>
+            <div class="highlight">⚠️ Avec un win rate de 42% seulement, ChebbiTrade a généré +128% en 2025. Comment ? Grâce à un ratio risque/rendement favorable et une gestion stricte des positions.</div>
+            <h3>Les règles de base</h3>
+            <ul>
+                <li><strong>Ne jamais risquer plus de 1-2% par trade</strong> sur votre capital total</li>
+                <li><strong>Toujours définir un stop loss</strong> avant d'entrer en position</li>
+                <li><strong>Le ratio R/R minimum</strong> : viser au moins 1:2 (risque 100 pips pour gagner 200)</li>
+                <li><strong>Ne pas sur-trader</strong> : moins de positions = plus de contrôle</li>
+            </ul>
+            <h3>Low risk vs Medium risk</h3>
+            <p>Dans notre groupe, on propose deux niveaux de risque :</p>
+            <ul>
+                <li><strong>Low risk</strong> : 1$/pip pour un compte de 10 000$ → protège du margin call même en cas de longue série perdante</li>
+                <li><strong>Medium risk</strong> : 2$/pip → rendements doublés mais risque doublé aussi</li>
+            </ul>
+            <p>Commencez toujours par le low risk, surtout si vous débutez.</p>
+        `
+    },
+    {
+        id:3, cat:'strategie', emoji:'⚙️',
+        catLabel:'Stratégie', catColor:'rgba(139,92,246,.15)', catText:'#8b5cf6',
+        title:"BUY on Dips : la stratégie principale de ChebbiTrade expliquée",
+        date:'1 Mars 2026', read:'6 min', views:750,
+        excerpt:"BUY on dips est notre stratégie phare sur l'or. Découvrez comment identifier les bons niveaux d'entrée dans une tendance haussière.",
+        content:`
+            <h3>Qu'est-ce que le "BUY on Dips" ?</h3>
+            <p>La stratégie <strong>BUY on Dips</strong> consiste à acheter lors des corrections à la baisse dans une tendance haussière. L'idée : profiter des pullbacks pour entrer à meilleur prix dans le sens de la tendance principale.</p>
+            <div class="highlight">📈 Sur l'or en 2025, le marché était structurellement haussier. Chaque correction était une opportunité d'achat.</div>
+            <h3>Comment identifier un bon "dip" ?</h3>
+            <ul>
+                <li>Attendre une correction de <strong>30-50% du dernier mouvement</strong></li>
+                <li>Chercher un <strong>support technique</strong> (niveau S/R, retracement Fibonacci)</li>
+                <li>Vérifier que la <strong>tendance supérieure reste intacte</strong> (pas de break de structure)</li>
+                <li>Confirmer avec un <strong>signal de momentum</strong> (bougie de retournement)</li>
+            </ul>
+            <h3>Exemple concret</h3>
+            <p>Semaine 2 de mars 2025 : après une consolidation sur la zone 5050-5080, le marché a retesté ce niveau. Nos membres ont acheté à 5053 pour sortir à 5130 — soit <strong>770 pips de gain</strong>, le meilleur trade du mois.</p>
+        `
+    },
+    {
+        id:4, cat:'analyse', emoji:'📊',
+        catLabel:'Analyse', catColor:'rgba(16,185,129,.15)', catText:'#10b981',
+        title:"Bilan 2025 : comment ChebbiTrade a généré +128% en 12 mois",
+        date:'5 Janv 2026', read:'8 min', views:2100,
+        excerpt:"Analyse détaillée de nos performances 2025 : les meilleurs mois, les moins bons, et les leçons à retenir pour 2026.",
+        content:`
+            <h3>2025, une année exceptionnelle</h3>
+            <p>L'année 2025 restera dans les annales de ChebbiTrade. Avec <strong>+128% en low risk</strong> (et +256% en medium risk), c'est notre meilleure performance depuis la création du groupe.</p>
+            <div class="highlight">🏆 10 000$ investis en janvier 2025 = 22 800$ en décembre 2025 (low risk)</div>
+            <h3>Les meilleurs mois</h3>
+            <ul>
+                <li><strong>Avril 2025 : +22.22%</strong> — marché de l'or en pleine explosion post-FED</li>
+                <li><strong>Juillet 2025 : +17.02%</strong> — tendance haussière claire sur XAUUSD</li>
+                <li><strong>Mars 2025 : +12.79%</strong> — recovery après une mauvaise semaine</li>
+            </ul>
+            <h3>Les mois difficiles</h3>
+            <ul>
+                <li><strong>Octobre 2025 : -10.03%</strong> — marché très chaotique, beaucoup de faux signaux</li>
+                <li><strong>Février 2025 : -4.25%</strong> — début d'année difficile avec forte volatilité</li>
+            </ul>
+            <h3>Les leçons pour 2026</h3>
+            <p>La discipline dans la gestion du risque a été la clé. Même pendant les mauvais mois, on n'a jamais sur-tradé. C'est ce qui nous a permis de récupérer rapidement et terminer l'année sur un bilan exceptionnel.</p>
+        `
+    },
+    {
+        id:5, cat:'education', emoji:'📚',
+        catLabel:'Éducation', catColor:'rgba(59,130,246,.15)', catText:'#3b82f6',
+        title:"Comment ouvrir son premier compte XM en 10 minutes",
+        date:'20 Fév 2026', read:'4 min', views:1560,
+        excerpt:"Guide pas-à-pas pour ouvrir votre compte XM via notre lien affilié et rejoindre notre groupe de signaux gratuits.",
+        content:`
+            <h3>Étape 1 : Ouvrir le compte</h3>
+            <p>Cliquez sur notre lien d'inscription XM (disponible sur le site). Renseignez vos informations personnelles : nom, email, pays de résidence.</p>
+            <h3>Étape 2 : Choisir votre type de compte</h3>
+            <p>XM propose plusieurs types de comptes. Nous recommandons le compte <strong>Standard ou Micro</strong> pour les débutants. Le compte Ultra Low est idéal pour les spreads minimaux.</p>
+            <h3>Étape 3 : Vérification d'identité (KYC)</h3>
+            <p>Uploadez une pièce d'identité et un justificatif de domicile. La vérification prend généralement <strong>24-48 heures</strong>.</p>
+            <h3>Étape 4 : Premier dépôt</h3>
+            <p>Dépôt minimum <strong>5$</strong> (recommandé 100$+). XM accepte virement, carte bancaire, et plusieurs méthodes locales selon votre pays.</p>
+            <div class="highlight">✅ Une fois inscrit via notre lien, contactez-nous sur Telegram @ChebbiTrading avec votre ID XM pour rejoindre le groupe privé !</div>
+            <h3>Étape 5 : Rejoindre notre groupe</h3>
+            <p>Envoyez votre ID de compte XM sur Telegram. Notre équipe vérifiera l'inscription et vous ajoutera au groupe privé dans les 24 heures.</p>
+        `
+    },
+    {
+        id:6, cat:'analyse', emoji:'🌍',
+        catLabel:'Analyse', catColor:'rgba(16,185,129,.15)', catText:'#10b981',
+        title:"L'impact de la politique de la FED sur l'or en 2026",
+        date:'12 Mars 2026', read:'6 min', views:890,
+        excerpt:"Comment les décisions de la Réserve Fédérale américaine influencent le prix de l'or et comment en profiter dans vos trades.",
+        content:`
+            <h3>FED et or : une relation inverse</h3>
+            <p>Il existe une corrélation bien établie entre la politique monétaire de la FED et le prix de l'or. En général : <strong>baisse des taux = hausse de l'or</strong> et vice versa.</p>
+            <h3>Pourquoi cette relation ?</h3>
+            <p>L'or ne génère pas de rendement (pas d'intérêts). Quand les taux d'intérêt sont élevés, les obligations US deviennent plus attractives que l'or. Inversement, quand la FED baisse ses taux, l'or retrouve son attractivité comme valeur refuge.</p>
+            <div class="highlight">📅 Surveillez toujours le calendrier économique : les annonces FED sont des événements à fort impact sur XAUUSD.</div>
+            <h3>Comment trader autour des annonces FED ?</h3>
+            <ul>
+                <li><strong>Avant l'annonce</strong> : Réduisez vos positions ou fermez-les si vous avez des gains</li>
+                <li><strong>Pendant l'annonce</strong> : Ne prenez pas de nouvelles positions — la volatilité est imprévisible</li>
+                <li><strong>Après l'annonce</strong> : Attendez la stabilisation du marché (15-30 min) avant d'entrer</li>
+            </ul>
+            <h3>Notre approche chez ChebbiTrade</h3>
+            <p>En 2025, nous avons systématiquement évité de trader lors des grandes annonces macro. Cette discipline a contribué à éviter plusieurs pertes importantes pendant les périodes de haute volatilité.</p>
+        `
+    }
+];
+
+let currentCat = 'all', currentSearch = '';
+
+function getCatStyle(post){
+    return `background:${post.catColor};color:${post.catText}`;
+}
+
+function renderPosts(){
+    const grid = document.getElementById('blogGrid');
+    let filtered = posts.filter(p=>{
+        const catOk = currentCat==='all'||p.cat===currentCat;
+        const searchOk = !currentSearch||p.title.toLowerCase().includes(currentSearch.toLowerCase())||p.excerpt.toLowerCase().includes(currentSearch.toLowerCase());
+        return catOk && searchOk;
+    });
+    if(filtered.length===0){
+        grid.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--t3)"><i class="fas fa-search" style="font-size:2rem;display:block;margin-bottom:12px"></i>Aucun article trouvé.</div>`;
+        return;
+    }
+    grid.innerHTML = filtered.map(p=>`
+        <div class="post-card rv" onclick="openPost(${p.id})">
+            <div class="post-thumb">
+                <span class="post-cat-badge" style="${getCatStyle(p)}">${p.catLabel}</span>
+                <span style="position:relative;z-index:1;font-size:3rem">${p.emoji}</span>
+            </div>
+            <div class="post-body">
+                <div class="post-meta">
+                    <span><i class="fas fa-calendar"></i> ${p.date}</span>
+                    <span><i class="fas fa-clock"></i> ${p.read}</span>
+                    <span><i class="fas fa-eye"></i> ${p.views.toLocaleString()}</span>
+                </div>
+                <div class="post-title">${p.title}</div>
+                <div class="post-excerpt">${p.excerpt}</div>
+                <div class="post-footer">
+                    <div class="post-author">
+                        <img src="https://i.imgur.com/USEEiyC.png" alt="Chebbi">
+                        <span>Chebbi Trading</span>
+                    </div>
+                    <span class="read-more">Lire <i class="fas fa-arrow-right"></i></span>
+                </div>
+            </div>
+        </div>`).join('');
+    document.querySelectorAll('.post-card.rv').forEach((e,i)=>setTimeout(()=>e.classList.add('v'),i*80));
+}
+
+function renderFeatured(){
+    const p = posts[3]; // bilan 2025
+    document.getElementById('featuredPost').innerHTML = `
+        <div class="hf-tag">⭐ Article à la une</div>
+        <div class="hf-title">${p.title}</div>
+        <div class="hf-meta">
+            <span><i class="fas fa-calendar"></i> ${p.date}</span>
+            <span><i class="fas fa-clock"></i> ${p.read}</span>
+            <span><i class="fas fa-eye"></i> ${p.views.toLocaleString()} vues</span>
+        </div>
+        <div class="hf-excerpt">${p.excerpt}</div>
+        <span class="btn-sm" onclick="openPost(${p.id})">Lire l'article <i class="fas fa-arrow-right"></i></span>`;
+}
+
+function openPost(id){
+    const p = posts.find(x=>x.id===id);
+    if(!p)return;
+    document.getElementById('modalContent').innerHTML = `
+        <button class="modal-close" onclick="closeModal(null,true)"><i class="fas fa-times"></i></button>
+        <div class="modal-cat">${p.catLabel}</div>
+        <div class="modal-title">${p.title}</div>
+        <div class="modal-meta">
+            <span><i class="fas fa-calendar"></i> ${p.date}</span>
+            <span><i class="fas fa-clock"></i> ${p.read} de lecture</span>
+            <span><i class="fas fa-eye"></i> ${p.views.toLocaleString()} vues</span>
+            <span><i class="fas fa-user"></i> ChebbiTrade</span>
+        </div>
+        <div class="modal-content">${p.content}</div>
+        <div class="modal-cta">
+            <h4>Profitez de ces signaux gratuitement</h4>
+            <p>Ouvrez un compte XM via notre lien et rejoignez le groupe Telegram privé.</p>
+            <a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=fr&p=1" target="_blank" class="btn-xm"><i class="fas fa-user-plus"></i> S'inscrire sur XM — Gratuit</a>
+        </div>`;
+    document.getElementById('modalOverlay').classList.add('open');
+    document.body.style.overflow='hidden';
+}
+
+function closeModal(e, force=false){
+    if(force || e.target===document.getElementById('modalOverlay')){
+        document.getElementById('modalOverlay').classList.remove('open');
+        document.body.style.overflow='';
+    }
+}
+
+function filterBlog(cat, btn){
+    currentCat=cat;
+    document.querySelectorAll('.fcat').forEach(b=>b.classList.remove('act'));
+    btn.classList.add('act');
+    renderPosts();
+}
+
+function sortPosts(val){
+    if(val==='popular') posts.sort((a,b)=>b.views-a.views);
+    else posts.sort((a,b)=>b.id-a.id);
+    renderPosts();
+}
+
+function subscribeNL(btn){
+    btn.textContent='✅ Inscrit !';
+    btn.style.background='var(--grn-l)';
+    setTimeout(()=>{btn.textContent='S\'abonner';btn.style.background=''},3000);
+}
+
+document.getElementById('blogSearch').addEventListener('input',function(){
+    currentSearch=this.value;renderPosts();
+});
+
+// PARTICLES
+const pc=document.getElementById('pCanvas');
+const ctx=pc.getContext('2d');
+let pts=[];
+function resizeC(){pc.width=window.innerWidth;pc.height=window.innerHeight}
+resizeC(); window.addEventListener('resize',resizeC);
+for(let i=0;i<50;i++)pts.push({x:Math.random()*pc.width,y:Math.random()*pc.height,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.5+.5,a:Math.random()*.5+.1});
+function animP(){ctx.clearRect(0,0,pc.width,pc.height);pts.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,Math.PI*2);ctx.fillStyle=`rgba(16,185,129,${p.a})`;ctx.fill();p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>pc.width)p.vx*=-1;if(p.y<0||p.y>pc.height)p.vy*=-1;});requestAnimationFrame(animP);}
+animP();
+
+function toggleTheme(){
+    const isLight = document.body.classList.toggle('light');
+    document.getElementById('themeIcon').className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+}
+
+window.addEventListener('scroll',()=>document.getElementById('nav').classList.toggle('scr',scrollY>60));
+document.getElementById('ham').addEventListener('click',()=>document.getElementById('nM').classList.toggle('open'));
+const rO=new IntersectionObserver(es=>{es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('v'),i*80);rO.unobserve(e.target)}})},{threshold:.08});
+document.querySelectorAll('.rv').forEach(e=>rO.observe(e));
+
+document.addEventListener('keydown',e=>{ if(e.key==='Escape')closeModal(null,true); });
+
+// Restore saved theme
+if(localStorage.getItem('theme')==='light'){
+    document.body.classList.add('light');
+    document.getElementById('themeIcon').className='fas fa-sun';
+}
+
+renderFeatured();
+renderPosts();
+</script>
+</body>
+</html>

@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chebbi Trading — Dashboard Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07090e;--bg2:#0d1117;--bg3:#111823;--card:#131c28;--card2:#192235;
+  --brd:rgba(255,255,255,.07);--brd2:rgba(255,255,255,.12);
+  --grn:#00e5a0;--grn2:#00c988;--grng:rgba(0,229,160,.1);
+  --red:#ff4757;--redg:rgba(255,71,87,.1);
+  --gld:#ffd32a;--gldg:rgba(255,211,42,.1);
+  --blu:#3d8bff;--blug:rgba(61,139,255,.1);
+  --pur:#a855f7;--purg:rgba(168,85,247,.1);
+  --t1:#e8edf5;--t2:#8896aa;--t3:#4a5568;--w:#fff;
+}
+html{scroll-behavior:smooth}
+body{font-family:"Syne",sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{position:fixed;top:0;left:0;width:252px;height:100vh;background:var(--bg2);border-right:1px solid var(--brd);display:flex;flex-direction:column;z-index:100}
+.sb-logo{padding:24px 20px 18px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--brd)}
+.sb-logo-icon{width:38px;height:38px;border-radius:9px;background:linear-gradient(135deg,var(--grn),var(--grn2));display:flex;align-items:center;justify-content:center;font-size:1rem;color:#000;font-weight:800;flex-shrink:0}
+.sb-logo-name{font-size:1rem;font-weight:800;line-height:1.2}
+.sb-logo-sub{font-size:.65rem;color:var(--grn);font-weight:500;letter-spacing:.08em;text-transform:uppercase;opacity:.8}
+.sb-nav{flex:1;padding:14px 10px;overflow-y:auto}
+.sb-sec{font-size:.62rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--t3);padding:8px 10px 4px;margin-top:6px}
+.sb-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:9px;cursor:pointer;transition:.2s;color:var(--t2);font-size:.85rem;font-weight:500;margin-bottom:1px;border:1px solid transparent}
+.sb-item:hover{background:rgba(255,255,255,.04);color:var(--t1)}
+.sb-item.act{background:var(--grng);color:var(--grn);border-color:rgba(0,229,160,.2)}
+.sb-item i{width:16px;text-align:center;font-size:.85rem;flex-shrink:0}
+.sb-badge{margin-left:auto;font-size:.62rem;font-weight:700;padding:2px 7px;border-radius:8px;font-family:"JetBrains Mono",monospace}
+.sb-badge.grn{background:var(--grng);color:var(--grn)}
+.sb-badge.red{background:var(--redg);color:var(--red)}
+.sb-foot{padding:14px;border-top:1px solid var(--brd)}
+.sb-user{display:flex;align-items:center;gap:10px}
+.sb-av{width:34px;height:34px;border-radius:8px;background:linear-gradient(135deg,var(--grn),var(--blu));display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.8rem;color:#000;flex-shrink:0}
+.sb-uname{font-size:.83rem;font-weight:700}
+.sb-urole{font-size:.7rem;color:var(--grn);font-weight:500}
+
+/* MAIN */
+.main{margin-left:252px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:var(--bg2);border-bottom:1px solid var(--brd);padding:14px 28px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.tb-title{font-size:1.05rem;font-weight:800}
+.tb-title span{color:var(--grn)}
+.tb-right{display:flex;align-items:center;gap:10px}
+.tb-btn{background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--t2);width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:.2s;font-size:.85rem}
+.tb-btn:hover{border-color:var(--grn);color:var(--grn)}
+.tb-online{display:flex;align-items:center;gap:6px;background:var(--grng);border:1px solid rgba(0,229,160,.25);color:var(--grn);padding:6px 12px;border-radius:7px;font-size:.75rem;font-weight:700}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--grn);animation:blink 2s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+
+.content{flex:1;padding:28px;display:flex;flex-direction:column;gap:24px}
+
+/* SECTION */
+.sh{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.sh-left .st{font-size:.95rem;font-weight:700}
+.sh-left .ss{font-size:.75rem;color:var(--t3);margin-top:2px}
+.sh-btn{background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--t2);padding:7px 13px;border-radius:8px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:"Syne",sans-serif;transition:.2s;display:flex;align-items:center;gap:6px}
+.sh-btn:hover{border-color:var(--grn);color:var(--grn)}
+
+/* KPI */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.kpi{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:20px;position:relative;overflow:hidden;transition:.3s}
+.kpi::after{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--grn))}
+.kpi:hover{transform:translateY(-3px);border-color:var(--brd2);box-shadow:0 10px 32px rgba(0,0,0,.4)}
+.kpi-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:.9rem;margin-bottom:12px}
+.kpi-v{font-size:1.8rem;font-weight:800;font-family:"JetBrains Mono",monospace;color:var(--w);line-height:1}
+.kpi-l{font-size:.7rem;color:var(--t3);margin-top:4px;text-transform:uppercase;letter-spacing:.06em;font-weight:500}
+.kpi-tr{position:absolute;top:16px;right:16px;font-size:.7rem;font-weight:700;font-family:"JetBrains Mono",monospace;padding:2px 7px;border-radius:5px}
+.up{background:var(--grng);color:var(--grn)}
+.dn{background:var(--redg);color:var(--red)}
+
+/* PAGES GRID */
+.pg-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.pc{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:18px;transition:.3s;position:relative;overflow:hidden}
+.pc::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:var(--ac,var(--grn))}
+.pc:hover{border-color:var(--brd2);transform:translateY(-2px)}
+.pc-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.pc-ico{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1.1rem}
+.pc-langs{display:flex;gap:3px}
+.lang-tag{font-size:.62rem;padding:2px 7px;border-radius:4px;font-weight:700;border:1px solid}
+.lang-tag.ok{background:var(--grng);color:var(--grn);border-color:rgba(0,229,160,.3)}
+.lang-tag.no{background:var(--redg);color:var(--red);border-color:rgba(255,71,87,.25)}
+.pc-name{font-size:.9rem;font-weight:700;color:var(--w);margin-bottom:3px}
+.pc-file{font-size:.72rem;color:var(--t3);font-family:"JetBrains Mono",monospace;margin-bottom:12px}
+.pc-btns{display:flex;gap:6px}
+.pc-btn{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--t2);padding:7px;border-radius:7px;font-size:.72rem;font-weight:600;cursor:pointer;font-family:"Syne",sans-serif;transition:.2s;display:flex;align-items:center;justify-content:center;gap:4px;text-decoration:none}
+.pc-btn:hover{border-color:var(--grn);color:var(--grn);background:var(--grng)}
+.pc-btn.prim{background:var(--grng);border-color:rgba(0,229,160,.25);color:var(--grn)}
+
+/* TABLE */
+.tbl-wrap{background:var(--card);border:1px solid var(--brd);border-radius:12px;overflow:hidden}
+.tbl-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--brd)}
+.tbl-hd-title{font-size:.85rem;font-weight:700}
+.tbl-search{display:flex;align-items:center;gap:7px;background:rgba(255,255,255,.04);border:1px solid var(--brd);border-radius:8px;padding:7px 12px;transition:.2s}
+.tbl-search:focus-within{border-color:rgba(0,229,160,.4)}
+.tbl-search i{color:var(--t3);font-size:.8rem}
+.tbl-search input{background:none;border:none;color:var(--t1);font-size:.8rem;outline:none;font-family:"Syne",sans-serif;width:180px}
+.tbl-search input::placeholder{color:var(--t3)}
+table{width:100%;border-collapse:collapse}
+th{padding:11px 16px;text-align:left;font-size:.67rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--t3);background:rgba(255,255,255,.02);border-bottom:1px solid var(--brd)}
+td{padding:12px 16px;font-size:.82rem;color:var(--t2);border-bottom:1px solid rgba(255,255,255,.03);transition:.15s}
+tr:hover td{background:rgba(255,255,255,.02);color:var(--t1)}
+tr:last-child td{border-bottom:none}
+.td-bold{color:var(--w);font-weight:600}
+.td-mono{font-family:"JetBrains Mono",monospace;font-size:.78rem;color:var(--grn)}
+.st{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;border-radius:5px;font-size:.7rem;font-weight:700}
+.st.pending{background:var(--gldg);color:var(--gld)}
+.st.active{background:var(--grng);color:var(--grn)}
+.st.rejected{background:var(--redg);color:var(--red)}
+.act-btns{display:flex;gap:5px}
+.ab{padding:4px 10px;border-radius:5px;font-size:.7rem;font-weight:700;cursor:pointer;border:1px solid;font-family:"Syne",sans-serif;transition:.2s}
+.ab.ap{background:var(--grng);color:var(--grn);border-color:rgba(0,229,160,.25)}
+.ab.ap:hover{background:rgba(0,229,160,.2)}
+.ab.rj{background:var(--redg);color:var(--red);border-color:rgba(255,71,87,.2)}
+.ab.rj:hover{background:rgba(255,71,87,.2)}
+.ab.vw{background:var(--blug);color:var(--blu);border-color:rgba(61,139,255,.2)}
+
+/* QUICK ACTIONS */
+.qa-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.qa{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:18px;text-align:center;cursor:pointer;transition:.3s;position:relative;overflow:hidden}
+.qa:hover{border-color:var(--brd2);transform:translateY(-3px)}
+.qa::before{content:"";position:absolute;inset:0;opacity:0;transition:.3s;background:radial-gradient(circle at center,var(--gg),transparent 70%)}
+.qa:hover::before{opacity:1}
+.qa-em{font-size:1.5rem;margin-bottom:8px;position:relative}
+.qa-n{font-size:.83rem;font-weight:700;color:var(--t1);position:relative}
+.qa-d{font-size:.7rem;color:var(--t3);margin-top:3px;position:relative}
+
+/* TWO COL */
+.two{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+/* PERF CARD */
+.pcard{background:var(--card);border:1px solid var(--brd);border-radius:12px;padding:20px}
+.pcard-title{font-size:.85rem;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:7px}
+.pcard-title span{color:var(--grn)}
+.yr{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.yr-l{font-size:.78rem;font-weight:600;color:var(--t2);width:34px;flex-shrink:0}
+.yr-b{flex:1;height:7px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.yr-f{height:100%;border-radius:3px;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.yr-v{font-size:.78rem;font-weight:700;font-family:"JetBrains Mono",monospace;color:var(--grn);width:48px;text-align:right;flex-shrink:0}
+
+/* SIGNALS */
+.sig-list{display:flex;flex-direction:column;gap:7px}
+.sig{display:flex;align-items:center;gap:10px;padding:10px 12px;background:rgba(255,255,255,.03);border:1px solid var(--brd);border-radius:9px;transition:.2s}
+.sig:hover{border-color:var(--brd2);background:rgba(255,255,255,.05)}
+.sd{font-size:.68rem;font-weight:800;padding:3px 8px;border-radius:4px;min-width:38px;text-align:center}
+.sd.buy{background:var(--grng);color:var(--grn)}
+.sd.sell{background:var(--redg);color:var(--red)}
+.ss{font-family:"JetBrains Mono",monospace;font-size:.82rem;font-weight:700;color:var(--w);min-width:68px}
+.sp{font-family:"JetBrains Mono",monospace;font-size:.75rem;color:var(--t2);flex:1}
+.sr{font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:4px}
+.sr.w{background:var(--grng);color:var(--grn)}
+.sr.l{background:var(--redg);color:var(--red)}
+.sr.o{background:var(--gldg);color:var(--gld)}
+
+/* MODAL */
+.mow{position:fixed;inset:0;background:rgba(0,0,0,.75);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:.3s}
+.mow.open{opacity:1;visibility:visible}
+.mbox{background:var(--bg2);border:1px solid var(--brd2);border-radius:16px;padding:28px;width:500px;max-width:95vw;position:relative;max-height:88vh;overflow-y:auto}
+.mbox h3{font-size:1.05rem;font-weight:800;margin-bottom:3px}
+.mbox .msub{color:var(--t3);font-size:.8rem;margin-bottom:22px}
+.mclose{position:absolute;top:14px;right:14px;width:30px;height:30px;background:rgba(255,255,255,.05);border:1px solid var(--brd);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--t3);transition:.2s;font-size:.85rem}
+.mclose:hover{border-color:var(--red);color:var(--red)}
+.mrow{margin-bottom:14px}
+.mlbl{font-size:.72rem;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;display:block}
+.minp{width:100%;background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--t1);padding:10px 13px;border-radius:9px;font-family:"Syne",sans-serif;font-size:.85rem;outline:none;transition:.2s}
+.minp:focus{border-color:rgba(0,229,160,.5);box-shadow:0 0 0 3px var(--grng)}
+.minp::placeholder{color:var(--t3)}
+textarea.minp{resize:none;height:75px}
+select.minp{cursor:pointer}
+.mbtns{display:flex;gap:9px;margin-top:20px}
+.mc{flex:1;background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--t2);padding:10px;border-radius:9px;font-family:"Syne",sans-serif;font-weight:700;cursor:pointer;transition:.2s}
+.mc:hover{border-color:var(--red);color:var(--red)}
+.ms{flex:2;background:var(--grng);border:1px solid rgba(0,229,160,.3);color:var(--grn);padding:10px;border-radius:9px;font-family:"Syne",sans-serif;font-weight:800;cursor:pointer;transition:.2s}
+.ms:hover{background:rgba(0,229,160,.2)}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--card2);border:1px solid var(--grn);color:var(--grn);padding:12px 18px;border-radius:10px;font-size:.82rem;font-weight:700;z-index:9999;transform:translateY(60px);opacity:0;transition:.4s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;box-shadow:0 6px 24px rgba(0,229,160,.15)}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.red-t{border-color:var(--red);color:var(--red);box-shadow:0 6px 24px rgba(255,71,87,.15)}
+
+.view{display:none}
+.view.active{display:contents}
+
+/* SETTINGS */
+.set-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.set-row{margin-bottom:13px}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.kpi-grid,.pg-grid,.qa-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:750px){.sidebar{transform:translateX(-100%)}.main{margin-left:0}.two,.set-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<aside class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-icon">CT</div>
+    <div>
+      <div class="sb-logo-name">Chebbi Trading</div>
+      <div class="sb-logo-sub">Admin Dashboard</div>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-sec">Principal</div>
+    <div class="sb-item act" onclick="showView('overview')"><i class="fas fa-th-large"></i> Vue d'ensemble</div>
+    <div class="sb-item" onclick="showView('members')"><i class="fas fa-users"></i> Membres <span class="sb-badge red" id="pBadge">3</span></div>
+    <div class="sb-item" onclick="showView('signals')"><i class="fas fa-signal"></i> Signaux</div>
+    <div class="sb-item" onclick="showView('pages')"><i class="fas fa-globe"></i> Pages du Site</div>
+    <div class="sb-sec">Contenu</div>
+    <div class="sb-item" onclick="showView('blog')"><i class="fas fa-pen-nib"></i> Blog</div>
+    <div class="sb-item" onclick="showView('results')"><i class="fas fa-chart-line"></i> Résultats</div>
+    <div class="sb-item" onclick="showView('faq')"><i class="fas fa-question-circle"></i> FAQ</div>
+    <div class="sb-sec">Config</div>
+    <div class="sb-item" onclick="showView('settings')"><i class="fas fa-cog"></i> Paramètres</div>
+    <div class="sb-item" onclick="showView('affiliate')"><i class="fas fa-link"></i> Lien XM Affilié</div>
+  </nav>
+  <div class="sb-foot">
+    <div class="sb-user">
+      <div class="sb-av">AC</div>
+      <div><div class="sb-uname">Amine Chebbi</div><div class="sb-urole">Administrateur</div></div>
+    </div>
+  </div>
+</aside>
+<main class="main">
+  <header class="topbar">
+    <div class="tb-title" id="topTitle">Vue d'ensemble <span>Dashboard</span></div>
+    <div class="tb-right">
+      <div class="tb-online"><div class="dot"></div> Site en ligne</div>
+      <button class="tb-btn" onclick="refreshData()" title="Actualiser"><i class="fas fa-sync-alt"></i></button>
+      <button class="tb-btn" onclick="toast('🔔 Aucune nouvelle notification')" title="Notifications"><i class="fas fa-bell"></i></button>
+    </div>
+  </header>
+  <div class="content">
+
+    <!-- OVERVIEW -->
+    <section class="view active" id="view-overview">
+      <div class="sh"><div class="sh-left"><div class="st">Statistiques</div><div class="ss">Données en temps réel</div></div></div>
+      <div class="kpi-grid">
+        <div class="kpi" style="--ac:var(--grn)"><div class="kpi-ic" style="background:var(--grng);color:var(--grn)"><i class="fas fa-users"></i></div><div class="kpi-tr up">+12%</div><div class="kpi-v">1,920</div><div class="kpi-l">Membres actifs</div></div>
+        <div class="kpi" style="--ac:var(--gld)"><div class="kpi-ic" style="background:var(--gldg);color:var(--gld)"><i class="fas fa-chart-line"></i></div><div class="kpi-tr up">+128%</div><div class="kpi-v">+128%</div><div class="kpi-l">Performance 2025</div></div>
+        <div class="kpi" style="--ac:var(--blu)"><div class="kpi-ic" style="background:var(--blug);color:var(--blu)"><i class="fas fa-eye"></i></div><div class="kpi-tr up">+8%</div><div class="kpi-v">4,821</div><div class="kpi-l">Visites / semaine</div></div>
+        <div class="kpi" style="--ac:var(--red)"><div class="kpi-ic" style="background:var(--redg);color:var(--red)"><i class="fas fa-user-clock"></i></div><div class="kpi-tr dn" id="kPend">3</div><div class="kpi-v" id="kPend">3</div><div class="kpi-l">Demandes en attente</div></div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="sh"><div class="sh-left"><div class="st">Actions rapides</div></div></div>
+        <div class="qa-grid">
+          <div class="qa" style="--gg:var(--grng)" onclick="openModal('addMember')"><div class="qa-em">➕</div><div class="qa-n">Ajouter membre</div><div class="qa-d">Approbation manuelle</div></div>
+          <div class="qa" style="--gg:var(--blug)" onclick="openModal('addSignal')"><div class="qa-em">📡</div><div class="qa-n">Publier signal</div><div class="qa-d">Envoyer aux membres</div></div>
+          <div class="qa" style="--gg:var(--gldg)" onclick="openModal('addArticle')"><div class="qa-em">✍️</div><div class="qa-n">Écrire article</div><div class="qa-d">Nouveau post blog</div></div>
+          <div class="qa" style="--gg:var(--purg)" onclick="showView('affiliate')"><div class="qa-em">🔗</div><div class="qa-n">Lien XM</div><div class="qa-d">Mettre à jour</div></div>
+        </div>
+      </div>
+      <div class="two">
+        <div class="pcard">
+          <div class="pcard-title"><i class="fas fa-trophy" style="color:var(--gld)"></i> Performance <span>annuelle</span></div>
+          <div class="yr"><div class="yr-l">2023</div><div class="yr-b"><div class="yr-f" style="width:48%;background:var(--grn)"></div></div><div class="yr-v">+62%</div></div>
+          <div class="yr"><div class="yr-l">2024</div><div class="yr-b"><div class="yr-f" style="width:33%;background:var(--grn)"></div></div><div class="yr-v">+43%</div></div>
+          <div class="yr"><div class="yr-l">2025</div><div class="yr-b"><div class="yr-f" style="width:100%;background:linear-gradient(90deg,var(--gld),var(--grn))"></div></div><div class="yr-v" style="color:var(--gld)">+128%</div></div>
+          <div class="yr"><div class="yr-l" style="color:var(--gld)">2026</div><div class="yr-b"><div class="yr-f" style="width:13%;background:var(--gld)"></div></div><div class="yr-v" style="color:var(--gld)">+17%</div></div>
+        </div>
+        <div class="pcard">
+          <div class="pcard-title"><i class="fas fa-signal" style="color:var(--grn)"></i> Derniers <span>signaux</span></div>
+          <div class="sig-list">
+            <div class="sig"><span class="sd buy">BUY</span><span class="ss">XAU/USD</span><span class="sp">EP:3020 TP:3060 SL:3000</span><span class="sr o">🔴 Live</span></div>
+            <div class="sig"><span class="sd buy">BUY</span><span class="ss">XAU/USD</span><span class="sp">2980 → 3018</span><span class="sr w">+380p</span></div>
+            <div class="sig"><span class="sd sell">SELL</span><span class="ss">EUR/USD</span><span class="sp">1.083 → 1.079</span><span class="sr w">+40p</span></div>
+            <div class="sig"><span class="sd buy">BUY</span><span class="ss">XAU/USD</span><span class="sp">3005 → 2990</span><span class="sr l">-150p</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MEMBERS -->
+    <section class="view" id="view-members">
+      <div class="sh"><div class="sh-left"><div class="st">Gestion des membres</div><div class="ss">Demandes et membres actifs</div></div><button class="sh-btn" onclick="openModal('addMember')"><i class="fas fa-plus"></i> Ajouter</button></div>
+      <div class="tbl-wrap">
+        <div class="tbl-hd"><div class="tbl-hd-title">Membres <span style="color:var(--t3);font-size:.75rem;font-weight:normal;margin-left:6px">6 entrées</span></div><div class="tbl-search"><i class="fas fa-search"></i><input type="text" placeholder="Rechercher..." oninput="filterMembers(this.value)"></div></div>
+        <table><thead><tr><th>Nom</th><th>Email</th><th>ID XM</th><th>Date</th><th>Statut</th><th>Action</th></tr></thead><tbody id="mBody"></tbody></table>
+      </div>
+    </section>
+
+    <!-- SIGNALS -->
+    <section class="view" id="view-signals">
+      <div class="sh"><div class="sh-left"><div class="st">Journal des signaux</div><div class="ss">Historique des trades publiés</div></div><button class="sh-btn" onclick="openModal('addSignal')"><i class="fas fa-plus"></i> Nouveau signal</button></div>
+      <div class="tbl-wrap">
+        <div class="tbl-hd"><div class="tbl-hd-title">Signaux publiés</div></div>
+        <table><thead><tr><th>Instrument</th><th>Direction</th><th>Entrée</th><th>TP / SL</th><th>Résultat</th><th>Date</th></tr></thead><tbody id="sigBody"></tbody></table>
+      </div>
+    </section>
+
+    <!-- PAGES -->
+    <section class="view" id="view-pages">
+      <div class="sh"><div class="sh-left"><div class="st">Pages du site</div><div class="ss">FR / EN / AR — Toutes les pages</div></div></div>
+      <div class="pg-grid" id="pgGrid"></div>
+    </section>
+
+    <!-- BLOG -->
+    <section class="view" id="view-blog">
+      <div class="sh"><div class="sh-left"><div class="st">Gestion du blog</div><div class="ss">Articles publiés</div></div><button class="sh-btn" onclick="openModal('addArticle')"><i class="fas fa-plus"></i> Nouvel article</button></div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>Titre</th><th>Catégorie</th><th>Date</th><th>Vues</th><th>Action</th></tr></thead><tbody id="blogBody"></tbody></table>
+      </div>
+    </section>
+
+    <!-- RESULTS -->
+    <section class="view" id="view-results">
+      <div class="sh"><div class="sh-left"><div class="st">Résultats & Performances</div></div><button class="sh-btn" onclick="openModal('updateResult')"><i class="fas fa-edit"></i> Mettre à jour</button></div>
+      <div class="two">
+        <div class="pcard">
+          <div class="pcard-title">Performance <span>par année</span></div>
+          <div class="yr"><div class="yr-l">2023</div><div class="yr-b"><div class="yr-f" style="width:48%;background:var(--grn)"></div></div><div class="yr-v">+62%</div></div>
+          <div class="yr"><div class="yr-l">2024</div><div class="yr-b"><div class="yr-f" style="width:33%;background:var(--grn)"></div></div><div class="yr-v">+43%</div></div>
+          <div class="yr"><div class="yr-l">2025</div><div class="yr-b"><div class="yr-f" style="width:100%;background:linear-gradient(90deg,var(--gld),var(--grn))"></div></div><div class="yr-v" style="color:var(--gld)">+128%</div></div>
+          <div class="yr"><div class="yr-l" style="color:var(--gld)">2026</div><div class="yr-b"><div class="yr-f" style="width:13%;background:var(--gld)"></div></div><div class="yr-v" style="color:var(--gld)">+17%</div></div>
+        </div>
+        <div class="pcard">
+          <div class="pcard-title">Stats <span>2026</span></div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px">
+            <div style="background:rgba(255,255,255,.03);border:1px solid var(--brd);border-radius:9px;padding:14px;text-align:center"><div style="font-size:1.3rem;font-weight:800;color:var(--grn);font-family:'JetBrains Mono',monospace">+17.3%</div><div style="font-size:.68rem;color:var(--t3);margin-top:4px;text-transform:uppercase">Total 2026</div></div>
+            <div style="background:rgba(255,255,255,.03);border:1px solid var(--brd);border-radius:9px;padding:14px;text-align:center"><div style="font-size:1.3rem;font-weight:800;color:var(--gld);font-family:'JetBrains Mono',monospace">42%</div><div style="font-size:.68rem;color:var(--t3);margin-top:4px;text-transform:uppercase">Win Rate</div></div>
+            <div style="background:rgba(255,255,255,.03);border:1px solid var(--brd);border-radius:9px;padding:14px;text-align:center"><div style="font-size:1.3rem;font-weight:800;color:var(--blu);font-family:'JetBrains Mono',monospace">2</div><div style="font-size:.68rem;color:var(--t3);margin-top:4px;text-transform:uppercase">Mois actifs</div></div>
+            <div style="background:rgba(255,255,255,.03);border:1px solid var(--brd);border-radius:9px;padding:14px;text-align:center"><div style="font-size:1.3rem;font-weight:800;color:var(--pur);font-family:'JetBrains Mono',monospace">901</div><div style="font-size:.68rem;color:var(--t3);margin-top:4px;text-transform:uppercase">Pips gagnés</div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="view" id="view-faq">
+      <div class="sh"><div class="sh-left"><div class="st">FAQ Management</div></div><button class="sh-btn" onclick="openModal('addFaq')"><i class="fas fa-plus"></i> Nouvelle question</button></div>
+      <div class="tbl-wrap">
+        <table><thead><tr><th>#</th><th>Question</th><th>Catégorie</th><th>Action</th></tr></thead><tbody id="faqBody"></tbody></table>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="view" id="view-settings">
+      <div class="sh"><div class="sh-left"><div class="st">Paramètres du site</div></div></div>
+      <div class="set-grid">
+        <div class="pcard">
+          <div class="pcard-title"><i class="fas fa-cog"></i> Paramètres <span>généraux</span></div>
+          <div class="set-row"><label class="mlbl">Nom du site</label><input class="minp" value="Chebbi Trading"></div>
+          <div class="set-row"><label class="mlbl">Email de contact</label><input class="minp" value="contact@chebbitrade.com" type="email"></div>
+          <div class="set-row"><label class="mlbl">Telegram</label><input class="minp" value="@ChebbiTrading"></div>
+          <div class="set-row"><label class="mlbl">YouTube</label><input class="minp" value="@ChebbiTrading"></div>
+          <button class="ms" style="margin-top:6px;width:100%" onclick="toast('✅ Paramètres sauvegardés')">Sauvegarder</button>
+        </div>
+        <div class="pcard">
+          <div class="pcard-title"><i class="fas fa-link"></i> Lien <span>XM Affilié</span></div>
+          <div class="set-row"><label class="mlbl">Code affilié XM</label><input class="minp" id="xmCode" value="VOTRE_CODE" oninput="document.getElementById('xmCodeAff').value=this.value"></div>
+          <div class="set-row"><label class="mlbl">Lien FR</label><input class="minp" readonly id="xmLinkFR" value="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=fr&p=1"></div>
+          <div class="set-row"><label class="mlbl">Lien EN</label><input class="minp" readonly id="xmLinkEN" value="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=en&p=1"></div>
+          <div class="set-row"><label class="mlbl">Lien AR</label><input class="minp" readonly id="xmLinkAR" value="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=ar&p=1"></div>
+          <button class="ms" style="margin-top:6px;width:100%" onclick="updateXmLinks()"><i class="fas fa-sync-alt"></i> Mettre à jour</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- AFFILIATE -->
+    <section class="view" id="view-affiliate">
+      <div class="sh"><div class="sh-left"><div class="st">Lien XM Affilié</div><div class="ss">Mettez à jour votre code sur toutes les pages</div></div></div>
+      <div class="pcard" style="max-width:560px">
+        <div class="pcard-title"><i class="fas fa-link"></i> Code <span>affilié XM</span></div>
+        <p style="color:var(--t3);font-size:.8rem;margin:6px 0 18px">Entrez votre code affilié XM. Il sera appliqué sur toutes les pages du site (FR, EN, AR).</p>
+        <div class="set-row"><label class="mlbl">Votre code XM</label><input class="minp" id="xmCodeAff" value="VOTRE_CODE" placeholder="Ex: 12345ABC"></div>
+        <button class="ms" style="margin-top:10px;width:100%" onclick="updateXmLinksFromAff()"><i class="fas fa-sync-alt"></i> Appliquer sur toutes les pages</button>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+<div class="mow" id="mOv" onclick="if(event.target===this)closeModal()"><div class="mbox" id="mBox"></div></div>
+<div class="toast" id="toastEl"></div>
+
+<script>
+// DATA
+let MEMBERS = [
+  {id:"m1",name:"Ahmed K.",email:"ahmed@gmail.com",xm:"78234512",date:"22 Mar 2026",status:"pending"},
+  {id:"m2",name:"Sara B.",email:"sara@hotmail.com",xm:"65981234",date:"21 Mar 2026",status:"pending"},
+  {id:"m3",name:"Mohamed H.",email:"moh@gmail.com",xm:"91234678",date:"20 Mar 2026",status:"pending"},
+  {id:"m4",name:"Fatima A.",email:"fatima@gmail.com",xm:"44123789",date:"18 Mar 2026",status:"active"},
+  {id:"m5",name:"Youssef M.",email:"youssef@gmail.com",xm:"55678901",date:"15 Mar 2026",status:"active"},
+  {id:"m6",name:"Nour T.",email:"nour@outlook.com",xm:"33456789",date:"10 Mar 2026",status:"rejected"},
+];
+
+let SIGNALS = [
+  {sym:"XAU/USD",dir:"BUY",entry:"3020",tp:"3060",sl:"3000",res:"open",date:"22 Mar 2026"},
+  {sym:"XAU/USD",dir:"BUY",entry:"2980",tp:"3018",sl:"2960",res:"+380",date:"19 Mar 2026"},
+  {sym:"EUR/USD",dir:"SELL",entry:"1.083",tp:"1.079",sl:"1.087",res:"+40",date:"18 Mar 2026"},
+  {sym:"XAU/USD",dir:"BUY",entry:"3005",tp:"3040",sl:"2990",res:"-150",date:"15 Mar 2026"},
+  {sym:"GBP/USD",dir:"SELL",entry:"1.295",tp:"1.290",sl:"1.300",res:"+50",date:"12 Mar 2026"},
+];
+
+const PAGES = [
+  {name:"Accueil",file:"chebbi.html",icon:"🏠",ac:"var(--grn)",fr:"chebbi.html",en:"chebbi-en.html",ar:"chebbi-ar.html"},
+  {name:"Résultats",file:"resultats.html",icon:"📊",ac:"var(--gld)",fr:"resultats.html",en:"resultats-en.html",ar:"resultats-ar.html"},
+  {name:"Blog",file:"blog.html",icon:"✍️",ac:"var(--blu)",fr:"blog.html",en:"blog-en.html",ar:"blog-ar.html"},
+  {name:"FAQ",file:"faq.html",icon:"❓",ac:"var(--pur)",fr:"faq.html",en:null,ar:null},
+];
+
+let ARTICLES = [
+  {title:"Pourquoi l'or (XAUUSD) est l'actif préféré",cat:"Or / Gold",date:"15 Mar 2026",views:1240},
+  {title:"Comprendre le Risk Management",cat:"Éducation",date:"8 Mar 2026",views:980},
+  {title:"BUY on Dips : la stratégie principale",cat:"Stratégie",date:"1 Mar 2026",views:750},
+  {title:"Bilan 2025 : +128% en 12 mois",cat:"Analyse",date:"5 Jan 2026",views:2100},
+  {title:"Comment ouvrir son premier compte XM",cat:"Éducation",date:"20 Fév 2026",views:1560},
+  {title:"L'impact de la FED sur l'or en 2026",cat:"Analyse",date:"12 Mar 2026",views:890},
+];
+
+let FAQS = [
+  {q:"C'est vraiment 100% gratuit ?",cat:"Gratuité"},
+  {q:"Pourquoi m'inscrire via votre lien ?",cat:"XM"},
+  {q:"J'ai déjà un compte XM ?",cat:"XM"},
+  {q:"Où voir vos résultats ?",cat:"Résultats"},
+  {q:"Capital minimum requis ?",cat:"Capital"},
+  {q:"XM est-il un broker fiable ?",cat:"XM"},
+];
+
+let xmCode = "VOTRE_CODE";
+
+// NAVIGATION
+const TITLES = {
+  overview:"Vue d'ensemble <span>Dashboard</span>",
+  members:"Membres <span>&amp; Demandes</span>",
+  signals:"Journal <span>des Signaux</span>",
+  pages:"Pages <span>du Site</span>",
+  blog:"Blog <span>&amp; Articles</span>",
+  results:"Résultats <span>&amp; Performances</span>",
+  faq:"FAQ <span>Management</span>",
+  settings:"Paramètres <span>du Site</span>",
+  affiliate:"Lien <span>XM Affilié</span>",
+};
+
+function showView(v){
+  document.querySelectorAll(".view").forEach(e=>e.classList.remove("active"));
+  document.querySelectorAll(".sb-item").forEach(e=>e.classList.remove("act"));
+  const el=document.getElementById("view-"+v);
+  if(el) el.classList.add("active");
+  document.querySelectorAll(".sb-item").forEach(e=>{
+    if(e.getAttribute("onclick")&&e.getAttribute("onclick").includes("'"+v+"'")) e.classList.add("act");
+  });
+  document.getElementById("topTitle").innerHTML = TITLES[v]||v;
+  if(v==="members") renderMembers();
+  if(v==="signals") renderSignals();
+  if(v==="pages")   renderPages();
+  if(v==="blog")    renderBlog();
+  if(v==="faq")     renderFaq();
+}
+
+// RENDER MEMBERS
+function renderMembers(filter=""){
+  const f = filter.toLowerCase();
+  const data = MEMBERS.filter(m=>!f||m.name.toLowerCase().includes(f)||m.email.includes(f)||m.xm.includes(f));
+  document.getElementById("mBody").innerHTML = data.map(m=>`
+    <tr>
+      <td class="td-bold">${m.name}</td>
+      <td>${m.email}</td>
+      <td class="td-mono">${m.xm}</td>
+      <td style="color:var(--t3);font-size:.78rem">${m.date}</td>
+      <td><span class="st ${m.status}">${m.status==="pending"?"⏳ En attente":m.status==="active"?"✅ Actif":"❌ Rejeté"}</span></td>
+      <td><div class="act-btns">
+        ${m.status==="pending"?`<button class="ab ap" onclick="approveMember('${m.id}')">Approuver</button><button class="ab rj" onclick="rejectMember('${m.id}')">Rejeter</button>`:""}
+        <button class="ab vw" onclick="toast('👁 Profil: ${m.name} — ID: ${m.xm}')">Voir</button>
+      </div></td>
+    </tr>`).join("");
+}
+
+function approveMember(id){
+  const m=MEMBERS.find(x=>x.id===id);
+  if(m){m.status="active";renderMembers();updateBadge();toast("✅ "+m.name+" approuvé — Telegram notifié");}
+}
+function rejectMember(id){
+  const m=MEMBERS.find(x=>x.id===id);
+  if(m){m.status="rejected";renderMembers();updateBadge();toast("❌ "+m.name+" rejeté","red");}
+}
+function updateBadge(){
+  const n=MEMBERS.filter(m=>m.status==="pending").length;
+  document.getElementById("pBadge").textContent=n;
+  document.getElementById("kPend").textContent=n;
+}
+function filterMembers(v){renderMembers(v);}
+
+// RENDER SIGNALS
+function renderSignals(){
+  document.getElementById("sigBody").innerHTML = SIGNALS.map(s=>{
+    const open=s.res==="open", pos=!open&&!s.res.startsWith("-");
+    const rc=open?"var(--gld)":pos?"var(--grn)":"var(--red)";
+    return `<tr>
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--w)">${s.sym}</td>
+      <td><span class="sd ${s.dir.toLowerCase()}">${s.dir}</span></td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:.8rem">${s.entry}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--t3)">TP:${s.tp} / SL:${s.sl}</td>
+      <td style="font-family:'JetBrains Mono',monospace;font-weight:700;color:${rc}">${open?"🔴 LIVE":s.res+" pip"}</td>
+      <td style="color:var(--t3);font-size:.78rem">${s.date}</td>
+    </tr>`;
+  }).join("");
+}
+
+// RENDER PAGES
+function renderPages(){
+  document.getElementById("pgGrid").innerHTML = PAGES.map(p=>`
+    <div class="pc" style="--ac:${p.ac}">
+      <div class="pc-hd">
+        <div class="pc-ico" style="background:${p.ac}22;color:${p.ac}">${p.icon}</div>
+        <div class="pc-langs">
+          <span class="lang-tag ok">FR</span>
+          <span class="lang-tag ${p.en?"ok":"no"}">EN</span>
+          <span class="lang-tag ${p.ar?"ok":"no"}">AR</span>
+        </div>
+      </div>
+      <div class="pc-name">${p.name}</div>
+      <div class="pc-file">${p.file}</div>
+      <div class="pc-btns">
+        <a class="pc-btn prim" href="${p.fr}" target="_blank"><i class="fas fa-eye"></i> FR</a>
+        ${p.en?`<a class="pc-btn" href="${p.en}" target="_blank"><i class="fas fa-eye"></i> EN</a>`:""}
+        ${p.ar?`<a class="pc-btn" href="${p.ar}" target="_blank"><i class="fas fa-eye"></i> AR</a>`:""}
+      </div>
+    </div>`).join("");
+}
+
+// RENDER BLOG
+function renderBlog(){
+  document.getElementById("blogBody").innerHTML = ARTICLES.map((a,i)=>`
+    <tr>
+      <td class="td-bold">${a.title}</td>
+      <td><span class="st active" style="background:var(--blug);color:var(--blu);border:none">${a.cat}</span></td>
+      <td style="color:var(--t3);font-size:.78rem">${a.date}</td>
+      <td style="font-family:'JetBrains Mono',monospace;color:var(--gld)">${a.views.toLocaleString()}</td>
+      <td><div class="act-btns">
+        <button class="ab ap" onclick="toast('✏️ Édition: ${a.title.substring(0,30)}...')">Éditer</button>
+        <button class="ab rj" onclick="deleteArticle(${i})">Supprimer</button>
+      </div></td>
+    </tr>`).join("");
+}
+function deleteArticle(i){ARTICLES.splice(i,1);renderBlog();toast("🗑 Article supprimé","red");}
+
+// RENDER FAQ
+function renderFaq(){
+  document.getElementById("faqBody").innerHTML = FAQS.map((f,i)=>`
+    <tr>
+      <td style="color:var(--t3);font-family:'JetBrains Mono',monospace;font-size:.78rem">${String(i+1).padStart(2,"0")}</td>
+      <td class="td-bold">${f.q}</td>
+      <td><span class="st active" style="background:var(--purg);color:var(--pur);border:none">${f.cat}</span></td>
+      <td><div class="act-btns">
+        <button class="ab ap" onclick="toast('✏️ Édition FAQ #${i+1}')">Éditer</button>
+        <button class="ab rj" onclick="deleteFaq(${i})">Supprimer</button>
+      </div></td>
+    </tr>`).join("");
+}
+function deleteFaq(i){FAQS.splice(i,1);renderFaq();toast("🗑 Question supprimée","red");}
+
+// MODALS
+const MODALS = {
+  addMember:{
+    title:"Ajouter un membre",sub:"Approbation manuelle d'un membre XM",
+    fields:[
+      {l:"Nom complet",p:"Ex: Ahmed Kassem",id:"mName"},
+      {l:"Email",p:"ahmed@gmail.com",id:"mEmail",t:"email"},
+      {l:"Numéro de compte XM",p:"Ex: 78234512",id:"mXm"},
+    ],
+    submit:"Ajouter le membre",
+    action:()=>{
+      const n=document.getElementById("mName").value;
+      const e=document.getElementById("mEmail").value;
+      const x=document.getElementById("mXm").value;
+      if(!n||!e||!x){toast("Remplissez tous les champs","red");return;}
+      MEMBERS.unshift({id:"m"+Date.now(),name:n,email:e,xm:x,date:"Aujourd'hui",status:"active"});
+      closeModal();renderMembers();toast("✅ Membre ajouté: "+n);
+    }
+  },
+  addSignal:{
+    title:"Publier un signal",sub:"Envoyer un nouveau signal aux membres",
+    fields:[
+      {l:"Instrument",p:"Ex: XAU/USD, EUR/USD",id:"sySym"},
+      {l:"Direction",id:"syDir",type:"select",opts:["BUY","SELL"]},
+      {l:"Prix d'entrée",p:"Ex: 3020.50",id:"syEp"},
+      {l:"Take Profit (TP)",p:"Ex: 3060",id:"syTp"},
+      {l:"Stop Loss (SL)",p:"Ex: 3000",id:"sySl"},
+    ],
+    submit:"Publier le signal",
+    action:()=>{
+      const s=document.getElementById("sySym").value;
+      const d=document.getElementById("syDir").value;
+      const e=document.getElementById("syEp").value;
+      if(!s||!e){toast("Remplissez les champs requis","red");return;}
+      SIGNALS.unshift({sym:s,dir:d,entry:e,tp:document.getElementById("syTp").value,sl:document.getElementById("sySl").value,res:"open",date:"Aujourd'hui"});
+      closeModal();toast("📡 Signal publié: "+d+" "+s+" @ "+e);
+    }
+  },
+  addArticle:{
+    title:"Nouvel article blog",sub:"Créer un nouvel article",
+    fields:[
+      {l:"Titre de l'article",p:"Ex: Comment trader l'or en 2026",id:"arTitle"},
+      {l:"Catégorie",id:"arCat",type:"select",opts:["Analyse","Éducation","Stratégie","Or / Gold"]},
+      {l:"Extrait (résumé)",p:"Décrivez brièvement l'article...",id:"arExcerpt",type:"textarea"},
+    ],
+    submit:"Publier l'article",
+    action:()=>{
+      const t=document.getElementById("arTitle").value;
+      const c=document.getElementById("arCat").value;
+      if(!t){toast("Entrez un titre","red");return;}
+      ARTICLES.unshift({title:t,cat:c,date:"Aujourd'hui",views:0});
+      closeModal();toast("✍️ Article publié: "+t.substring(0,40));
+    }
+  },
+  addFaq:{
+    title:"Nouvelle question FAQ",sub:"Ajouter une question fréquente",
+    fields:[
+      {l:"Question",p:"Ex: Comment fonctionne le groupe ?",id:"fqQ"},
+      {l:"Catégorie",id:"fqCat",type:"select",opts:["Gratuité","XM","Signaux","Résultats","Capital"]},
+      {l:"Réponse",p:"Tapez la réponse ici...",id:"fqA",type:"textarea"},
+    ],
+    submit:"Ajouter la question",
+    action:()=>{
+      const q=document.getElementById("fqQ").value;
+      const c=document.getElementById("fqCat").value;
+      if(!q){toast("Entrez la question","red");return;}
+      FAQS.push({q,cat:c});
+      closeModal();renderFaq();toast("❓ Question ajoutée");
+    }
+  },
+  updateResult:{
+    title:"Mettre à jour les résultats",sub:"Modifier les données de performance",
+    fields:[
+      {l:"Année",p:"Ex: 2026",id:"rYear"},
+      {l:"Mois",p:"Ex: Mars",id:"rMonth"},
+      {l:"Performance (%)",p:"Ex: 12.5",id:"rPerf"},
+      {l:"Pips gagnés",p:"Ex: 350",id:"rPips"},
+    ],
+    submit:"Sauvegarder",
+    action:()=>{closeModal();toast("📊 Résultats mis à jour");}
+  },
+};
+
+function openModal(key){
+  const m=MODALS[key];if(!m)return;
+  const fields=m.fields.map(f=>{
+    if(f.type==="select") return `<div class="mrow"><label class="mlbl">${f.l}</label><select class="minp" id="${f.id}">${f.opts.map(o=>`<option>${o}</option>`).join("")}</select></div>`;
+    if(f.type==="textarea") return `<div class="mrow"><label class="mlbl">${f.l}</label><textarea class="minp" id="${f.id}" placeholder="${f.p||""}"></textarea></div>`;
+    return `<div class="mrow"><label class="mlbl">${f.l}</label><input class="minp" id="${f.id}" type="${f.t||"text"}" placeholder="${f.p||""}"></div>`;
+  }).join("");
+  document.getElementById("mBox").innerHTML=`
+    <button class="mclose" onclick="closeModal()">✕</button>
+    <h3>${m.title}</h3><p class="msub">${m.sub}</p>
+    ${fields}
+    <div class="mbtns">
+      <button class="mc" onclick="closeModal()">Annuler</button>
+      <button class="ms" onclick="MODALS['${key}'].action()">${m.submit}</button>
+    </div>`;
+  document.getElementById("mOv").classList.add("open");
+}
+function closeModal(){document.getElementById("mOv").classList.remove("open");}
+
+// TOAST
+let toastTimer;
+function toast(msg,type="grn"){
+  const el=document.getElementById("toastEl");
+  el.innerHTML="<i class='fas "+(type==="red"?"fa-times-circle":"fa-check-circle")+"'></i> "+msg;
+  el.className="toast"+(type==="red"?" red-t":"");
+  void el.offsetWidth;
+  el.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove("show"),3500);
+}
+
+// XM LINK UPDATE
+function updateXmLinks(){
+  const code=document.getElementById("xmCode").value.trim();
+  if(!code){toast("Entrez votre code XM","red");return;}
+  xmCode=code;
+  document.getElementById("xmLinkFR").value=`https://clicks.pipaffiliates.com/c?c=${code}&l=fr&p=1`;
+  document.getElementById("xmLinkEN").value=`https://clicks.pipaffiliates.com/c?c=${code}&l=en&p=1`;
+  document.getElementById("xmLinkAR").value=`https://clicks.pipaffiliates.com/c?c=${code}&l=ar&p=1`;
+  toast("🔗 Liens XM mis à jour — Code: "+code);
+}
+function updateXmLinksFromAff(){
+  const code=document.getElementById("xmCodeAff").value.trim();
+  if(!code){toast("Entrez votre code XM","red");return;}
+  xmCode=code;
+  toast("🔗 Code XM '"+code+"' appliqué sur toutes les pages");
+}
+
+// REFRESH
+function refreshData(){toast("🔄 Données actualisées");}
+
+// INIT
+renderMembers();
+</script>
+</body>
+</html>

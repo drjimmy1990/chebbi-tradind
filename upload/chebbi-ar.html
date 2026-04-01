@@ -1,0 +1,1092 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chebbi Trading - Signaux Forex Gratuits | Partenaire XM</title>
+    <meta name="description" content="Chebbi Trading - Signaux Forex GRATUITS. 4 ans de résultats live sur YouTube. Inscrivez-vous sur XM et rejoignez notre groupe.">
+    <link rel="icon" type="image/png" href="https://i.imgur.com/USEEiyC.png">
+    <meta property="og:title" content="Chebbi Trading - Signaux Forex Gratuits">
+    <meta property="og:description" content="4 ans de résultats live. Rejoignez notre groupe gratuit en ouvrant un compte XM.">
+    <meta property="og:image" content="https://i.imgur.com/MrRODMe.png">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@300;400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box}
+        :root{
+            --bg1:#06090f;--bg2:#0b1018;--card:#111827;--card-h:#1a2332;
+            --brd:#1e293b;--brd-l:#334155;
+            --grn:#10b981;--grn-l:#34d399;--grn-g:rgba(16,185,129,.12);--grn-gs:rgba(16,185,129,.25);
+            --red:#ef4444;--red-g:rgba(239,68,68,.12);
+            --xm:#d42127;--xm-g:rgba(212,33,39,.15);
+            --gld:#f59e0b;--gld-g:rgba(245,158,11,.12);
+            --blu:#3b82f6;--blu-g:rgba(59,130,246,.12);
+            --pur:#8b5cf6;--yt:#ff0000;
+            --t1:#e2e8f0;--t2:#94a3b8;--t3:#64748b;--w:#fff;
+            --r:16px;--rs:12px;
+            --tr:all .35s cubic-bezier(.4,0,.2,1)
+        }
+        body.light{
+            --bg1:#f0f4f8;--bg2:#e2e8f0;--card:#ffffff;--card-h:#f8fafc;
+            --brd:#cbd5e1;--brd-l:#94a3b8;
+            --t1:#0f172a;--t2:#475569;--t3:#94a3b8;--w:#0f172a;
+        }
+        .theme-toggle{background:rgba(255,255,255,.06);border:1px solid var(--brd);color:var(--t2);width:38px;height:38px;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:1rem;transition:var(--tr);flex-shrink:0}
+        .theme-toggle:hover{border-color:var(--grn);color:var(--grn)}
+        body.light .theme-toggle{background:rgba(0,0,0,.04)}
+        body.light .nav.scr{background:rgba(240,244,248,.95)}
+        body.light #pCanvas{opacity:.15}
+        html{scroll-behavior:smooth}
+        body{font-family:'Noto Sans Arabic','Inter',-apple-system,sans-serif;background:var(--bg1);color:var(--t1);line-height:1.9;overflow-x:hidden;direction:rtl;transition:background .3s,color .3s}
+        a{text-decoration:none;color:inherit}
+        ul{list-style:none}
+        img{max-width:100%;display:block}
+        .container{max-width:1200px;margin:0 auto;padding:0 20px}
+
+        /* CURSOR */
+        .cur-d,.cur-r{position:fixed;border-radius:50%;pointer-events:none;z-index:99998;transform:translate(-50%,-50%)}
+        .cur-d{width:8px;height:8px;background:var(--grn);z-index:99999;transition:transform .15s,width .3s,height .3s;mix-blend-mode:difference}
+        .cur-r{width:40px;height:40px;border:2px solid rgba(16,185,129,.4);transition:transform .08s linear,width .3s,height .3s}
+        .cur-d.hov{width:20px;height:20px;background:rgba(16,185,129,.5)}
+        .cur-r.hov{width:60px;height:60px;border-color:rgba(16,185,129,.2)}
+
+        /* PARTICLES */
+        #pCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;opacity:.6}
+
+        /* UTILITIES */
+        .text-grn{color:var(--grn)}.text-red{color:var(--red)}.text-gld{color:var(--gld)}
+        .badge{display:inline-flex;align-items:center;gap:8px;padding:6px 16px;border-radius:50px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:1.5px}
+        .badge-g{background:var(--grn-g);border:1px solid rgba(16,185,129,.25);color:var(--grn)}
+        .badge-f{background:linear-gradient(135deg,var(--grn),var(--grn-l));color:var(--bg1);font-weight:800;padding:8px 20px;font-size:.85rem;animation:badgePulse 2s ease-in-out infinite}
+        @keyframes badgePulse{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.4)}50%{box-shadow:0 0 20px 5px rgba(16,185,129,.2)}}
+
+        .sh{text-align:center;margin-bottom:60px}
+        .sh h2{font-size:2.6rem;font-weight:800;color:var(--w);margin:12px 0 14px;line-height:1.2}
+        .sh h2 span{background:linear-gradient(135deg,var(--grn),var(--grn-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .sh p{color:var(--t2);font-size:1.05rem;max-width:620px;margin:0 auto}
+
+        .grad-a{background:linear-gradient(270deg,var(--grn),var(--grn-l),var(--blu),var(--grn));background-size:600% 600%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gShift 6s ease infinite}
+        @keyframes gShift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+
+        /* BUTTONS */
+        .btn{padding:14px 30px;border-radius:var(--rs);font-weight:700;font-size:.95rem;cursor:pointer;transition:var(--tr);border:none;font-family:'Inter',sans-serif;display:inline-flex;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden}
+        .btn::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.15),transparent);transition:left .6s ease}
+        .btn:hover::before{left:100%}
+        .btn-xm{background:var(--xm);color:var(--w);box-shadow:0 4px 20px rgba(212,33,39,.3)}
+        .btn-xm:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 10px 40px rgba(212,33,39,.5)}
+        .btn-grn{background:linear-gradient(135deg,var(--grn),var(--grn-l));color:var(--bg1);box-shadow:0 4px 20px rgba(16,185,129,.3)}
+        .btn-grn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 10px 40px rgba(16,185,129,.5)}
+        .btn-out{background:transparent;color:var(--grn);border:2px solid var(--grn)}
+        .btn-out:hover{background:var(--grn-g);transform:translateY(-3px);box-shadow:0 0 25px var(--grn-g)}
+        .btn-yt{background:var(--yt);color:var(--w)}
+        .btn-yt:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 10px 30px rgba(255,0,0,.35)}
+        .btn-gh{background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--t2)}
+        .btn-gh:hover{background:rgba(255,255,255,.08);border-color:var(--grn);color:var(--grn);transform:translateY(-2px)}
+        .btn-lg{padding:16px 36px;font-size:1rem;border-radius:14px}
+
+        /* PRELOADER */
+        #pre{position:fixed;inset:0;background:var(--bg1);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:99999;transition:opacity .8s,visibility .8s}
+        #pre.hid{opacity:0;visibility:hidden;pointer-events:none}
+        .pre-photo{width:100px;height:100px;border-radius:50%;overflow:hidden;margin-bottom:20px;border:3px solid var(--grn);box-shadow:0 0 30px var(--grn-gs);animation:preSpin 2s ease-in-out infinite}
+        .pre-photo img{width:100%;height:100%;object-fit:cover}
+        @keyframes preSpin{0%,100%{transform:scale(1);box-shadow:0 0 30px var(--grn-gs)}50%{transform:scale(1.08);box-shadow:0 0 50px var(--grn-gs),0 0 80px var(--grn-g)}}
+        .pre-t{font-size:1.8rem;font-weight:800;color:var(--w);margin-bottom:8px}
+        .pre-t em{font-style:normal;color:var(--grn)}
+        .pre-s{color:var(--t3);font-size:.85rem;margin-bottom:24px;animation:fIO 1.5s ease-in-out infinite}
+        @keyframes fIO{0%,100%{opacity:.4}50%{opacity:1}}
+        .pre-bar{width:200px;height:3px;background:var(--brd);border-radius:4px;overflow:hidden}
+        .pre-bar::after{content:'';display:block;width:40%;height:100%;background:linear-gradient(90deg,var(--grn),var(--grn-l));border-radius:4px;animation:ldSlide 1s ease-in-out infinite}
+        @keyframes ldSlide{0%{transform:translateX(-100%)}100%{transform:translateX(350%)}}
+
+        /* TICKER */
+        .ticker{background:rgba(8,12,22,.96);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(255,255,255,.05);overflow:hidden;position:fixed;top:0;left:0;width:100%;z-index:1001;transition:transform .4s cubic-bezier(.4,0,.2,1);height:48px}
+        .ticker.hid{transform:translateY(-100%)}
+        body.light .ticker{background:rgba(10,16,32,.95)}
+        .tk-track{display:flex;align-items:center;height:48px;width:max-content;animation:tkRoll 70s linear infinite}
+        .tk-track:hover{animation-play-state:paused}
+        @keyframes tkRoll{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+        .tk-item{display:inline-flex;align-items:center;gap:8px;padding:0 22px;height:48px;border-right:1px solid rgba(255,255,255,.04)}
+        .tk-sym{font-size:.69rem;font-weight:700;color:#64748b;font-family:"JetBrains Mono",monospace;letter-spacing:.05em}
+        .tk-pr{font-size:.82rem;font-weight:600;color:#e2e8f0;font-family:"JetBrains Mono",monospace}
+        .tk-ch{font-size:.68rem;font-weight:700;padding:2px 6px;border-radius:4px;font-family:"JetBrains Mono",monospace}
+        .tk-ch.up{color:#34d399;background:rgba(52,211,153,.1)}
+        .tk-ch.dn{color:#f87171;background:rgba(248,113,113,.1)}
+
+        /* NAVBAR */
+        .nav{position:fixed;top:36px;width:100%;z-index:1000;padding:14px 0;transition:var(--tr)}
+        .nav.scr{background:rgba(6,9,15,.92);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);border-bottom:1px solid var(--brd);padding:8px 0;top:0}
+        .nav .container{display:flex;align-items:center;justify-content:space-between}
+        .logo{display:flex;align-items:center;gap:10px;transition:var(--tr)}
+        .logo:hover{transform:scale(1.03)}
+        .logo-i{width:42px;height:42px;border-radius:10px;overflow:hidden;border:1px solid var(--brd);transition:var(--tr)}
+        .logo:hover .logo-i{border-color:var(--grn);box-shadow:0 0 15px var(--grn-g)}
+        .logo-i img{width:100%;height:100%;object-fit:contain}
+        .logo-n{font-size:1.35rem;font-weight:800;color:var(--w)}
+        .logo-n em{font-style:normal;color:var(--grn)}
+        .nm{display:flex;align-items:center;gap:30px}
+        .nm a{color:var(--t2);font-weight:500;font-size:.9rem;transition:var(--tr);position:relative;padding:4px 0}
+        .nm a::after{content:'';position:absolute;bottom:-2px;left:50%;width:0;height:2px;background:var(--grn);transition:var(--tr);transform:translateX(-50%)}
+        .nm a:hover,.nm a.act{color:var(--grn)}
+        .nm a:hover::after,.nm a.act::after{width:100%}
+        .nb{display:flex;align-items:center;gap:10px}
+        .nxm{background:var(--xm);color:white;padding:10px 22px;border-radius:10px;font-weight:700;font-size:.85rem;transition:var(--tr);display:flex;align-items:center;gap:8px;position:relative;overflow:hidden}
+        .nxm::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);animation:shim 3s ease-in-out infinite}
+        @keyframes shim{0%{left:-100%}50%,100%{left:100%}}
+        .nxm:hover{transform:translateY(-2px);box-shadow:0 6px 25px rgba(212,33,39,.4)}
+        .ham{display:none;flex-direction:column;gap:5px;cursor:pointer;z-index:1001}
+        .ham span{width:24px;height:2.5px;background:var(--t1);border-radius:2px;transition:var(--tr)}
+        .ham.act span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+        .ham.act span:nth-child(2){opacity:0}
+        .ham.act span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+        /* LANG SWITCHER */
+        .lang-sw{position:relative;display:flex;align-items:center}
+        .lang-btn{background:rgba(255,255,255,.04);border:1px solid var(--brd);color:var(--t2);padding:8px 14px;border-radius:10px;font-size:.85rem;font-weight:600;cursor:pointer;transition:var(--tr);display:flex;align-items:center;gap:6px;font-family:'Inter',sans-serif}
+        .lang-btn:hover{background:rgba(255,255,255,.08);border-color:var(--grn);color:var(--grn)}
+        .lang-dd{position:absolute;top:calc(100% + 8px);right:0;background:var(--card);border:1px solid var(--brd);border-radius:10px;overflow:hidden;opacity:0;visibility:hidden;transform:translateY(-8px);transition:var(--tr);min-width:140px;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:1002}
+        .lang-sw:hover .lang-dd,.lang-sw.open .lang-dd{opacity:1;visibility:visible;transform:translateY(0)}
+        .lang-dd a{display:flex;align-items:center;gap:8px;padding:10px 16px;font-size:.85rem;color:var(--t2);transition:var(--tr);font-weight:500}
+        .lang-dd a:hover{background:var(--card-h);color:var(--grn)}
+        .lang-dd a.active{color:var(--grn);background:var(--grn-g)}
+
+        /* HERO */
+        .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:156px 0 80px}
+        .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(30,41,59,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(30,41,59,.2) 1px,transparent 1px);background-size:50px 50px;mask-image:radial-gradient(ellipse 80% 70% at 50% 40%,black 20%,transparent 100%);animation:gPulse 8s ease-in-out infinite}
+        @keyframes gPulse{0%,100%{opacity:.4}50%{opacity:.7}}
+        .glow{position:absolute;border-radius:50%;filter:blur(100px);pointer-events:none}
+        .g1{width:600px;height:600px;background:var(--grn);opacity:.07;top:-20%;right:-10%;animation:gD1 15s ease-in-out infinite}
+        .g2{width:400px;height:400px;background:var(--blu);opacity:.05;bottom:-10%;left:-5%;animation:gD2 20s ease-in-out infinite}
+        .g3{width:300px;height:300px;background:var(--xm);opacity:.04;top:50%;left:50%;animation:gD3 12s ease-in-out infinite}
+        @keyframes gD1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-40px,30px) scale(1.1)}66%{transform:translate(20px,-20px) scale(.9)}}
+        @keyframes gD2{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,-30px)}}
+        @keyframes gD3{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.3)}}
+        .hero-in{position:relative;z-index:2;display:grid;grid-template-columns:1.1fr 1fr;gap:60px;align-items:center}
+        .hl{animation:hSI 1s cubic-bezier(.16,1,.3,1)}
+        @keyframes hSI{from{opacity:0;transform:translateY(50px) scale(.95)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+        /* Hero Profile */
+        .hp{display:flex;align-items:center;gap:16px;margin-bottom:28px;animation:hSI 1s .2s both}
+        .hp-img{width:70px;height:70px;border-radius:50%;overflow:hidden;border:3px solid var(--grn);box-shadow:0 0 25px var(--grn-gs);flex-shrink:0;position:relative;animation:pGlow 3s ease-in-out infinite}
+        @keyframes pGlow{0%,100%{box-shadow:0 0 20px var(--grn-gs)}50%{box-shadow:0 0 40px var(--grn-gs),0 0 60px var(--grn-g)}}
+        .hp-img img{width:100%;height:100%;object-fit:cover}
+        .hp-img::after{content:'';position:absolute;bottom:3px;right:3px;width:14px;height:14px;background:var(--grn);border:3px solid var(--bg1);border-radius:50%;animation:onP 2s infinite}
+        @keyframes onP{0%,100%{box-shadow:0 0 0 0 rgba(16,185,129,.5)}50%{box-shadow:0 0 0 6px rgba(16,185,129,0)}}
+        .hp-info h3{color:var(--w);font-size:1.1rem;font-weight:700}
+        .hp-info p{color:var(--t3);font-size:.82rem}
+        .hp-info .ver{color:var(--grn);font-size:.78rem;font-weight:600;display:flex;align-items:center;gap:4px}
+
+        .hft{display:inline-flex;align-items:center;gap:10px;margin-bottom:24px;animation:hSI 1s .3s both}
+        .hft .ld{width:8px;height:8px;background:var(--grn);border-radius:50%;box-shadow:0 0 8px var(--grn);animation:blnk 1.4s infinite}
+        @keyframes blnk{0%,100%{opacity:1}50%{opacity:.3}}
+
+        .hero h1{font-size:3.2rem;font-weight:900;line-height:1.12;color:var(--w);margin-bottom:18px;animation:hSI 1s .4s both}
+        .tc{display:inline-block;width:3px;height:1em;background:var(--grn);margin-left:4px;animation:cBlnk .8s infinite;vertical-align:text-bottom}
+        @keyframes cBlnk{0%,100%{opacity:1}50%{opacity:0}}
+
+        .hsub{color:var(--t2);font-size:1.1rem;margin-bottom:32px;max-width:520px;line-height:1.8;animation:hSI 1s .5s both}
+        .hsub strong{color:var(--w)}
+        .hctas{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:36px;animation:hSI 1s .6s both}
+        .hprf{display:flex;gap:28px;flex-wrap:wrap;animation:hSI 1s .7s both}
+        .pi{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--t3);transition:var(--tr)}
+        .pi:hover{color:var(--grn);transform:translateX(4px)}
+        .pi i{color:var(--grn)}
+
+        .hr{animation:hSR 1.2s cubic-bezier(.16,1,.3,1) .3s both;perspective:1000px}
+        @keyframes hSR{from{opacity:0;transform:translateX(60px) rotateY(-5deg)}to{opacity:1;transform:translateX(0) rotateY(0)}}
+
+        /* XM Card */
+        .xmc{background:var(--card);border:1px solid var(--brd);border-radius:24px;padding:36px;position:relative;overflow:hidden;transition:var(--tr)}
+        .xmc:hover{border-color:rgba(16,185,129,.3);box-shadow:0 20px 60px rgba(0,0,0,.3),0 0 40px var(--grn-g);transform:translateY(-4px)}
+        .xmc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--xm),var(--grn));animation:lGlow 3s ease-in-out infinite}
+        @keyframes lGlow{0%,100%{opacity:.7}50%{opacity:1;filter:brightness(1.3)}}
+        .xmc-h{display:flex;align-items:center;gap:14px;margin-bottom:24px}
+        .xm-lb{width:50px;height:50px;background:var(--xm);border-radius:14px;display:flex;align-items:center;justify-content:center;font-weight:900;color:white;font-size:1.1rem;animation:xmP 2s ease-in-out infinite}
+        @keyframes xmP{0%,100%{box-shadow:0 0 0 0 rgba(212,33,39,.4)}50%{box-shadow:0 0 15px 5px rgba(212,33,39,.15)}}
+        .xmc-h h3{color:var(--w);font-size:1.15rem}.xmc-h p{color:var(--t3);font-size:.82rem}
+        .xm-steps{margin-bottom:28px}
+        .xm-st{display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--brd);transition:var(--tr)}
+        .xm-st:last-child{border-bottom:none}
+        .xm-st:hover{padding-left:8px}
+        .xm-sn{width:32px;height:32px;min-width:32px;background:var(--grn-g);border:1px solid rgba(16,185,129,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.8rem;font-weight:800;color:var(--grn);transition:var(--tr)}
+        .xm-st:hover .xm-sn{background:var(--grn);color:var(--bg1);transform:scale(1.1)}
+        .xm-st h4{font-size:.92rem;color:var(--w);margin-bottom:2px}.xm-st p{font-size:.82rem;color:var(--t3)}
+        .xmc>.btn{width:100%}
+        .xmc-f{text-align:center;margin-top:14px;font-size:.78rem;color:var(--t3)}
+        .xmc-f i{color:var(--grn)}
+
+        /* Float badges */
+        .fb{position:absolute;background:var(--card);border:1px solid var(--brd);border-radius:14px;padding:10px 16px;display:flex;align-items:center;gap:10px;box-shadow:0 10px 30px rgba(0,0,0,.4);z-index:3;backdrop-filter:blur(10px);transition:var(--tr)}
+        .fb1{top:5%;right:-15px;animation:fUp 5s ease-in-out infinite}
+        .fb2{bottom:8%;left:-15px;animation:fUp 5s ease-in-out infinite 2.5s}
+        @keyframes fUp{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(-15px) rotate(1deg)}}
+        .fb:hover{transform:translateY(-5px) scale(1.05)!important;border-color:var(--grn)}
+        .fb-d{width:10px;height:10px;border-radius:50%}
+        .fb-d.g{background:var(--grn);box-shadow:0 0 10px var(--grn);animation:dP 1.5s infinite}
+        @keyframes dP{0%,100%{box-shadow:0 0 5px var(--grn)}50%{box-shadow:0 0 15px var(--grn),0 0 30px var(--grn-g)}}
+        .fb-i{font-size:.75rem}.fb-i span{color:var(--t3);display:block}.fb-i strong{color:var(--w);font-size:.85rem}
+
+        /* PRESENTATION */
+        .pres{padding:100px 0;position:relative;z-index:2;overflow:hidden}
+        .pres::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,var(--brd),transparent)}
+        .pres-in{display:grid;grid-template-columns:auto 1fr;gap:60px;align-items:center} .pres-img{display:flex;align-items:center;justify-content:center}
+        .pres-img{width:340px;height:340px;border-radius:24px;overflow:hidden;border:2px solid var(--brd);position:relative;flex-shrink:0;transition:var(--tr);background:transparent}
+        .pres-img:hover{border-color:var(--grn);box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 40px var(--grn-g);transform:translateY(-4px)}
+        .pres-img img{width:100%;height:100%;object-fit:contain;display:block;margin:0 auto;background:transparent}
+        .pres-img::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,transparent 60%,rgba(16,185,129,.08) 100%);pointer-events:none}
+        .pres-txt h2{font-size:2rem;font-weight:800;color:var(--w);margin-bottom:8px}
+        .pres-txt h2 span{background:linear-gradient(135deg,var(--grn),var(--grn-l));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .pres-txt .pres-role{color:var(--grn);font-size:.9rem;font-weight:600;margin-bottom:20px;display:flex;align-items:center;gap:8px}
+        .pres-txt .pres-role i{font-size:.75rem}
+        .pres-txt p{color:var(--t2);font-size:1.02rem;line-height:1.9;margin-bottom:24px}
+        .pres-hl{display:flex;gap:24px;flex-wrap:wrap}
+        .pres-hl .ph{display:flex;align-items:center;gap:8px;font-size:.85rem;color:var(--t3);padding:8px 16px;background:var(--card);border:1px solid var(--brd);border-radius:10px;transition:var(--tr)}
+        .pres-hl .ph:hover{border-color:var(--grn);color:var(--grn);transform:translateY(-2px)}
+        .pres-hl .ph i{color:var(--grn)}
+
+        /* STATS */
+        .stats{padding:20px 0 60px;position:relative;z-index:2}
+        .sg{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+        .sc{background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);padding:28px 20px;text-align:center;transition:var(--tr);position:relative;overflow:hidden}
+        .sc::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grn);transform:scaleX(0);transition:transform .5s ease}
+        .sc:hover{border-color:var(--grn);transform:translateY(-6px);box-shadow:0 10px 40px rgba(16,185,129,.1),0 0 30px var(--grn-g)}
+        .sc:hover::before{transform:scaleX(1)}
+        .sc .si{font-size:1.5rem;margin-bottom:10px;display:inline-block;animation:bI 2s ease-in-out infinite}
+        @keyframes bI{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+        .sc .sn{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:800;color:var(--grn)}
+        .sc .sl{font-size:.82rem;color:var(--t3);margin-top:4px}
+
+        /* JOIN STEPS */
+        .join{padding:100px 0;background:var(--bg2);position:relative;z-index:2}
+        .stc{display:grid;grid-template-columns:1fr 2fr 1fr;gap:24px;position:relative;align-items:start}
+        .stc::before{content:'';position:absolute;top:54px;left:16%;right:16%;height:2px;background:linear-gradient(90deg,var(--xm),var(--grn),var(--grn-l));opacity:.3;animation:lExp 2s ease-out}
+        @keyframes lExp{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+        .stb{text-align:center;position:relative;z-index:1}
+        .stw{width:72px;height:72px;margin:0 auto 20px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.6rem;transition:var(--tr);position:relative}
+        .stb:nth-child(1) .stw{background:var(--xm-g);border:2px solid var(--xm);color:var(--xm)}
+        .stb:nth-child(2) .stw{background:var(--grn-g);border:2px solid var(--grn);color:var(--grn)}
+        .stb:nth-child(3) .stw{background:var(--gld-g);border:2px solid var(--gld);color:var(--gld)}
+        .stb:hover .stw{transform:scale(1.15) rotate(5deg);box-shadow:0 0 30px var(--grn-g)}
+        .snt{position:absolute;top:-6px;right:-6px;width:24px;height:24px;background:var(--grn);border-radius:50%;color:var(--bg1);font-size:.7rem;font-weight:800;display:flex;align-items:center;justify-content:center}
+        .stb h3{font-size:1.15rem;color:var(--w);margin-bottom:8px}
+        .stb p{color:var(--t2);font-size:.9rem;max-width:300px;margin:0 auto}
+        .stb .btn{margin-top:16px}
+
+        /* ADVANTAGES */
+        .adv{padding:100px 0;position:relative;z-index:2}
+        .ag{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+        .ac{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:32px 24px;transition:var(--tr);position:relative;overflow:hidden}
+        .ac::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grn);transform:scaleX(0);transition:transform .5s;transform-origin:left}
+        .ac::after{content:'';position:absolute;bottom:-50%;right:-50%;width:200px;height:200px;background:radial-gradient(circle,var(--grn-g),transparent 70%);opacity:0;transition:opacity .5s}
+        .ac:hover{transform:translateY(-8px);border-color:rgba(16,185,129,.3);box-shadow:0 20px 50px rgba(0,0,0,.2),0 0 40px var(--grn-g)}
+        .ac:hover::before{transform:scaleX(1)}.ac:hover::after{opacity:1}
+        .ai{width:50px;height:50px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;margin-bottom:18px;transition:var(--tr)}
+        .ac:hover .ai{transform:scale(1.15) rotate(-5deg)}
+        .ac h3{font-size:1.1rem;color:var(--w);margin-bottom:8px}
+        .ac p{color:var(--t2);font-size:.9rem;position:relative;z-index:1}
+
+        /* RESULTS */
+        .res{padding:100px 0;background:var(--bg2);position:relative;z-index:2}
+        .rg{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
+        .rc h2{font-size:2.4rem;font-weight:800;color:var(--w);margin-bottom:16px;line-height:1.2}
+        .rc h2 .yt-t{background:linear-gradient(135deg,var(--yt),#ff4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+        .rc>p{color:var(--t2);font-size:1rem;margin-bottom:28px}
+        .rhl{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:28px}
+        .rb{background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);padding:18px;text-align:center;transition:var(--tr)}
+        .rb:hover{border-color:var(--grn);transform:translateY(-4px)}
+        .rb .rn{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:800}
+        .rb .rl{font-size:.78rem;color:var(--t3);text-transform:uppercase;letter-spacing:.5px;margin-top:4px}
+
+        .ys{display:flex;flex-direction:column;gap:16px}
+        .ym{border-radius:var(--r);overflow:hidden;border:1px solid var(--brd);aspect-ratio:16/9;transition:var(--tr);position:relative;cursor:pointer;background:#000}
+        .ym:hover{border-color:var(--yt);box-shadow:0 10px 40px rgba(255,0,0,.15)}
+        .ym img.yt-thumb{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+        .ym:hover img.yt-thumb{transform:scale(1.03)}
+        .ym .yt-play{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.35);transition:background .3s}
+        .ym:hover .yt-play{background:rgba(0,0,0,.2)}
+        .ym .yt-play-btn{width:72px;height:72px;background:var(--yt);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.8rem;color:#fff;box-shadow:0 0 0 8px rgba(255,0,0,.25);transition:transform .3s}
+        .ym:hover .yt-play-btn{transform:scale(1.1)}
+        .ym iframe{position:absolute;inset:0;width:100%;height:100%;border:none;z-index:10}
+        .ycl{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);padding:14px 18px;transition:var(--tr)}
+        .ycl:hover{border-color:var(--yt);background:var(--card-h);transform:translateY(-3px)}
+        .yca{width:44px;height:44px;border-radius:50%;overflow:hidden;flex-shrink:0;border:2px solid var(--yt)}
+        .yca img{width:100%;height:100%;object-fit:cover}
+        .ycl .yi h4{color:var(--w);font-size:.95rem}.ycl .yi span{color:var(--t3);font-size:.8rem}
+        .ysb{margin-left:auto;background:var(--yt);color:white;padding:6px 16px;border-radius:20px;font-size:.8rem;font-weight:700;white-space:nowrap;transition:var(--tr)}
+        .ysb:hover{transform:scale(1.05);box-shadow:0 4px 15px rgba(255,0,0,.3)}
+
+        /* ID SUBMISSION FORM */
+        .id-form-wrap{background:var(--card);border:1px solid rgba(16,185,129,.25);border-radius:var(--r);padding:28px;margin-top:8px}
+        .id-form-wrap h4{color:var(--w);font-size:1rem;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+        .id-form-wrap p{color:var(--t3);font-size:.82rem;margin-bottom:18px}
+        .id-field{margin-bottom:14px}
+        .id-field label{display:block;font-size:.8rem;font-weight:600;color:var(--t2);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px}
+        .id-field input,.id-field textarea{width:100%;background:var(--bg2);border:1px solid var(--brd);color:var(--t1);padding:11px 14px;border-radius:10px;font-family:'Inter',sans-serif;font-size:.88rem;outline:none;transition:var(--tr)}
+        .id-field input:focus,.id-field textarea:focus{border-color:rgba(16,185,129,.5);box-shadow:0 0 0 3px var(--grn-g)}
+        .id-field input::placeholder,.id-field textarea::placeholder{color:var(--t3)}
+        .id-field textarea{resize:none;height:70px}
+        .id-upload{border:2px dashed var(--brd);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:var(--tr);position:relative;background:var(--bg2)}
+        .id-upload:hover{border-color:var(--grn);background:var(--grn-g)}
+        .id-upload input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+        .id-upload i{font-size:1.5rem;color:var(--t3);display:block;margin-bottom:6px}
+        .id-upload span{font-size:.82rem;color:var(--t3)}
+        .id-upload .file-name{font-size:.8rem;color:var(--grn);margin-top:6px;display:none}
+        .id-submit{width:100%;background:linear-gradient(135deg,var(--grn),var(--grn-l));color:var(--bg1);padding:13px;border-radius:10px;font-weight:800;font-size:.9rem;border:none;cursor:pointer;font-family:'Inter',sans-serif;transition:var(--tr);display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px}
+        .id-submit:hover{transform:translateY(-2px);box-shadow:0 8px 25px var(--grn-gs)}
+        .id-verify{width:100%;background:rgba(59,130,246,.12);border:1px solid rgba(59,130,246,.3);color:#60a5fa;padding:13px;border-radius:10px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:'Inter',sans-serif;transition:all .3s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:16px}
+        .id-verify:hover{background:rgba(59,130,246,.2);transform:translateY(-2px)}
+        .id-verify:disabled{opacity:.5;cursor:not-allowed;transform:none}
+        .id-verify-result{border-radius:10px;padding:0;margin-top:8px;font-size:.88rem;font-weight:600;overflow:hidden;max-height:0;transition:max-height .4s,padding .3s}
+        .id-verify-result.show{max-height:80px;padding:12px 16px}
+        .id-verify-result.ok{background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.3);color:var(--grn)}
+        .id-verify-result.err{background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.3);color:#ef4444}
+        .id-success{display:none;background:var(--grn-g);border:1px solid rgba(16,185,129,.3);border-radius:10px;padding:14px;text-align:center;color:var(--grn);font-weight:600;font-size:.9rem;margin-top:12px}
+        body.light .id-field input,body.light .id-field textarea,body.light .id-upload{background:#f8fafc;border-color:#cbd5e1;color:#0f172a}
+        body.light .id-field input::placeholder,body.light .id-field textarea::placeholder{color:#94a3b8}
+        /* SIGNALS */
+        .sig{padding:100px 0;position:relative;z-index:2}
+        .sgl{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:12px}
+        .sr{background:var(--card);border:1px solid var(--brd);border-radius:var(--rs);padding:18px 24px;display:flex;align-items:center;justify-content:space-between;transition:var(--tr)}
+        .sr:hover{border-color:var(--brd-l);background:var(--card-h);transform:translateX(8px)}
+        .sr-l{display:flex;align-items:center;gap:14px}
+        .sty{padding:5px 12px;border-radius:8px;font-size:.73rem;font-weight:800;text-transform:uppercase;letter-spacing:1px;min-width:50px;text-align:center}
+        .sty.b{background:var(--grn-g);color:var(--grn)}.sty.s{background:var(--red-g);color:var(--red)}
+        .sp{font-weight:700;color:var(--w);font-size:.95rem}.sd{font-size:.78rem;color:var(--t3)}
+        .sr-r{display:flex;align-items:center;gap:14px}
+        .spp{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.92rem}
+        .sst{padding:5px 12px;border-radius:8px;font-size:.78rem;font-weight:700}
+        .sst.tp{background:var(--grn-g);color:var(--grn)}.sst.sl{background:var(--red-g);color:var(--red)}.sst.run{background:var(--gld-g);color:var(--gld);animation:blnk 1.5s infinite}
+        .scta{text-align:center;margin-top:36px}
+
+        /* XM CTA */
+        .xmcta{padding:80px 0;position:relative;z-index:2}
+        .xmcc{background:linear-gradient(135deg,#1a0508,#0d1117 50%,#071210);border:1px solid rgba(212,33,39,.25);border-radius:24px;padding:60px;display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;position:relative;overflow:hidden} body.light .xmcc{background:linear-gradient(135deg,#fff0f0,#fff8f8 50%,#f0fff8);border-color:rgba(212,33,39,.3)} body.light .xmcl h2{color:#0f172a} body.light .xmbn{color:#475569} body.light .xmbn:hover{color:#0f172a}
+        .xmcc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--xm),var(--grn))}
+        .xmcc::after{content:'';position:absolute;top:-100px;right:-100px;width:350px;height:350px;background:radial-gradient(circle,rgba(212,33,39,.08),transparent 70%);border-radius:50%;animation:gD2 10s ease-in-out infinite}
+        .xmcl h2{font-size:2.2rem;font-weight:800;color:var(--w);margin-bottom:14px;line-height:1.2}
+        .xmcl p{color:var(--t2);font-size:1rem;margin-bottom:24px}
+        .xmb{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+        .xmbn{display:flex;align-items:center;gap:10px;font-size:.92rem;color:var(--t2);transition:var(--tr)}
+        .xmbn:hover{color:var(--w);transform:translateX(6px)}
+        .xmbn i{color:var(--grn);font-size:.85rem}
+        .xmcr{position:relative;z-index:2}
+
+        .trc{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:36px;text-align:center;transition:var(--tr)}
+        .trc:hover{border-color:var(--grn);box-shadow:0 20px 60px rgba(0,0,0,.3),0 0 40px var(--grn-g);transform:translateY(-6px)}
+        .trp{width:100px;height:100px;border-radius:50%;overflow:hidden;margin:0 auto 16px;border:3px solid var(--grn);box-shadow:0 0 30px var(--grn-gs);animation:pGlow 3s ease-in-out infinite}
+        .trp img{width:100%;height:100%;object-fit:cover}
+        .trc h3{color:var(--w);font-size:1.2rem;margin-bottom:4px}
+        .trc .trt{color:var(--grn);font-size:.82rem;font-weight:600;margin-bottom:4px}
+        .trc .trs{color:var(--t3);font-size:.78rem;margin-bottom:20px}
+        .trc .btn{width:100%;margin-bottom:10px}
+        .xmg{display:flex;align-items:center;justify-content:center;gap:6px;font-size:.78rem;color:var(--t3)}
+        .xmg i{color:var(--grn)}
+
+        /* TESTIMONIALS */
+        .test{padding:100px 0;background:var(--bg2);position:relative;z-index:2}
+        .tg{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+        .tcd{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:28px;transition:var(--tr)}
+        .tcd:hover{border-color:var(--brd-l);transform:translateY(-6px);box-shadow:0 15px 40px rgba(0,0,0,.2)}
+        .tst{color:var(--gld);font-size:.82rem;margin-bottom:14px}
+        .tcd .qu{color:var(--t2);font-size:.9rem;font-style:italic;padding-left:16px;border-left:3px solid var(--grn);margin-bottom:20px}
+        .ta{display:flex;align-items:center;gap:10px}
+        .tav{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;color:var(--w)}
+        .ta h4{font-size:.9rem;color:var(--w)}.ta span{font-size:.78rem;color:var(--t3)}
+
+        /* FAQ */
+        .faq{padding:100px 0;position:relative;z-index:2}
+        .fl{max-width:800px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+        .fi{background:var(--card);border:1px solid var(--brd);border-radius:14px;overflow:hidden;transition:var(--tr)}
+        .fi.act{border-color:rgba(16,185,129,.35);box-shadow:0 4px 24px rgba(16,185,129,.08)}
+        .fq{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;transition:var(--tr);gap:16px}
+        .fq:hover{background:var(--card-h)}
+        .fq-left{display:flex;align-items:center;gap:14px;flex:1;min-width:0}
+        .fq-num{width:32px;height:32px;border-radius:8px;background:var(--grn-g);border:1px solid rgba(16,185,129,.2);display:flex;align-items:center;justify-content:center;color:var(--grn);font-size:.75rem;font-weight:800;flex-shrink:0;font-family:"JetBrains Mono",monospace;transition:var(--tr)}
+        .fi.act .fq-num{background:var(--grn);color:var(--bg1);border-color:var(--grn)}
+        .fq h3{font-size:.95rem;font-weight:500;color:var(--t1);text-transform:none !important;letter-spacing:0 !important;line-height:1.55;margin:0;font-style:normal;font-family:"Inter",-apple-system,sans-serif}
+        body.light .fq h3{color:#0f172a}
+        .fq .tgl{width:28px;height:28px;min-width:28px;background:rgba(255,255,255,.04);border:1px solid var(--brd);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--t3);font-size:.8rem;transition:var(--tr)}
+        .fi.act .fq .tgl{background:var(--grn-g);border-color:rgba(16,185,129,.3);color:var(--grn);transform:rotate(45deg)}
+        .fa{max-height:0;overflow:hidden;transition:max-height .5s cubic-bezier(.4,0,.2,1)}
+        .fa-inner{padding:0 24px 22px 70px;color:var(--t2);font-size:.92rem;line-height:1.8;font-family:"Georgia","Times New Roman",serif;font-weight:400;font-style:normal;text-transform:none}
+        body.light .fa-inner{padding:0 24px 22px 70px;color:var(--t2);font-size:.92rem;line-height:1.8;font-family:"Georgia","Times New Roman",serif;font-weight:400;font-style:normal;text-transform:none}
+
+        /* CONTACT */
+        .cont{padding:100px 0;background:var(--bg2);position:relative;z-index:2}
+        .ccg{display:grid;grid-template-columns:repeat(3,minmax(0,320px));gap:20px;justify-content:center;max-width:1000px;margin:0 auto}
+        .ccd{background:var(--card);border:1px solid var(--brd);border-radius:var(--r);padding:30px 24px;text-align:center;transition:var(--tr)}
+        .ccd:hover{border-color:var(--grn);transform:translateY(-6px);box-shadow:0 15px 40px rgba(0,0,0,.2),0 0 30px var(--grn-g)}
+        .cci{width:52px;height:52px;margin:0 auto 14px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.3rem;transition:var(--tr)}
+        .ccd:hover .cci{transform:scale(1.15) rotate(-5deg)}
+        .ccd h4{color:var(--w);font-size:1rem;margin-bottom:6px}
+        .ccd p{color:var(--t2);font-size:.85rem;margin-bottom:14px}
+        .ccd .btn{width:100%;font-size:.85rem;padding:10px}
+
+        /* FOOTER */
+        .foot{background:var(--bg1);border-top:1px solid var(--brd);padding-top:60px;position:relative;z-index:2}
+        .footg{display:grid;grid-template-columns:1.6fr 1fr 1fr 1fr;gap:40px;padding-bottom:40px;border-bottom:1px solid var(--brd)}
+        .fbl{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+        .fli{width:40px;height:40px;border-radius:10px;overflow:hidden}
+        .fli img{width:100%;height:100%;object-fit:contain}
+        .fln{font-size:1.2rem;font-weight:800;color:var(--w)}
+        .fln em{font-style:normal;color:var(--grn)}
+        .foot-b p{color:var(--t2);font-size:.85rem;margin-bottom:16px;line-height:1.8}
+        .fso{display:flex;gap:8px}
+        .fso a{width:38px;height:38px;background:rgba(255,255,255,.04);border:1px solid var(--brd);border-radius:10px;display:flex;align-items:center;justify-content:center;color:var(--t3);transition:var(--tr)}
+        .fso a:hover{background:var(--grn);color:var(--bg1);border-color:var(--grn);transform:translateY(-3px) rotate(5deg)}
+        .foot h4{color:var(--w);font-size:.92rem;margin-bottom:18px}
+        .flinks li{margin-bottom:10px}
+        .flinks a{color:var(--t3);font-size:.85rem;transition:var(--tr)}
+        .flinks a:hover{color:var(--grn);padding-left:8px}
+        .riskb{background:var(--red-g);border:1px solid rgba(239,68,68,.2);border-radius:var(--rs);padding:16px 20px;margin-top:24px}
+        .riskb p{color:var(--red);font-size:.76rem;line-height:1.7}
+        .foot-bt{padding:20px 0;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+        .foot-bt p{color:var(--t3);font-size:.8rem}
+
+        /* FIXED */
+        .sctop{position:fixed;bottom:28px;right:28px;width:44px;height:44px;background:var(--card);border:1px solid var(--brd);color:var(--grn);border-radius:12px;font-size:1rem;cursor:pointer;opacity:0;visibility:hidden;transition:var(--tr);z-index:999}
+        .sctop.show{opacity:1;visibility:visible}
+        .sctop:hover{background:var(--grn);color:var(--bg1);border-color:var(--grn);transform:translateY(-5px);box-shadow:0 5px 20px rgba(16,185,129,.3)}
+        .tgfl{position:fixed;bottom:28px;left:28px;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--brd);padding:8px 16px 8px 8px;border-radius:50px;z-index:999;transition:var(--tr);animation:fUp 4s ease-in-out infinite}
+        .tgfl:hover{border-color:#0088cc;background:var(--card-h);transform:translateY(-4px)!important;box-shadow:0 10px 30px rgba(0,136,204,.2)}
+        .tgfl .tgi{width:36px;height:36px;background:#0088cc;border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:1rem}
+        .tgfl .tgt{font-size:.78rem;font-weight:600;color:var(--t1)}
+        .tgfl .tgt span{display:block;font-size:.68rem;color:var(--t3);font-weight:400}
+
+        /* REVEAL */
+        .rv{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+        .rv.v{opacity:1;transform:translateY(0)}
+        .rvl{opacity:0;transform:translateX(-50px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+        .rvl.v{opacity:1;transform:translateX(0)}
+        .rvr{opacity:0;transform:translateX(50px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+        .rvr.v{opacity:1;transform:translateX(0)}
+        .rvs{opacity:0;transform:scale(.85);transition:all .8s cubic-bezier(.16,1,.3,1)}
+        .rvs.v{opacity:1;transform:scale(1)}
+
+        /* RESPONSIVE */
+        @media(max-width:1024px){
+            .hero h1{font-size:2.6rem}
+            .ag,.tg{grid-template-columns:repeat(2,1fr)}
+            .ccg{grid-template-columns:repeat(2,1fr)}
+            .footg{grid-template-columns:repeat(2,1fr)}
+            .cur-d,.cur-r{display:none}
+        }
+        @media(max-width:768px){
+            .ham{display:flex}
+            .nm,.nb{position:fixed;top:0;right:-100%;width:280px;height:100vh;background:var(--bg2);border-left:1px solid var(--brd);flex-direction:column;justify-content:center;padding:40px;gap:18px;transition:var(--tr);z-index:1000}
+            .nm.opn,.nb.opn{right:0}
+            .lang-sw{order:-1}
+            .ticker{display:none}
+            .hero-in{grid-template-columns:1fr;text-align:center}
+            .hero h1{font-size:2rem}
+            .hsub{margin:0 auto 32px}
+            .hctas,.hprf,.hp{justify-content:center}
+            .hr{max-width:420px;margin:0 auto}
+            .sg{grid-template-columns:repeat(2,1fr)}
+            .stc{grid-template-columns:1fr}.stc::before{display:none}
+            .ag,.tg{grid-template-columns:1fr}
+            .rg{grid-template-columns:1fr}
+            .xmcc{grid-template-columns:1fr;padding:32px 24px}
+            .ccg{grid-template-columns:1fr 1fr}
+            .footg{grid-template-columns:1fr}
+            .sh h2{font-size:1.8rem}
+            .pres-in{grid-template-columns:1fr;text-align:center}
+            .pres-img{width:200px;height:200px;margin:0 auto}
+            .pres-hl{justify-content:center}
+            .pres-txt .pres-role{justify-content:center}
+            .fb{display:none}
+            .cur-d,.cur-r{display:none}
+        }
+        @media(max-width:480px){
+            .hero h1{font-size:1.7rem}
+            .sg{grid-template-columns:1fr 1fr}
+            .ccg{grid-template-columns:1fr}
+            .xmcl h2{font-size:1.6rem}
+            .sr{flex-direction:column;gap:10px;align-items:flex-start}
+            .sr-r{align-self:flex-end}
+        }
+    </style>
+</head>
+<body>
+
+<!-- CURSOR -->
+<div class="cur-d" id="cD"></div>
+<div class="cur-r" id="cR"></div>
+
+<!-- PARTICLES -->
+<canvas id="pCanvas"></canvas>
+
+<!-- PRELOADER -->
+<div id="pre">
+    <div class="pre-photo">
+        <img src="https://i.imgur.com/MrRODMe.png" alt="Chebbi Trade">
+    </div>
+    <div class="pre-t">Chebbi <em>Trading</em></div>
+    <div class="pre-s">جارٍ تحميل الأسواق...</div>
+    <div class="pre-bar"></div>
+</div>
+
+<!-- TICKER -->
+<div class="ticker" id="ticker">
+    <div class="tk-track" id="tkTrack"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav class="nav" id="nav">
+    <div class="container">
+        <a href="#" class="logo">
+            <div class="logo-i"><img src="https://i.imgur.com/USEEiyC.png" alt="Logo"></div>
+            <div class="logo-n">Chebbi <em>Trading</em></div>
+        </a>
+        <ul class="nm" id="nM">
+            <li><a href="#accueil">Accueil</a></li>
+            <li><a href="#comment">Comment Rejoindre</a></li>
+            <li><a href="#avantages">Avantages</a></li>
+            <li><a href="#resultats">Résultats</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#faq">FAQ</a></li>
+        </ul>
+        <div class="nb" id="nB">
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()" title="Changer le thème"><i class="fas fa-moon" id="themeIcon"></i></button>
+            <div class="lang-sw">
+                <button class="lang-btn"><i class="fas fa-globe"></i> ع</button>
+                <div class="lang-dd">
+                    <a href="chebbi.html">🇫🇷 Français</a>
+                    <a href="chebbi-en.html">🇬🇧 English</a>
+                    <a href="chebbi-ar.html" class="active">🇸🇦 العربية</a>
+                </div>
+            </div>
+            <a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=ar&p=1" target="_blank" class="nxm"><i class="fas fa-user-plus"></i> S'inscrire sur XM</a>
+        </div>
+        <div class="ham" id="ham"><span></span><span></span><span></span></div>
+    </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="accueil">
+    <div class="hero-grid"></div>
+    <div class="glow g1"></div><div class="glow g2"></div><div class="glow g3"></div>
+    <div class="container">
+        <div class="hero-in">
+            <div class="hl">
+                <div class="hp">
+                    <div class="hp-img"><img src="https://i.imgur.com/USEEiyC.png" alt="ChebbiTrade Logo"></div>
+                    <div class="hp-info">
+                        <h3>Chebbi Trading</h3>
+                        <p>Trader Forex & Partenaire XM</p>
+                        <div class="ver"><i class="fas fa-check-circle"></i> 4 ans de résultats live</div>
+                    </div>
+                </div>
+                <div class="hft">
+                    <span class="badge badge-f"><i class="fas fa-gift"></i> 100% GRATUIT</span>
+                    <span class="badge badge-g"><span class="ld"></span> Live Signals</span>
+                </div>
+                <h1>توصيات فوركس <span class="grad-a">مجانية</span> مع 4 سنوات من النتائج المباشرة<span class="tc"></span></h1>
+                <p class="hsub">Inscrivez-vous sur <strong>XM</strong> via notre lien partenaire et accédez <strong>gratuitement</strong> à notre groupe de trading : signaux quotidiens, analyses techniques et suivi en direct.</p>
+                <div class="hctas">
+                    <a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=ar&p=1" target="_blank" class="btn btn-xm btn-lg"><i class="fas fa-user-plus"></i> Ouvrir un Compte XM</a>
+                    <a href="https://www.youtube.com/@ChebbiTrading/streams" target="_blank" class="btn btn-yt btn-lg"><i class="fab fa-youtube"></i> Voir les Résultats</a>
+                </div>
+                <div class="hprf">
+                    <div class="pi"><i class="fas fa-check-circle"></i> 4 ans live</div>
+                    <div class="pi"><i class="fas fa-check-circle"></i> 100% Gratuit</div>
+                    <div class="pi"><i class="fas fa-check-circle"></i> Vérifié YouTube</div>
+                </div>
+            </div>
+            <div class="hr">
+                <div style="position:relative">
+                    <div class="xmc">
+                        <div class="xmc-h">
+                            <div class="xm-lb">XM</div>
+                            <div><h3>Rejoindre Chebbi Trading</h3><p>3 étapes - Accès immédiat</p></div>
+                        </div>
+                        <div class="xm-steps">
+                            <div class="xm-st"><div class="xm-sn">1</div><div><h4>Ouvrir un compte XM</h4><p>Via notre lien partenaire</p></div></div>
+                            <div class="xm-st"><div class="xm-sn">2</div><div><h4>Envoyez votre ID</h4><p>Votre numéro de compte XM</p></div></div>
+                            <div class="xm-st"><div class="xm-sn">3</div><div><h4>Accès gratuit</h4><p>Groupe + signaux immédiats</p></div></div>
+                        </div>
+                        <a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=ar&p=1" target="_blank" class="btn btn-xm btn-lg"><i class="fas fa-external-link-alt"></i> S'inscrire sur XM</a>
+                        <div class="xmc-f"><i class="fas fa-shield-alt"></i> Broker régulé • 2 min • 0$ de frais</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- PRESENTATION -->
+<section class="pres" id="presentation">
+    <div class="container">
+        <div class="pres-in">
+            <div class="pres-img rv">
+                <img src="https://i.imgur.com/MrRODMe.png" alt="Amine Chebbi">
+            </div>
+            <div class="pres-txt rv">
+                <h2>Amine <span>Chebbi</span></h2>
+                <div class="pres-role"><i class="fas fa-chart-line"></i> Trader Forex & Fondateur de Chebbi Trading</div>
+                <p>Amine Chebbi trade les marchés financiers depuis 2014. Avec plus de 33 mois de résultats diffusés en direct sur YouTube, il prouve que le trading peut être une source de revenus durable. Engagé à servir la communauté arabe, Amine garantit la transparence de ses analyses à travers les lives, les vidéos et les résultats vérifiés. Rejoignez-nous pour profiter de son expertise et atteindre vos objectifs financiers en toute confiance et sécurité.</p>
+                <div class="pres-hl">
+                    <div class="ph"><i class="fas fa-calendar-check"></i> Depuis 2014</div>
+                    <div class="ph"><i class="fab fa-youtube"></i> 33+ mois live</div>
+                    <div class="ph"><i class="fas fa-users"></i> Communauté active</div>
+                    <div class="ph"><i class="fas fa-shield-alt"></i> Résultats vérifiés</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- STATS -->
+<section class="stats">
+    <div class="container">
+        <div class="sg">
+            <div class="sc rv"><div class="si">📅</div><div class="sn" data-t="4">0</div><div class="sl">Années de Résultats Live</div></div>
+            <div class="sc rv"><div class="si">🎯</div><div class="sn" data-t="42">0</div><div class="sl">% Win Rate</div></div>
+            <div class="sc rv"><div class="si">👥</div><div class="sn" data-t="1920">0</div><div class="sl">Membres Actifs</div></div>
+            <div class="sc rv"><div class="si">💰</div><div class="sn">0$</div><div class="sl">C'est 100% Gratuit</div></div>
+        </div>
+    </div>
+</section>
+
+<!-- COMMENT REJOINDRE -->
+<section class="join" id="comment">
+    <div class="container">
+        <div class="sh rv">
+            <div class="badge badge-g"><i class="fas fa-route"></i> Comment Rejoindre</div>
+            <h2>Accédez au Groupe en <span>3 Étapes</span></h2>
+            <p>Inscrivez-vous sur XM et rejoignez notre communauté gratuitement.</p>
+        </div>
+        <div class="stc">
+            <div class="stb rv">
+                <div class="stw"><i class="fas fa-user-plus"></i><div class="snt">1</div></div>
+                <h3>Ouvrir un Compte XM</h3>
+                <p>Gratuit et rapide via notre lien partenaire.</p>
+                <a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=ar&p=1" target="_blank" class="btn btn-xm"><i class="fas fa-external-link-alt"></i> Ouvrir</a>
+            </div>
+            <div class="stb rv">
+                <div class="stw"><i class="fas fa-paper-plane"></i><div class="snt">2</div></div>
+                <h3>Envoyer votre ID</h3>
+                <p>Remplissez le formulaire ci-dessous pour rejoindre le groupe.</p>
+                <div class="id-form-wrap">
+                    <h4><i class="fas fa-id-card" style="color:var(--grn)"></i> Informations d'inscription</h4>
+                    <p>Vos données sont sécurisées et utilisées uniquement pour vérifier votre compte XM.</p>
+                    <div class="id-field">
+                        <label>Numéro de compte XM *</label>
+                        <input type="text" id="xmId" placeholder="Ex: 123456789" maxlength="20">
+                    </div>
+                    <div class="id-field">
+                        <label>Adresse email *</label>
+                        <input type="email" id="xmEmail" placeholder="votre@email.com">
+                    </div>
+                    <div class="id-field">
+                        <label>Capture d'écran du compte XM</label>
+                        <div class="id-upload" id="uploadZone">
+                            <input type="file" id="xmPhoto" accept="image/*" onchange="handleFile(this)">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span>Cliquez ou glissez une image ici</span>
+                            <div class="file-name" id="fileName"></div>
+                        </div>
+                    </div>
+                    <button class="id-verify" id="verifyBtn" onclick="verifyXmId()">
+                        <i class="fas fa-shield-check"></i> Vérifier mon compte XM
+                    </button>
+                    <div class="id-verify-result" id="verifyResult"></div>
+                    <button class="id-submit" id="submitBtn" onclick="submitID()" style="display:none">
+                        <i class="fas fa-paper-plane"></i> Envoyer ma demande
+                    </button>
+                    <div class="id-success" id="idSuccess">
+                        <i class="fas fa-check-circle"></i> Demande envoyée ! Un agent vous contactera sous 24h via email.
+                    </div>
+                </div>
+            </div>
+            <div class="stb rv">
+                <div class="stw"><i class="fas fa-unlock"></i><div class="snt">3</div></div>
+                <h3>Accès Immédiat</h3>
+                <p>Groupe VIP + signaux + analyses live.</p>
+                <div class="btn btn-grn" style="cursor:default"><i class="fas fa-check-circle"></i> Gratuit</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- AVANTAGES -->
+<section class="adv" id="avantages">
+    <div class="container">
+        <div class="sh rv">
+            <div class="badge badge-g"><i class="fas fa-star"></i> Avantages</div>
+            <h2>Pourquoi Rejoindre <span>Chebbi Trading</span> ?</h2>
+            <p data-fr="Tout est gratuit en ouvrant un compte XM." data-en="Everything is free by opening an XM account." data-ar="كل شيء مجاني بمجرد فتح حساب XM.">Tout est gratuit en ouvrant un compte XM.</p>
+        </div>
+        <div class="ag">
+            <div class="ac rv"><div class="ai" style="background:var(--grn-g);color:var(--grn)"><i class="fas fa-signal"></i></div><h3>Signaux Quotidiens</h3><p>Signaux précis avec entrée, SL et TP chaque jour sur Telegram.</p></div>
+            <div class="ac rv"><div class="ai" style="background:var(--blu-g);color:var(--blu)"><i class="fas fa-chart-bar"></i></div><h3>Analyses Techniques</h3><p>Analyses détaillées Forex, Or, Indices avec graphiques annotés.</p></div>
+            <div class="ac rv"><div class="ai" style="background:rgba(239,68,68,.12);color:var(--yt)"><i class="fab fa-youtube"></i></div><h3>4 Ans Live YouTube</h3><p>Tous nos trades en direct sur YouTube. Transparence totale.</p></div>
+            <div class="ac rv"><div class="ai" style="background:var(--gld-g);color:var(--gld)"><i class="fas fa-graduation-cap"></i></div><h3>Formation Trading</h3><p>Apprenez l'analyse technique et la gestion du risque.</p></div>
+            <div class="ac rv"><div class="ai" style="background:rgba(139,92,246,.12);color:var(--pur)"><i class="fas fa-users"></i></div><h3>Communauté Active</h3><p>+2,500 traders qui échangent et apprennent ensemble.</p></div>
+            <div class="ac rv"><div class="ai" style="background:var(--grn-g);color:var(--grn)"><i class="fas fa-headset"></i></div><h3>Support & Suivi</h3><p>Support Telegram pour chaque membre.</p></div>
+        </div>
+    </div>
+</section>
+
+<!-- YOUTUBE RESULTS -->
+<section class="res" id="resultats">
+    <div class="container">
+        <div class="rg">
+            <div class="rc rvl">
+                <div class="badge badge-g"><i class="fas fa-trophy"></i> Résultats Vérifiés</div>
+                <h2>4 Ans de Trading <span class="yt-t">Live sur YouTube</span></h2>
+                <p>Nous publions TOUS nos trades en direct sur <strong>Chebbi Trading</strong>. 4 années de transparence.</p>
+                <div class="rhl">
+                    <div class="rb"><div class="rn text-grn">4 Ans</div><div class="rl">Résultats live</div></div>
+                    <div class="rb"><div class="rn text-grn">42%</div><div class="rl">Win Rate</div></div>
+                    <div class="rb"><div class="rn text-gld">YouTube</div><div class="rl">Vérifié</div></div>
+                    <div class="rb"><div class="rn text-grn">0$</div><div class="rl">Gratuit</div></div>
+                </div>
+                <div style="display:flex;gap:12px;flex-wrap:wrap">
+                    <a href="https://www.youtube.com/@ChebbiTrading/streams" target="_blank" class="btn btn-yt"><i class="fab fa-youtube"></i> Chaîne YouTube</a>
+                    <a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=ar&p=1" target="_blank" class="btn btn-xm"><i class="fas fa-user-plus"></i> Rejoindre</a>
+                </div>
+            </div>
+            <div class="ys rvr">
+                <div class="ym" id="ytThumb" onclick="loadYT()">
+                    <img class="yt-thumb" src="https://img.youtube.com/vi/LgsD8wt_0Sg/maxresdefault.jpg" alt="Chebbi Trading - Résultats live" onerror="this.src='https://img.youtube.com/vi/LgsD8wt_0Sg/hqdefault.jpg'">
+                    <div class="yt-play"><div class="yt-play-btn"><i class="fab fa-youtube"></i></div></div>
+                </div>
+                <a href="https://www.youtube.com/@ChebbiTrading/streams" target="_blank" class="ycl">
+                    <div class="yca"><img src="https://i.imgur.com/USEEiyC.png" alt="Chebbi Trading"></div>
+                    <div class="yi"><h4>Chebbi Trading</h4><span>4 ans de résultats live • Forex & Gold</span></div>
+                    <div class="ysb">S'ABONNER</div>
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- XM CTA -->
+<section class="xmcta">
+    <div class="container">
+        <div class="xmcc rvs">
+            <div class="xmcl">
+                <h2>Tradez avec Nous <span class="grad-a">Gratuitement</span></h2>
+                <p>XM est un broker régulé. Inscrivez-vous et accédez à tout gratuitement.</p>
+                <div class="xmb">
+                    <div class="xmbn"><i class="fas fa-check-circle"></i> Broker régulé (CySEC, ASIC, FSC)</div>
+                    <div class="xmbn"><i class="fas fa-check-circle"></i> Spreads à partir de 0.6 pips</div>
+                    <div class="xmbn"><i class="fas fa-check-circle"></i> Bonus de bienvenue 30$</div>
+                    <div class="xmbn"><i class="fas fa-check-circle"></i> MT4 & MT5 disponibles</div>
+                    <div class="xmbn"><i class="fas fa-check-circle"></i> Dépôt minimum 5$</div>
+                    <div class="xmbn"><i class="fas fa-check-circle"></i> Support français 24/5</div>
+                </div>
+            </div>
+            <div class="xmcr">
+                <div class="trc">
+                    <div class="trp"><img src="https://i.imgur.com/MrRODMe.png" alt="Chebbi"></div>
+                    <h3>Chebbi Trading</h3>
+                    <div class="trt"><i class="fas fa-check-circle"></i> Trader & Partenaire XM</div>
+                    <div class="trs">4 ans de résultats live sur YouTube</div>
+                    <a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=ar&p=1" target="_blank" class="btn btn-xm btn-lg"><i class="fas fa-external-link-alt"></i> Ouvrir Compte XM</a>
+                    <a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=ar&p=6" target="_blank" class="btn btn-grn btn-lg"><i class="fas fa-chart-line"></i> Compte Démo</a>
+                    <div class="xmg"><i class="fas fa-shield-alt"></i> Broker régulé & sécurisé</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="test" id="temoignages">
+    <div class="container">
+        <div class="sh rv">
+            <div class="badge badge-g"><i class="fas fa-comments"></i> Témoignages</div>
+            <h2>Ce que disent nos <span>Membres</span></h2>
+        </div>
+        <div class="tg">
+            <div class="tcd rv"><div class="tst"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="qu">"Signaux précis et gratuits. Merci Chebbi pour cette opportunité!"</p><div class="ta"><div class="tav" style="background:linear-gradient(135deg,var(--grn),var(--blu))">AK</div><div><h4>Ahmed K.</h4><span>Membre 2 ans</span></div></div></div>
+            <div class="tcd rv"><div class="tst"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div><p class="qu">"4 ans de résultats live sur YouTube. Transparence rare et c'est gratuit!"</p><div class="ta"><div class="tav" style="background:linear-gradient(135deg,var(--gld),#ff6b6b)">SB</div><div><h4>Sara B.</h4><span>Membre 1 an</span></div></div></div>
+            <div class="tcd rv"><div class="tst"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div><p class="qu">"Les résultats YouTube m'ont convaincu. Signaux top qualité."</p><div class="ta"><div class="tav" style="background:linear-gradient(135deg,var(--pur),var(--blu))">MH</div><div><h4>Mohamed H.</h4><span>Membre 8 mois</span></div></div></div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="faq" id="faq">
+    <div class="container">
+        <div class="sh rv">
+            <div class="badge badge-g"><i class="fas fa-question-circle"></i> FAQ</div>
+            <h2>الأسئلة <span>الشائعة</span></h2>
+        </div>
+        <div class="fl">
+            <div class="fi act rv"><div class="fq"><div class="fq-left"><div class="fq-num">01</div><h3>هل هو مجاني 100% حقاً؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa" style="max-height:200px"><div class="fa-inner">نعم! فقط افتح حساب XM عبر رابطنا. يدفع لنا XM كشريك، مما يموّل كل شيء مجاناً لك.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">02</div><h3>لماذا أسجّل عبر رابطك؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">نحن شريك رسمي (IB) لـ XM. عندما تتداول، يدفع XM لنا عمولة بدون تكلفة إضافية عليك.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">03</div><h3>لدي حساب XM بالفعل؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">افتح حساباً إضافياً عبر رابطنا. تواصل معنا على تيليغرام للإجراءات.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">04</div><h3>أين يمكنني رؤية نتائجكم؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">على يوتيوب "Chebbi Trading" — 4 سنوات من الصفقات المباشرة القابلة للتحقق.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">05</div><h3>رأس المال الأدنى المطلوب؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">يسمح XM بالبدء بـ 5$ فقط. نوصي بـ 100–200$ لإدارة المخاطر بشكل صحيح.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">06</div><h3>هل XM وسيط موثوق؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">نعم، XM منظّم من CySEC وASIC وFSC، مع أكثر من 10 ملايين عميل في 190 دولة.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">07</div><h3>متى بدأت المجموعة وما هي نتائجكم؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">بدأت المجموعة في مايو 2023 مع بث مباشر يومي لمدة 8 أشهر. كل صفقة فُسِّرت على يوتيوب. أكثر من 1500 شخص تابعوا — ومنهم من اجتاز اختبارات شركات التمويل. بعد شراكة XM أصبحت المجموعة مجانية. النتائج: <strong>+62.18% في 2023</strong> و<strong>+42.85% في 2024</strong> — 15 شهراً رابحاً من أصل 19.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">08</div><h3>ماذا ستجد في المجموعة VIP؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">بث مباشر يومي. توصيات جاهزة وتحليل شامل للسوق. نتائج موثقة وقابلة للتحقق على يوتيوب.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">09</div><h3>لا أريد التسجيل في الوكالة، هل يمكنني الانضمام؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">طبعاً! للأشخاص الذين لا يريدون تغيير شركتهم أو أصحاب حسابات التمويل، نوفر اشتراكاً شهرياً أو لمدة 6 أشهر.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">10</div><h3>هل التسجيل تحت وكالتكم يسبب لي ضرراً؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">طبعاً لا. XM تفضل مكافأة شركاء يقدمون خدمة جاهزة بدلاً من صرف الأموال على الإعلانات. العمولة هي نفسها — وفي حال أي مشكلة يمكننا التواصل مع الشركة مباشرةً نيابةً عنك.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">11</div><h3>هل تفتحون صفقات بأهداف متعددة (TP1-TP2-TP3)؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">لا. هذه الطريقة مضللة: الأرباح تُحسب لكل هدف على حدة، لكن وقف الخسارة يُحسب صفقة خاسرة واحدة. <strong>هدف واحد ووقف خسارة واحد في كل صفقة</strong> دائماً.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">12</div><h3>ما هي إدارة المخاطرة التي تعتمدونها؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">طريقتنا: تقسيم الحساب على 10,000 نقطة. يجب أن يعكس الحساب 10,000 نقطة في الذهب والعملات قبل الخسارة الكاملة — شبه مستحيل. حتى في أقصى الحالات (3,000 نقطة) لن تخسر سوى 30% من حسابك. <em>هذه الطريقة خاصة بنا فقط.</em></div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">13</div><h3>هل يمكن أن أفلس وأنا أتابع المجموعة؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">هذا شبه مستحيل إن التزمت بإدارة مخاطرتنا وتبعت توصياتنا. أغلب المتداولين الذين يفلسون يتبعون أكثر من مجموعة أو لا يلتزمون بإدارة المخاطرة.</div></div></div>
+            <div class="fi rv"><div class="fq"><div class="fq-left"><div class="fq-num">14</div><h3>متى يمكنني الانضمام للمجموعة؟</h3></div><div class="tgl"><i class="fas fa-plus"></i></div></div><div class="fa"><div class="fa-inner">ننصح بالانضمام في بداية الشهر، لكن الانضمام مفتوح في أي وقت.</div></div></div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section class="cont" id="contact">
+    <div class="container">
+        <div class="sh rv">
+            <div class="badge badge-g"><i class="fas fa-headset"></i> Contact</div>
+            <h2>Contactez <span>Notre Équipe</span></h2>
+        </div>
+        <div class="ccg">
+            <div class="ccd rv"><div class="cci" style="background:#0088cc22;color:#0088cc"><i class="fab fa-telegram"></i></div><h4>Telegram</h4><p>Support & signaux</p><a href="https://t.me/ChebbiTrading" target="_blank" class="btn btn-gh"><i class="fab fa-telegram"></i> @ChebbiTrading</a></div>
+            <div class="ccd rv"><div class="cci" style="background:#ff000022;color:var(--yt)"><i class="fab fa-youtube"></i></div><h4>YouTube</h4><p>4 ans de trading live</p><a href="https://www.youtube.com/@ChebbiTrading/streams" target="_blank" class="btn btn-gh"><i class="fab fa-youtube"></i> YouTube</a></div>
+            <div class="ccd rv"><div class="cci" style="background:var(--grn-g);color:var(--grn)"><i class="fas fa-envelope"></i></div><h4>Email</h4><p>Questions & partenariats</p><a href="mailto:contact@chebbitrade.com" class="btn btn-gh"><i class="fas fa-envelope"></i> Email</a></div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot">
+    <div class="container">
+        <div class="footg">
+            <div class="foot-b">
+                <div class="fbl">
+                    <div class="fli"><img src="https://i.imgur.com/USEEiyC.png" alt="Logo"></div>
+                    <div class="fln">Chebbi <em>Trading</em></div>
+                </div>
+                <p>Signaux Forex gratuits, 4 ans de résultats live sur YouTube. Inscrivez-vous sur XM et rejoignez la communauté.</p>
+                <div class="fso">
+                    <a href="https://t.me/ChebbiTrading" target="_blank"><i class="fab fa-telegram"></i></a>
+                    <a href="https://www.youtube.com/@ChebbiTrading/streams" target="_blank"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div><h4>Navigation</h4><ul class="flinks"><li><a href="#accueil">Accueil</a></li><li><a href="#comment">Comment Rejoindre</a></li><li><a href="#avantages">Avantages</a></li><li><a href="#resultats">Résultats</a></li><li><a href="#blog">Blog</a></li><li><a href="#faq">FAQ</a></li></ul></div>
+            <div><h4>Ressources</h4><ul class="flinks"><li><a href="https://www.youtube.com/@ChebbiTrading/streams" target="_blank">YouTube</a></li><li><a href="https://t.me/ChebbiTrading" target="_blank">Telegram</a></li><li><a href="https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=ar&p=1" target="_blank">Ouvrir Compte XM</a></li></ul></div>
+            <div><h4>Contact</h4><ul class="flinks"><li><a href="https://t.me/ChebbiTrading"><i class="fab fa-telegram" style="width:16px"></i> @ChebbiTrading</a></li><li><a href="mailto:contact@chebbitrade.com"><i class="fas fa-envelope" style="width:16px"></i> Email</a></li></ul></div>
+        </div>
+        <div class="riskb"><p><strong>⚠️ Avertissement :</strong> Le trading Forex comporte un risque élevé de perte. Les performances passées ne garantissent pas les résultats futurs. Ce site contient des liens d'affiliation vers XM. Chebbi Trading est un IB de XM. Tradez de manière responsable.</p></div>
+        <div class="foot-bt"><p>&copy; 2025 ChebbiTrade. Partenaire officiel XM.</p><p>Politique de Confidentialité • Mentions Légales</p></div>
+    </div>
+</footer>
+
+<button class="sctop" id="scTop"><i class="fas fa-chevron-up"></i></button>
+
+<a href="https://t.me/ChebbiTrading" class="tgfl" target="_blank">
+    <div class="tgi"><i class="fab fa-telegram"></i></div>
+    <div class="tgt">Rejoindre le Groupe<span>Signaux gratuits 🎯</span></div>
+</a>
+
+<script>
+// PRELOADER
+window.addEventListener('load',()=>{setTimeout(()=>document.getElementById('pre').classList.add('hid'),1200)});
+
+
+// ── TICKER ──────────────────────────────────────────────
+const TKP=[
+  {s:'XAU/USD', seed:3020, ch0:0.45, d:2, fixed:true},
+  {s:'EUR/USD', base:'EUR', inv:false, d:4},
+  {s:'GBP/USD', base:'GBP', inv:false, d:4},
+  {s:'USD/JPY', base:'JPY', inv:true,  d:2},
+  {s:'USD/CAD', base:'CAD', inv:true,  d:4},
+  {s:'AUD/USD', base:'AUD', inv:false, d:4},
+  {s:'BTC/USD', seed:86500, ch0:1.23,  d:0, fixed:true},
+];
+let _tkPrev={};
+
+function fmtP(v,d){return d===0?Math.round(v).toLocaleString('en-US'):v.toFixed(d);}
+
+async function tkLoad(){
+  let rates={};
+  try{
+    // exchangerate-api: free, no key, CORS-enabled
+    const r=await fetch('https://open.er-api.com/v6/latest/USD',{cache:'no-cache'});
+    if(r.ok){const j=await r.json(); rates=j.rates||{};}
+  }catch(e){}
+
+  const items=TKP.map(p=>{
+    if(p.fixed){
+      const prev=_tkPrev[p.s]||p.seed;
+      const drift=(Math.random()-.495)*prev*.0004;
+      const pr=prev+drift;
+      _tkPrev[p.s]=pr;
+      const ch=((pr-p.seed)/p.seed*100);
+      return{s:p.s, pr, ch, d:p.d};
+    }
+    const r=rates[p.base];
+    if(!r)return null;
+    const pr=p.inv?r:1/r;
+    const prev=_tkPrev[p.s]||pr;
+    const drift=(Math.random()-.495)*pr*.0002;
+    const prNew=prev+drift;
+    _tkPrev[p.s]=prNew;
+    const ch=((prNew-pr)/pr*100);
+    return{s:p.s, pr:prNew, ch, d:p.d};
+  }).filter(Boolean);
+
+  if(!items.length)return;
+  const track=document.getElementById('tkTrack');
+  if(!track)return;
+  const mk=t=>{
+    const up=t.ch>=0;
+    return `<span class="tk-item"><span class="tk-sym">${t.s}</span><span class="tk-pr">${fmtP(t.pr,t.d)}</span><span class="tk-ch ${up?'up':'dn'}">${up?'+':''}${t.ch.toFixed(2)}%</span></span>`;
+  };
+  const row=items.map(mk).join('');
+  track.innerHTML=row+row; // duplicate for seamless loop
+  track.style.animationDuration=Math.max(40,items.length*10)+'s';
+}
+tkLoad();
+setInterval(tkLoad,60000);
+// ────────────────────────────────────────────────────────
+// CURSOR
+const cD=document.getElementById('cD'),cR=document.getElementById('cR');
+let mX=0,mY=0,rX=0,rY=0;
+document.addEventListener('mousemove',e=>{mX=e.clientX;mY=e.clientY;cD.style.left=mX+'px';cD.style.top=mY+'px'});
+function aR(){rX+=(mX-rX)*.15;rY+=(mY-rY)*.15;cR.style.left=rX+'px';cR.style.top=rY+'px';requestAnimationFrame(aR)}aR();
+document.querySelectorAll('a,button,.btn,.fq,.xm-st,.ac,.sc,.sr,.ccd,.tcd').forEach(e=>{
+    e.addEventListener('mouseenter',()=>{cD.classList.add('hov');cR.classList.add('hov')});
+    e.addEventListener('mouseleave',()=>{cD.classList.remove('hov');cR.classList.remove('hov')});
+});
+
+// PARTICLES
+const cv=document.getElementById('pCanvas'),cx=cv.getContext('2d');let pts=[];
+function rC(){cv.width=innerWidth;cv.height=innerHeight}rC();addEventListener('resize',rC);
+class P{constructor(){this.r()}r(){this.x=Math.random()*cv.width;this.y=Math.random()*cv.height;this.s=Math.random()*2+.5;this.sx=(Math.random()-.5)*.3;this.sy=(Math.random()-.5)*.3;this.o=Math.random()*.5+.1}u(){this.x+=this.sx;this.y+=this.sy;if(this.x<0||this.x>cv.width)this.sx*=-1;if(this.y<0||this.y>cv.height)this.sy*=-1}d(){cx.beginPath();cx.arc(this.x,this.y,this.s,0,Math.PI*2);cx.fillStyle=`rgba(16,185,129,${this.o})`;cx.fill()}}
+for(let i=0;i<60;i++)pts.push(new P);
+function aP(){cx.clearRect(0,0,cv.width,cv.height);pts.forEach(p=>{p.u();p.d()});for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<120){cx.beginPath();cx.moveTo(pts[i].x,pts[i].y);cx.lineTo(pts[j].x,pts[j].y);cx.strokeStyle=`rgba(16,185,129,${.08*(1-d/120)})`;cx.lineWidth=.5;cx.stroke()}}requestAnimationFrame(aP)}aP();
+
+// NAVBAR
+const nv=document.getElementById('nav');
+const tk=document.querySelector('.ticker');
+addEventListener('scroll',()=>{const s=scrollY>50;nv.classList.toggle('scr',s);if(tk)tk.classList.toggle('hid',s)});
+
+// MOBILE
+const hm=document.getElementById('ham'),nm=document.getElementById('nM'),nb=document.getElementById('nB');
+hm.addEventListener('click',()=>{hm.classList.toggle('act');nm.classList.toggle('opn');nb.classList.toggle('opn')});
+document.querySelectorAll('.nm a,.nb a').forEach(a=>a.addEventListener('click',()=>{hm.classList.remove('act');nm.classList.remove('opn');nb.classList.remove('opn')}));
+
+// SCROLL TOP
+const st=document.getElementById('scTop');
+addEventListener('scroll',()=>st.classList.toggle('show',scrollY>500));
+st.addEventListener('click',()=>scrollTo({top:0,behavior:'smooth'}));
+
+// SMOOTH SCROLL
+document.querySelectorAll('a[href^="#"]').forEach(a=>a.addEventListener('click',function(e){e.preventDefault();const t=document.querySelector(this.getAttribute('href'));if(t)scrollTo({top:t.offsetTop-80,behavior:'smooth'})}));
+
+// REVEAL
+const rvs=document.querySelectorAll('.rv,.rvl,.rvr,.rvs');
+const rO=new IntersectionObserver(es=>{es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('v'),i*80);rO.unobserve(e.target)}})},{threshold:.08,rootMargin:'0px 0px -30px 0px'});
+rvs.forEach(e=>rO.observe(e));
+
+// COUNTERS
+const cO=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.querySelectorAll('.sn[data-t]').forEach(c=>{const t=+c.dataset.t,d=2000,s=t/(d/16);let cur=0;const tm=setInterval(()=>{cur+=s;if(cur>=t){c.textContent=t>=100?t.toLocaleString()+'+':t+'+';clearInterval(tm)}else c.textContent=Math.floor(cur).toLocaleString()},16)});cO.unobserve(e.target)}})},{threshold:.3});
+const sG=document.querySelector('.sg');if(sG)cO.observe(sG);
+
+// FAQ
+document.querySelectorAll('.fq').forEach(q=>q.addEventListener('click',()=>{const i=q.parentElement,a=i.querySelector('.fa'),w=i.classList.contains('act');document.querySelectorAll('.fi').forEach(x=>{x.classList.remove('act');x.querySelector('.fa').style.maxHeight='0'});if(!w){i.classList.add('act');a.style.maxHeight=a.scrollHeight+'px'}}));
+
+// ACTIVE NAV
+const ss=document.querySelectorAll('section[id]');
+addEventListener('scroll',()=>{let c='';ss.forEach(s=>{if(scrollY>=s.offsetTop-100)c=s.id});document.querySelectorAll('.nm a').forEach(a=>{a.classList.toggle('act',a.getAttribute('href')==='#'+c)})});
+
+// THEME TOGGLE
+function toggleTheme(){
+    const isLight = document.body.classList.toggle('light');
+    document.getElementById('themeIcon').className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+    localStorage.setItem('theme', isLight ? 'light' : 'dark');
+    // ticker stays same dark bg always
+}
+if(localStorage.getItem('theme')==='light'){
+    document.body.classList.add('light');
+    const icon = document.getElementById('themeIcon');
+    if(icon) icon.className='fas fa-sun';
+}
+
+// YOUTUBE THUMBNAIL CLICK TO PLAY
+function loadYT(){
+    const wrap = document.getElementById('ytThumb');
+    wrap.innerHTML = '<iframe src="https://www.youtube.com/embed/LgsD8wt_0Sg?autoplay=1" title="Chebbi Trading" allow="accelerometer;autoplay;clipboard-write;encrypted-media;gyroscope;picture-in-picture" allowfullscreen></iframe>';
+}
+
+
+
+// ID FORM
+function handleFile(input){
+    const fn = document.getElementById('fileName');
+    if(input.files && input.files[0]){
+        fn.textContent = '✅ ' + input.files[0].name;
+        fn.style.display = 'block';
+        document.getElementById('uploadZone').style.borderColor = 'var(--grn)';
+    }
+}
+
+async function verifyXmId(){
+    const id = document.getElementById('xmId').value.trim();
+    const email = document.getElementById('xmEmail').value.trim();
+    const result = document.getElementById('verifyResult');
+    const btn = document.getElementById('verifyBtn');
+
+    if(!id){ result.className='id-verify-result show err'; result.innerHTML='<i class="fas fa-times-circle"></i> Veuillez saisir votre numéro de compte XM.'; return; }
+    if(!/^\d{5,20}$/.test(id)){ result.className='id-verify-result show err'; result.innerHTML='<i class="fas fa-times-circle"></i> Numéro invalide — doit être un nombre de 5 à 20 chiffres.'; return; }
+    if(!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ result.className='id-verify-result show err'; result.innerHTML='<i class="fas fa-times-circle"></i> Veuillez saisir un email valide.'; return; }
+
+    btn.innerHTML='<i class="fas fa-spinner fa-spin"></i> Vérification en cours...';
+    btn.disabled = true;
+    result.className='id-verify-result';
+
+    // Simulate AI agent verification (replace this URL with your real webhook)
+    await new Promise(r=>setTimeout(r,1800));
+
+    // Mock: accept any 6+ digit numeric ID
+    const valid = id.length >= 6;
+    if(valid){
+        result.className='id-verify-result show ok';
+        result.innerHTML='<i class="fas fa-check-circle"></i> Compte XM vérifié avec succès ! Vous pouvez soumettre votre demande.';
+        document.getElementById('submitBtn').style.display='flex';
+        btn.innerHTML='<i class="fas fa-check"></i> Compte vérifié';
+        btn.style.background='rgba(16,185,129,.1)';
+        btn.style.borderColor='rgba(16,185,129,.3)';
+        btn.style.color='var(--grn)';
+    } else {
+        result.className='id-verify-result show err';
+        result.innerHTML='<i class="fas fa-times-circle"></i> Compte introuvable. Vérifiez votre numéro XM.';
+        btn.innerHTML='<i class="fas fa-shield-check"></i> Réessayer';
+        btn.disabled=false;
+    }
+}
+
+function submitID(){
+    const id = document.getElementById('xmId').value.trim();
+    const email = document.getElementById('xmEmail').value.trim();
+    const photo = document.getElementById('xmPhoto').files[0];
+    const btn = document.getElementById('submitBtn');
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Envoi en cours...';
+    btn.disabled = true;
+    setTimeout(()=>{
+        btn.style.display = 'none';
+        document.getElementById('verifyBtn').style.display='none';
+        document.getElementById('verifyResult').style.display='none';
+        document.getElementById('idSuccess').style.display = 'block';
+        // 🔌 Connect your AI agent / webhook here:
+        console.log('New verified member:', {id, email, hasPhoto: !!photo});
+    }, 1500);
+}
+
+
+
+
+addEventListener('scroll',()=>{const s=scrollY;document.querySelectorAll('.glow').forEach((g,i)=>{g.style.transform=`translateY(${s*.03*(i+1)}px)`})});
+
+// LANG SWITCHER
+document.querySelectorAll('.lang-sw').forEach(sw=>{
+    sw.querySelector('.lang-btn').addEventListener('click',function(e){e.stopPropagation();sw.classList.toggle('open')});
+});
+document.addEventListener('click',()=>{document.querySelectorAll('.lang-sw').forEach(sw=>sw.classList.remove('open'))});
+</script>
+</body>
+</html>
