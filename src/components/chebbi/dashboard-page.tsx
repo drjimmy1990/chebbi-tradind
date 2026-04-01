@@ -430,18 +430,16 @@ export function DashboardPage() {
     try {
       const res = await fetch('/api/settings');
       if (res.ok) {
-        const data = await res.json();
-        const map: Record<string, string> = {};
-        if (Array.isArray(data)) data.forEach((s: { key: string; value: string }) => (map[s.key] = s.value));
-        else if (typeof data === 'object') Object.assign(map, data);
+        const json = await res.json();
+        const map: Record<string, string> = json.data || {};
         setSettings(map);
         setSiteName(map.siteName || '');
-        setContactEmail(map.contactEmail || '');
-        setTelegramHandle(map.telegramHandle || '');
-        setYoutubeChannel(map.youtubeChannel || '');
-        setXmLinkFr(map.XM_LINK_FR || map.XM_LINK || '');
-        setXmLinkEn(map.XM_LINK_EN || map.XM_LINK || '');
-        setXmLinkAr(map.XM_LINK_AR || map.XM_LINK || '');
+        setContactEmail(map.EMAIL || map.contactEmail || '');
+        setTelegramHandle(map.TELEGRAM_URL || map.telegramHandle || '');
+        setYoutubeChannel(map.YOUTUBE_URL || map.youtubeChannel || '');
+        setXmLinkFr(map.XM_LINK_FR || '');
+        setXmLinkEn(map.XM_LINK_EN || '');
+        setXmLinkAr(map.XM_LINK_AR || '');
         setWebhookRegUrl(map.webhookRegister || '');
         setWebhookSecret(map.webhookSecret || '');
       }
@@ -831,11 +829,17 @@ export function DashboardPage() {
   /* ---- Settings save ---- */
   const handleSaveSettings = async () => {
     try {
+      // Build telegram URL if user entered just a handle
+      let tgValue = telegramHandle.trim();
+      if (tgValue && !tgValue.startsWith('http')) {
+        tgValue = tgValue.replace(/^@/, '');
+        tgValue = `https://t.me/${tgValue}`;
+      }
       const updates = [
         { key: 'siteName', value: siteName },
-        { key: 'contactEmail', value: contactEmail },
-        { key: 'telegramHandle', value: telegramHandle },
-        { key: 'youtubeChannel', value: youtubeChannel },
+        { key: 'EMAIL', value: contactEmail },
+        { key: 'TELEGRAM_URL', value: tgValue },
+        { key: 'YOUTUBE_URL', value: youtubeChannel },
         { key: 'webhookRegister', value: webhookRegUrl },
         { key: 'webhookSecret', value: webhookSecret },
       ];
@@ -1821,49 +1825,6 @@ export function DashboardPage() {
                   </CardContent>
                 </Card>
 
-                {/* XM Links per Language */}
-                <Card className="rounded-xl">
-                  <CardHeader>
-                    <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                      {L('روابط XM', 'XM Links', 'Liens XM')}
-                    </h3>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-2">
-                      <Label className="text-xs text-muted-foreground">🇫🇷 {L('رابط الصفحة الفرنسية', 'French page link', 'Lien page française')}</Label>
-                      <Input
-                        value={xmLinkFr}
-                        onChange={(e) => setXmLinkFr(e.target.value)}
-                        placeholder="https://..."
-                        className="font-mono text-xs"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs text-muted-foreground">🇬🇧 {L('رابط الصفحة الإنجليزية', 'English page link', 'Lien page anglaise')}</Label>
-                      <Input
-                        value={xmLinkEn}
-                        onChange={(e) => setXmLinkEn(e.target.value)}
-                        placeholder="https://..."
-                        className="font-mono text-xs"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label className="text-xs text-muted-foreground">🇸🇦 {L('رابط الصفحة العربية', 'Arabic page link', 'Lien page arabe')}</Label>
-                      <Input
-                        value={xmLinkAr}
-                        onChange={(e) => setXmLinkAr(e.target.value)}
-                        placeholder="https://..."
-                        className="font-mono text-xs"
-                      />
-                    </div>
-                    <Button
-                      onClick={handleApplyXmLinks}
-                      className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-                    >
-                      🔗 {L('حفظ الروابط', 'Save Links', 'Enregistrer les liens')}
-                    </Button>
-                  </CardContent>
-                </Card>
 
                 {/* Webhook settings */}
                 <Card className="rounded-xl lg:col-span-2">
