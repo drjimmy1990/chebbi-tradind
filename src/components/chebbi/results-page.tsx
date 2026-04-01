@@ -21,7 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
 const YOUTUBE_URL = 'https://www.youtube.com/@ChebbiTrading/streams';
-const XM_LINK = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
+const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 
 const YEARS_STATIC = ['2023', '2024', '2025', '2026'] as const;
 
@@ -947,7 +947,7 @@ function TradeLogSection({
 
 // ──────────────────────── SECTION 7: CTA ────────────────────────
 
-function CtaSection({ lang }: { lang: Language }) {
+function CtaSection({ lang, xmLink }: { lang: Language; xmLink: string }) {
   return (
     <section className="pb-12 px-5">
       <div className="max-w-5xl mx-auto">
@@ -987,7 +987,7 @@ function CtaSection({ lang }: { lang: Language }) {
                   <ExternalLink size={14} />
                 </a>
                 <a
-                  href={XM_LINK}
+                  href={xmLink}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-ct-xm hover:bg-ct-xm/90 text-white px-7 py-3.5 rounded-xl font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ct-xm/25"
@@ -1118,6 +1118,26 @@ export function ResultsPage() {
   const [tradesData, setTradesData] = useState<Trade[]>([]);
   const [tradesLoading, setTradesLoading] = useState(true);
 
+  // Dynamic XM links
+  const [xmLinkFr, setXmLinkFr] = useState(DEFAULT_XM);
+  const [xmLinkEn, setXmLinkEn] = useState(DEFAULT_XM);
+  const [xmLinkAr, setXmLinkAr] = useState(DEFAULT_XM);
+  const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
+
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(json => {
+      const s = json?.data;
+      if (s) {
+        if (s.XM_LINK_FR) setXmLinkFr(s.XM_LINK_FR);
+        if (s.XM_LINK_EN) setXmLinkEn(s.XM_LINK_EN);
+        if (s.XM_LINK_AR) setXmLinkAr(s.XM_LINK_AR);
+        if (!s.XM_LINK_FR && s.XM_LINK) setXmLinkFr(s.XM_LINK);
+        if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
+        if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
+      }
+    }).catch(() => {});
+  }, []);
+
   // Fetch results data
   useEffect(() => {
     let cancelled = false;
@@ -1173,7 +1193,7 @@ export function ResultsPage() {
       <TradeLogSection lang={language} trades={tradesData} loading={tradesLoading} />
 
       {/* CTA */}
-      <CtaSection lang={language} />
+      <CtaSection lang={language} xmLink={XM_LINK} />
 
       {/* Risk Disclaimer */}
       <RiskDisclaimer lang={language} />

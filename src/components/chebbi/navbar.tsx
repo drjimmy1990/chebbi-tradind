@@ -12,6 +12,10 @@ export function Navbar() {
   const { currentView, setCurrentView, language, setLanguage, mobileMenuOpen, setMobileMenuOpen } = useAppStore();
   const [scrolled, setScrolled] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
+  const [xmLinkFr, setXmLinkFr] = useState('https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1');
+  const [xmLinkEn, setXmLinkEn] = useState('https://clicks.pipaffiliates.com/c?c=CHEBBI&l=en&p=1');
+  const [xmLinkAr, setXmLinkAr] = useState('https://clicks.pipaffiliates.com/c?c=CHEBBI&l=ar&p=1');
+  const xmLink = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
@@ -28,6 +32,21 @@ export function Navbar() {
     const onScroll = () => setScrolled(window.scrollY > 40);
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(json => {
+      if (json?.data) {
+        const s = json.data;
+        if (s.XM_LINK_FR) setXmLinkFr(s.XM_LINK_FR);
+        if (s.XM_LINK_EN) setXmLinkEn(s.XM_LINK_EN);
+        if (s.XM_LINK_AR) setXmLinkAr(s.XM_LINK_AR);
+        // Fallback
+        if (!s.XM_LINK_FR && s.XM_LINK) setXmLinkFr(s.XM_LINK);
+        if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
+        if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
+      }
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
@@ -122,14 +141,7 @@ export function Navbar() {
                 </button>
               </li>
             ))}
-            <li>
-              <button
-                onClick={() => handleNav('dashboard')}
-                className="px-4 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 transition-all"
-              >
-                {t('nav.dashboard', language)}
-              </button>
-            </li>
+
           </ul>
 
           {/* Right side */}
@@ -182,7 +194,7 @@ export function Navbar() {
 
             {/* XM Button (desktop only) */}
             <a
-              href="https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1"
+              href={xmLink}
               target="_blank"
               className="hidden md:flex items-center gap-2 bg-ct-xm text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ct-xm/40"
             >
@@ -225,15 +237,10 @@ export function Navbar() {
                     {t(item.labelKey, language)}
                   </button>
                 ))}
-                <button
-                  onClick={() => handleNav('dashboard')}
-                  className={`px-4 py-3 rounded-lg text-left text-sm font-medium transition-all text-muted-foreground hover:bg-secondary/50`}
-                >
-                  {t('nav.dashboard', language)}
-                </button>
+
                 {/* Mobile XM Button */}
                 <a
-                  href="https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1"
+                  href={xmLink}
                   target="_blank"
                   className="flex items-center justify-center gap-2 bg-ct-xm text-white px-4 py-2.5 rounded-lg text-sm font-bold mt-2"
                 >

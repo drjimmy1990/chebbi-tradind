@@ -7,7 +7,9 @@ const prisma = new PrismaClient();
 const siteSettings = [
   { key: 'TELEGRAM_URL', value: 'https://t.me/ChebbiTrading' },
   { key: 'YOUTUBE_URL', value: 'https://www.youtube.com/@ChebbiTrading/streams' },
-  { key: 'XM_LINK', value: 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1' },
+  { key: 'XM_LINK_FR', value: 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1' },
+  { key: 'XM_LINK_EN', value: 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=en&p=1' },
+  { key: 'XM_LINK_AR', value: 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=ar&p=1' },
   { key: 'LOGO_URL', value: 'https://i.imgur.com/USEEiyC.png' },
   { key: 'EMAIL', value: 'contact@chebbitrade.com' },
   { key: 'STAT_YEARS', value: '4+' },

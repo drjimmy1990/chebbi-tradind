@@ -386,3 +386,21 @@ Registration flow:
 | Admin URL | `https://yourdomain.com` → click Dashboard |
 | Register API | `POST https://yourdomain.com/api/register` |
 | Webhook Callback | `POST https://yourdomain.com/api/webhook/member-status` |
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+cd /www/wwwroot/chebbi-trading
+git pull
+npm run build
+pm2 restart chebbi-trading

@@ -31,7 +31,7 @@ import { Input } from '@/components/ui/input';
 // ──────────────────────── Constants ────────────────────────
 
 const TELEGRAM_URL = 'https://t.me/ChebbiTrading';
-const XM_LINK = 'https://clicks.pipaffiliates.com/c?c=VOTRE_CODE&l=fr&p=1';
+const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 
 // ──────────────────────── Types ────────────────────────
 
@@ -223,6 +223,26 @@ export function FaqPage() {
 
   // DB-driven FAQs
   const [dbFaqs, setDbFaqs] = useState<DbFaq[]>([]);
+
+  // Dynamic XM links
+  const [xmLinkFr, setXmLinkFr] = useState(DEFAULT_XM);
+  const [xmLinkEn, setXmLinkEn] = useState(DEFAULT_XM);
+  const [xmLinkAr, setXmLinkAr] = useState(DEFAULT_XM);
+  const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
+
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(json => {
+      const s = json?.data;
+      if (s) {
+        if (s.XM_LINK_FR) setXmLinkFr(s.XM_LINK_FR);
+        if (s.XM_LINK_EN) setXmLinkEn(s.XM_LINK_EN);
+        if (s.XM_LINK_AR) setXmLinkAr(s.XM_LINK_AR);
+        if (!s.XM_LINK_FR && s.XM_LINK) setXmLinkFr(s.XM_LINK);
+        if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
+        if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
+      }
+    }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     fetch('/api/faq')

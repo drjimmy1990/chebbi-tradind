@@ -333,7 +333,9 @@ export function DashboardPage() {
   const [contactEmail, setContactEmail] = useState('');
   const [telegramHandle, setTelegramHandle] = useState('');
   const [youtubeChannel, setYoutubeChannel] = useState('');
-  const [xmCode, setXmCode] = useState('');
+  const [xmLinkFr, setXmLinkFr] = useState('');
+  const [xmLinkEn, setXmLinkEn] = useState('');
+  const [xmLinkAr, setXmLinkAr] = useState('');
   const [webhookRegUrl, setWebhookRegUrl] = useState('');
   const [webhookSecret, setWebhookSecret] = useState('');
 
@@ -437,7 +439,9 @@ export function DashboardPage() {
         setContactEmail(map.contactEmail || '');
         setTelegramHandle(map.telegramHandle || '');
         setYoutubeChannel(map.youtubeChannel || '');
-        setXmCode(map.xmCode || '');
+        setXmLinkFr(map.XM_LINK_FR || map.XM_LINK || '');
+        setXmLinkEn(map.XM_LINK_EN || map.XM_LINK || '');
+        setXmLinkAr(map.XM_LINK_AR || map.XM_LINK || '');
         setWebhookRegUrl(map.webhookRegister || '');
         setWebhookSecret(map.webhookSecret || '');
       }
@@ -854,28 +858,38 @@ export function DashboardPage() {
     }
   };
 
-  const handleApplyXmCode = async () => {
-    if (!xmCode.trim()) {
+  const handleApplyXmLinks = async () => {
+    if (!xmLinkFr.trim() && !xmLinkEn.trim() && !xmLinkAr.trim()) {
       showToast(
-        L('يرجى إدخال رمز XM', 'Please enter an XM code', "Veuillez entrer un code XM"),
+        L('يرجى إدخال رابط واحد على الأقل', 'Please enter at least one XM link', 'Veuillez entrer au moins un lien XM'),
         'error'
       );
       return;
     }
     try {
-      const res = await fetch('/api/settings', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: 'xmCode', value: xmCode }),
-      });
-      if (res.ok) {
+      const updates = [
+        { key: 'XM_LINK_FR', value: xmLinkFr.trim() },
+        { key: 'XM_LINK_EN', value: xmLinkEn.trim() },
+        { key: 'XM_LINK_AR', value: xmLinkAr.trim() },
+      ];
+      let allOk = true;
+      for (const u of updates) {
+        if (!u.value) continue;
+        const res = await fetch('/api/settings', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(u),
+        });
+        if (!res.ok) allOk = false;
+      }
+      if (allOk) {
         showToast(
-          L('تم تطبيق رمز XM على جميع الصفحات', 'XM code applied to all pages', 'Code XM appliqué sur toutes les pages')
+          L('تم تحديث روابط XM بنجاح', 'XM links updated successfully', 'Liens XM mis à jour avec succès')
         );
         fetchSettings();
       } else {
         showToast(
-          L('خطأ أثناء التطبيق', 'Error applying', "Erreur lors de l'application"),
+          L('خطأ أثناء التحديث', 'Error updating', 'Erreur lors de la mise à jour'),
           'error'
         );
       }
@@ -897,15 +911,6 @@ export function DashboardPage() {
         m.xmId.toLowerCase().includes(q)
     );
   }, [members, memberSearch]);
-
-  const xmLinks = useMemo(() => {
-    const code = xmCode || 'CHEBBI';
-    return {
-      fr: `https://clicks.pipaffiliates.com/c?c=XXXXX&l=fr_FR&p=1&o=${code}`,
-      en: `https://clicks.pipaffiliates.com/c?c=XXXXX&l=en_US&p=1&o=${code}`,
-      ar: `https://clicks.pipaffiliates.com/c?c=XXXXX&l=ar_SA&p=1&o=${code}`,
-    };
-  }, [xmCode]);
 
   /* ---- yearPerf: computed from fetched results ---- */
   const yearPerf = useMemo(() => {
@@ -1816,57 +1821,46 @@ export function DashboardPage() {
                   </CardContent>
                 </Card>
 
-                {/* XM Affiliate link */}
+                {/* XM Links per Language */}
                 <Card className="rounded-xl">
                   <CardHeader>
                     <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                      {L('رابط XM التابع', 'XM Affiliate link', 'Lien XM Affilié')}
+                      {L('روابط XM', 'XM Links', 'Liens XM')}
                     </h3>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-2">
-                      <Label className="text-xs text-muted-foreground">{L('رمز XM (p=)', 'XM code (p=)', 'Code XM (p=)')}</Label>
+                      <Label className="text-xs text-muted-foreground">🇫🇷 {L('رابط الصفحة الفرنسية', 'French page link', 'Lien page française')}</Label>
                       <Input
-                        value={xmCode}
-                        onChange={(e) => setXmCode(e.target.value)}
-                        placeholder="CHEBBI"
-                        className="font-mono"
+                        value={xmLinkFr}
+                        onChange={(e) => setXmLinkFr(e.target.value)}
+                        placeholder="https://..."
+                        className="font-mono text-xs"
                       />
                     </div>
-
-                    <Separator />
-
-                    <div className="space-y-3">
-                      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                        {L('معاينة الروابط', 'Link preview', 'Aperçu des liens')}
-                      </p>
-                      <div className="space-y-2">
-                        <div>
-                          <span className="text-[10px] uppercase text-muted-foreground">FR</span>
-                          <div className="mt-0.5 rounded-md bg-muted/40 px-3 py-2 text-xs font-mono text-muted-foreground truncate">
-                            {xmLinks.fr}
-                          </div>
-                        </div>
-                        <div>
-                          <span className="text-[10px] uppercase text-muted-foreground">EN</span>
-                          <div className="mt-0.5 rounded-md bg-muted/40 px-3 py-2 text-xs font-mono text-muted-foreground truncate">
-                            {xmLinks.en}
-                          </div>
-                        </div>
-                        <div>
-                          <span className="text-[10px] uppercase text-muted-foreground">AR</span>
-                          <div className="mt-0.5 rounded-md bg-muted/40 px-3 py-2 text-xs font-mono text-muted-foreground truncate">
-                            {xmLinks.ar}
-                          </div>
-                        </div>
-                      </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs text-muted-foreground">🇬🇧 {L('رابط الصفحة الإنجليزية', 'English page link', 'Lien page anglaise')}</Label>
+                      <Input
+                        value={xmLinkEn}
+                        onChange={(e) => setXmLinkEn(e.target.value)}
+                        placeholder="https://..."
+                        className="font-mono text-xs"
+                      />
                     </div>
-
+                    <div className="space-y-2">
+                      <Label className="text-xs text-muted-foreground">🇸🇦 {L('رابط الصفحة العربية', 'Arabic page link', 'Lien page arabe')}</Label>
+                      <Input
+                        value={xmLinkAr}
+                        onChange={(e) => setXmLinkAr(e.target.value)}
+                        placeholder="https://..."
+                        className="font-mono text-xs"
+                      />
+                    </div>
                     <Button
-                      onClick={handleApplyXmCode}
+                      onClick={handleApplyXmLinks}
                       className="w-full bg-blue-600 hover:bg-blue-700 text-white"
                     >
-                      🔗 {L('تحديث الرابط', 'Update link', 'Mettre à jour le lien')}
+                      🔗 {L('حفظ الروابط', 'Save Links', 'Enregistrer les liens')}
                     </Button>
                   </CardContent>
                 </Card>
@@ -1933,59 +1927,63 @@ export function DashboardPage() {
             <div className="space-y-6">
               <div>
                 <h1 className="text-2xl font-bold text-foreground">
-                  {t('dash.affiliate', language)}
+                  {L('رابط XM المباشر', 'XM Direct Link', 'Lien XM Direct')}
                 </h1>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {L('إدارة رابط XM التابع', 'Manage your XM affiliate link', 'Gérez votre lien d&apos;affiliation XM')}
+                  {L('أدخل رابط الإحالة الكامل الذي سيظهر في جميع الصفحات', 'Enter the full referral URL that will appear on all pages', 'Entrez l\'URL de parrainage complète qui s\'affichera sur toutes les pages')}
                 </p>
               </div>
 
               <Card className="rounded-xl max-w-xl">
                 <CardHeader>
                   <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-                    {L('إعداد رابط XM', 'XM link configuration', 'Configuration du lien XM')}
+                    {L('روابط الإحالة', 'Referral Links', 'Liens de parrainage')}
                   </h3>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-5">
                   <div className="space-y-2">
-                    <Label className="text-xs text-muted-foreground">
-                      {L('رمز XM التابع', 'XM affiliate code', 'Code d&apos;affiliation XM')}
-                    </Label>
+                    <Label className="text-xs text-muted-foreground font-semibold">🇫🇷 {L('الفرنسية', 'French', 'Français')}</Label>
                     <Input
-                      value={xmCode}
-                      onChange={(e) => setXmCode(e.target.value)}
-                      placeholder="CHEBBI"
-                      className="font-mono text-lg"
+                      value={xmLinkFr}
+                      onChange={(e) => setXmLinkFr(e.target.value)}
+                      placeholder="https://..."
+                      className="font-mono text-xs"
                     />
-                    <p className="text-xs text-muted-foreground">
-                      {L('سيتم تطبيق هذا الرمز على جميع صفحات الموقع (FR، EN، AR).', 'This code will be applied to all site pages (FR, EN, AR).', 'Ce code sera appliqué sur toutes les pages du site (FR, EN, AR).')}
-                    </p>
+                    {xmLinkFr && <div className="rounded-md bg-muted/30 px-3 py-1.5 text-xs font-mono text-foreground/60 truncate">{xmLinkFr}</div>}
                   </div>
 
                   <Separator />
 
-                  <div className="space-y-3">
-                    <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                      {L('معاينة الروابط المولدة', 'Generated links preview', 'Aperçu des liens générés')}
-                    </p>
-                    <div className="space-y-2">
-                      {Object.entries(xmLinks).map(([lang, url]) => (
-                        <div key={lang} className="rounded-lg bg-muted/30 px-3 py-2">
-                          <div className="mb-0.5 text-[10px] font-bold uppercase text-muted-foreground">
-                            {lang === 'fr' ? L('الفرنسية', 'French', 'Français') : lang === 'en' ? L('الإنجليزية', 'English', 'English') : L('العربية', 'Arabic', 'العربية')}
-                          </div>
-                          <div className="truncate text-xs font-mono text-foreground/70">{url}</div>
-                        </div>
-                      ))}
-                    </div>
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground font-semibold">🇬🇧 {L('الإنجليزية', 'English', 'English')}</Label>
+                    <Input
+                      value={xmLinkEn}
+                      onChange={(e) => setXmLinkEn(e.target.value)}
+                      placeholder="https://..."
+                      className="font-mono text-xs"
+                    />
+                    {xmLinkEn && <div className="rounded-md bg-muted/30 px-3 py-1.5 text-xs font-mono text-foreground/60 truncate">{xmLinkEn}</div>}
+                  </div>
+
+                  <Separator />
+
+                  <div className="space-y-2">
+                    <Label className="text-xs text-muted-foreground font-semibold">🇸🇦 {L('العربية', 'Arabic', 'Arabe')}</Label>
+                    <Input
+                      value={xmLinkAr}
+                      onChange={(e) => setXmLinkAr(e.target.value)}
+                      placeholder="https://..."
+                      className="font-mono text-xs"
+                    />
+                    {xmLinkAr && <div className="rounded-md bg-muted/30 px-3 py-1.5 text-xs font-mono text-foreground/60 truncate">{xmLinkAr}</div>}
                   </div>
 
                   <Button
-                    onClick={handleApplyXmCode}
+                    onClick={handleApplyXmLinks}
                     className="w-full bg-purple-600 hover:bg-purple-700 text-white"
                     size="lg"
                   >
-                    🔗 {L('تطبيق على جميع الصفحات', 'Apply to all pages', 'Appliquer sur toutes les pages')}
+                    🔗 {L('حفظ الروابط', 'Save Links', 'Enregistrer les liens')}
                   </Button>
                 </CardContent>
               </Card>

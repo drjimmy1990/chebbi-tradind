@@ -35,7 +35,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 const LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
 const YOUTUBE_URL = 'https://www.youtube.com/@ChebbiTrading/streams';
 const TELEGRAM_URL = 'https://t.me/ChebbiTrading';
-const XM_LINK = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
+const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 
 // ──────────────────────── Types ────────────────────────
 
@@ -201,6 +201,26 @@ export function BlogPage() {
   const [sortBy, setSortBy] = useState<SortBy>('recent');
   const [sortDropdownOpen, setSortDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Dynamic XM links
+  const [xmLinkFr, setXmLinkFr] = useState(DEFAULT_XM);
+  const [xmLinkEn, setXmLinkEn] = useState(DEFAULT_XM);
+  const [xmLinkAr, setXmLinkAr] = useState(DEFAULT_XM);
+  const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
+
+  useEffect(() => {
+    fetch('/api/settings').then(r => r.json()).then(json => {
+      const s = json?.data;
+      if (s) {
+        if (s.XM_LINK_FR) setXmLinkFr(s.XM_LINK_FR);
+        if (s.XM_LINK_EN) setXmLinkEn(s.XM_LINK_EN);
+        if (s.XM_LINK_AR) setXmLinkAr(s.XM_LINK_AR);
+        if (!s.XM_LINK_FR && s.XM_LINK) setXmLinkFr(s.XM_LINK);
+        if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
+        if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
+      }
+    }).catch(() => {});
+  }, []);
 
   // Fetch articles on mount
   useEffect(() => {

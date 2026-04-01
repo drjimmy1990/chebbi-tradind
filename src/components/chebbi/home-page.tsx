@@ -136,7 +136,10 @@ export function HomePage() {
   const [LOGO_URL, setLogoUrl] = useState(DEFAULT_LOGO);
   const [YOUTUBE_URL, setYoutubeUrl] = useState(DEFAULT_YOUTUBE);
   const [TELEGRAM_URL, setTelegramUrl] = useState(DEFAULT_TELEGRAM);
-  const [XM_LINK, setXmLink] = useState(DEFAULT_XM);
+  const [xmLinkFr, setXmLinkFr] = useState(DEFAULT_XM);
+  const [xmLinkEn, setXmLinkEn] = useState(DEFAULT_XM);
+  const [xmLinkAr, setXmLinkAr] = useState(DEFAULT_XM);
+  const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
   const [statYears, setStatYears] = useState('4+');
   const [statPerf, setStatPerf] = useState('+128%');
   const [statMembers, setStatMembers] = useState('1,920+');
@@ -155,7 +158,13 @@ export function HomePage() {
           if (s.LOGO_URL) setLogoUrl(s.LOGO_URL);
           if (s.YOUTUBE_URL) setYoutubeUrl(s.YOUTUBE_URL);
           if (s.TELEGRAM_URL) setTelegramUrl(s.TELEGRAM_URL);
-          if (s.XM_LINK) setXmLink(s.XM_LINK);
+          if (s.XM_LINK_FR) setXmLinkFr(s.XM_LINK_FR);
+          if (s.XM_LINK_EN) setXmLinkEn(s.XM_LINK_EN);
+          if (s.XM_LINK_AR) setXmLinkAr(s.XM_LINK_AR);
+          // Fallback for old single-key format
+          if (!s.XM_LINK_FR && s.XM_LINK) setXmLinkFr(s.XM_LINK);
+          if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
+          if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
           if (s.STAT_YEARS) setStatYears(s.STAT_YEARS);
           if (s.STAT_PERFORMANCE) setStatPerf(s.STAT_PERFORMANCE);
           if (s.STAT_MEMBERS) setStatMembers(s.STAT_MEMBERS);
