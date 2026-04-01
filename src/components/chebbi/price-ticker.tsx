@@ -39,7 +39,6 @@ export function PriceTicker() {
         { proName: 'FOREXCOM:AUDUSD', title: 'AUD/USD' },
         { proName: 'BITSTAMP:BTCUSD', title: 'BTC/USD' },
         { proName: 'FOREXCOM:USDCHF', title: 'USD/CHF' },
-        { proName: 'NASDAQ:NDX', title: 'NASDAQ 100' },
       ],
       showSymbolLogo: true,
       isTransparent: true,

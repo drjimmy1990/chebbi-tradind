@@ -4,6 +4,9 @@ import { useAppStore } from '@/lib/store';
 import { Navbar } from './navbar';
 import { PriceTicker } from './price-ticker';
 import { ParticleCanvas } from './particle-canvas';
+import { CustomCursor } from './custom-cursor';
+import { Preloader } from './preloader';
+import { FloatingButtons } from './floating-buttons';
 import { HomePage } from './home-page';
 import { ResultsPage } from './results-page';
 import { BlogPage } from './blog-page';
@@ -17,6 +20,8 @@ export function App() {
 
   return (
     <div className="min-h-screen flex flex-col relative">
+      <Preloader />
+      <CustomCursor />
       {!isDashboard && <PriceTicker />}
       {!isDashboard && <ParticleCanvas />}
       {!isDashboard && <Navbar />}
@@ -31,6 +36,7 @@ export function App() {
           </AdminGate>
         )}
       </main>
+      {!isDashboard && <FloatingButtons />}
     </div>
   );
 }

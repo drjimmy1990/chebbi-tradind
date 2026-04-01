@@ -867,6 +867,93 @@ export function BlogPage() {
       </AnimatePresence>
 
       {/* ═══════════════════════════════════════════════════════════
+          SECTION 4.5: FREE EBOOK CTA
+          ═══════════════════════════════════════════════════════════ */}
+      <section className="py-16 lg:py-20">
+        <div className="max-w-2xl mx-auto px-5">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Card className="relative bg-card border border-primary/20 rounded-2xl overflow-hidden shadow-2xl shadow-primary/5">
+              {/* Gradient top border */}
+              <div className="h-1 bg-gradient-to-r from-primary via-ct-blue to-primary" />
+
+              <div className="p-8 sm:p-10 text-center">
+                {/* Gift icon */}
+                <div className="text-5xl mb-5">🎁</div>
+
+                {/* Badge */}
+                <Badge className="bg-primary/10 text-primary border-primary/20 text-sm mb-5 px-4 py-1.5 font-bold tracking-wider">
+                  {t('ebook.badge', language)}
+                </Badge>
+
+                {/* Title */}
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground mb-4 leading-tight">
+                  {t('ebook.title', language)}
+                </h2>
+
+                {/* Subtitle with HTML */}
+                <p
+                  className="text-sm sm:text-base text-muted-foreground leading-relaxed max-w-lg mx-auto mb-6"
+                  dangerouslySetInnerHTML={{ __html: t('ebook.subtitle', language) }}
+                />
+
+                {/* Topic tags */}
+                <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
+                  {[
+                    { color: 'bg-ct-blue', text: t('ebook.tag1', language) },
+                    { color: 'bg-pink-500', text: t('ebook.tag2', language) },
+                    { color: 'bg-ct-purple', text: t('ebook.tag3', language) },
+                  ].map((tag) => (
+                    <div key={tag.text} className="flex items-center gap-2 text-sm text-muted-foreground">
+                      <span className={`w-3 h-3 rounded-sm ${tag.color}`} />
+                      {tag.text}
+                    </div>
+                  ))}
+                </div>
+
+                {/* Email form */}
+                <form
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    const form = e.target as HTMLFormElement;
+                    const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement;
+                    if (emailInput?.value) {
+                      // Could POST to an API here
+                      emailInput.value = '';
+                      alert(t('ebook.success', language));
+                    }
+                  }}
+                  className="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto mb-5"
+                >
+                  <Input
+                    type="email"
+                    placeholder={t('ebook.placeholder', language)}
+                    required
+                    className="flex-1 h-12 bg-secondary border-border rounded-xl text-sm px-4 focus-visible:ring-primary"
+                  />
+                  <Button
+                    type="submit"
+                    className="w-full sm:w-auto h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl px-6 text-sm whitespace-nowrap"
+                  >
+                    {t('ebook.cta', language)}
+                  </Button>
+                </form>
+
+                {/* Trust note */}
+                <p className="text-xs text-muted-foreground">
+                  {t('ebook.note', language)}
+                </p>
+              </div>
+            </Card>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
           SECTION 5: FOOTER
           ═══════════════════════════════════════════════════════════ */}
       <footer className="mt-auto border-t border-border bg-card/50">

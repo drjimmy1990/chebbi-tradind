@@ -515,6 +515,70 @@ export function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
+          SECTION 2.5: AMINE CHEBBI PRESENTATION
+          ═══════════════════════════════════════════════════════════ */}
+      <section className="py-16 lg:py-20">
+        <div className="max-w-7xl mx-auto px-5">
+          <SectionReveal>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+              {/* Photo */}
+              <div className="flex justify-center">
+                <div className="relative">
+                  <div
+                    className="w-[220px] h-[220px] sm:w-[280px] sm:h-[280px] lg:w-[340px] lg:h-[340px] rounded-[2rem] overflow-hidden border-[3px] border-primary/40 shadow-2xl shadow-primary/10"
+                    style={{ boxShadow: '0 0 60px rgba(16,185,129,0.15), 0 0 120px rgba(16,185,129,0.05)' }}
+                  >
+                    <img
+                      src="https://i.imgur.com/MrRODMe.png"
+                      alt="Amine Chebbi"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {/* Glow ring */}
+                  <div className="absolute -inset-3 rounded-[2.4rem] border border-primary/10 pointer-events-none" />
+                  <div className="absolute -inset-6 rounded-[2.8rem] border border-primary/5 pointer-events-none" />
+                </div>
+              </div>
+
+              {/* Text */}
+              <div>
+                <Badge className="bg-primary/10 text-primary border-primary/20 mb-4 text-sm">
+                  {t('home.trader.title', language)}
+                </Badge>
+                <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-2">
+                  {t('pres.name', language)}
+                </h2>
+                <p className="text-primary font-semibold mb-5">
+                  {t('pres.role', language)}
+                </p>
+                <p className="text-muted-foreground leading-relaxed mb-8 max-w-lg">
+                  {t('pres.bio', language)}
+                </p>
+
+                {/* Highlight chips */}
+                <div className="grid grid-cols-2 gap-3">
+                  {[
+                    { icon: '🏆', text: t('pres.since', language) },
+                    { icon: '📡', text: t('pres.live', language) },
+                    { icon: '👥', text: t('pres.community', language) },
+                    { icon: '✅', text: t('pres.verified', language) },
+                  ].map((chip) => (
+                    <div
+                      key={chip.text}
+                      className="flex items-center gap-2.5 bg-card border border-border rounded-xl px-4 py-3 text-sm"
+                    >
+                      <span className="text-lg">{chip.icon}</span>
+                      <span className="text-foreground font-medium">{chip.text}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </SectionReveal>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
           SECTION 3: JOIN STEPS
           ═══════════════════════════════════════════════════════════ */}
       <section className="py-16 lg:py-20 bg-secondary/50">
@@ -560,6 +624,161 @@ export function HomePage() {
                 </div>
               ))}
             </div>
+          </SectionReveal>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 3.5: REGISTRATION FORM
+          ═══════════════════════════════════════════════════════════ */}
+      <section className="py-16 lg:py-20 bg-secondary/50">
+        <div className="max-w-xl mx-auto px-5">
+          <SectionReveal>
+            <Card className="bg-card border border-border rounded-2xl overflow-hidden shadow-xl shadow-primary/5">
+              {/* Gradient top border */}
+              <div className="h-1 bg-gradient-to-r from-primary via-ct-blue to-primary" />
+
+              <div className="p-6 lg:p-8">
+                {/* Header */}
+                <div className="text-center mb-6">
+                  <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
+                    <UserPlus size={28} className="text-primary" />
+                  </div>
+                  <h2 className="text-xl font-extrabold text-foreground mb-1">
+                    {t('home.reg.title', language)}
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    {t('home.reg.subtitle', language)}
+                  </p>
+                </div>
+
+                {/* Form */}
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="reg-name" className="text-sm font-medium text-foreground">
+                      {t('home.reg.name', language)}
+                    </Label>
+                    <Input
+                      id="reg-name"
+                      type="text"
+                      value={regName}
+                      onChange={(e) => setRegName(e.target.value)}
+                      placeholder={t('home.reg.name', language)}
+                      className="bg-secondary/50 border-border focus:border-primary"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="reg-email" className="text-sm font-medium text-foreground">
+                      {t('home.reg.email', language)}
+                    </Label>
+                    <Input
+                      id="reg-email"
+                      type="email"
+                      value={regEmail}
+                      onChange={(e) => setRegEmail(e.target.value)}
+                      placeholder={t('home.reg.email', language)}
+                      className="bg-secondary/50 border-border focus:border-primary"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="reg-xmid" className="text-sm font-medium text-foreground">
+                      {t('home.reg.xmId', language)}
+                    </Label>
+                    <Input
+                      id="reg-xmid"
+                      type="text"
+                      value={regXmId}
+                      onChange={(e) => setRegXmId(e.target.value)}
+                      placeholder={t('home.reg.xmId.placeholder', language)}
+                      className="bg-secondary/50 border-border focus:border-primary"
+                    />
+                  </div>
+
+                  {/* Proof of deposit upload */}
+                  <div className="space-y-2">
+                    <Label className="text-sm font-medium text-foreground">
+                      {t('home.reg.proof', language)}
+                    </Label>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      onChange={(e) => {
+                        const f = e.target.files?.[0];
+                        if (f) handleFileSelect(f);
+                      }}
+                    />
+                    <div
+                      onClick={() => fileInputRef.current?.click()}
+                      onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        const f = e.dataTransfer.files?.[0];
+                        if (f) handleFileSelect(f);
+                      }}
+                      className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-5 cursor-pointer transition-colors ${
+                        proofFile
+                          ? 'border-primary/40 bg-primary/5'
+                          : 'border-border hover:border-primary/30 hover:bg-secondary/30'
+                      }`}
+                    >
+                      {proofFile ? (
+                        <>
+                          <CheckCircle2 size={24} className="text-primary" />
+                          <span className="text-xs font-medium text-primary">{t('home.reg.proof.uploaded', language)}</span>
+                          <span className="text-[10px] text-muted-foreground truncate max-w-full">{proofFile.name}</span>
+                        </>
+                      ) : (
+                        <>
+                          <Upload size={24} className="text-muted-foreground" />
+                          <span className="text-xs text-muted-foreground text-center">
+                            {t('home.reg.proof.hint', language)}
+                          </span>
+                        </>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Status messages */}
+                  {regSuccess && (
+                    <div className="flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20">
+                      <CheckCircle2 size={16} className="text-primary shrink-0" />
+                      <p className="text-sm text-primary font-medium">{regSuccess}</p>
+                    </div>
+                  )}
+                  {regError && (
+                    <div className="flex items-center gap-2 p-3 rounded-xl bg-ct-red/10 border border-ct-red/20">
+                      <CircleDot size={16} className="text-ct-red shrink-0" />
+                      <p className="text-sm text-ct-red font-medium">{regError}</p>
+                    </div>
+                  )}
+
+                  <Button
+                    onClick={handleRegister}
+                    disabled={regSubmitting}
+                    className="w-full py-3.5 bg-primary text-primary-foreground hover:bg-primary/90 font-bold"
+                  >
+                    {regSubmitting ? (
+                      <>
+                        <Loader2 size={16} className="mr-2 animate-spin" />
+                        {t('home.reg.submitting', language)}
+                      </>
+                    ) : (
+                      t('home.reg.submit', language)
+                    )}
+                  </Button>
+                </div>
+
+                {/* Note */}
+                <p className="text-center text-xs text-muted-foreground mt-4">
+                  ℹ️ {t('home.reg.note', language)}
+                </p>
+              </div>
+            </Card>
           </SectionReveal>
         </div>
       </section>
@@ -890,160 +1109,6 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════
-          SECTION 7.5: REGISTRATION FORM
-          ═══════════════════════════════════════════════════════════ */}
-      <section className="py-16 lg:py-20 bg-secondary/50">
-        <div className="max-w-xl mx-auto px-5">
-          <SectionReveal>
-            <Card className="bg-card border border-border rounded-2xl overflow-hidden shadow-xl shadow-primary/5">
-              {/* Gradient top border */}
-              <div className="h-1 bg-gradient-to-r from-primary via-ct-blue to-primary" />
-
-              <div className="p-6 lg:p-8">
-                {/* Header */}
-                <div className="text-center mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
-                    <UserPlus size={28} className="text-primary" />
-                  </div>
-                  <h2 className="text-xl font-extrabold text-foreground mb-1">
-                    {t('home.reg.title', language)}
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    {t('home.reg.subtitle', language)}
-                  </p>
-                </div>
-
-                {/* Form */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="reg-name" className="text-sm font-medium text-foreground">
-                      {t('home.reg.name', language)}
-                    </Label>
-                    <Input
-                      id="reg-name"
-                      type="text"
-                      value={regName}
-                      onChange={(e) => setRegName(e.target.value)}
-                      placeholder={t('home.reg.name', language)}
-                      className="bg-secondary/50 border-border focus:border-primary"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="reg-email" className="text-sm font-medium text-foreground">
-                      {t('home.reg.email', language)}
-                    </Label>
-                    <Input
-                      id="reg-email"
-                      type="email"
-                      value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
-                      placeholder={t('home.reg.email', language)}
-                      className="bg-secondary/50 border-border focus:border-primary"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="reg-xmid" className="text-sm font-medium text-foreground">
-                      {t('home.reg.xmId', language)}
-                    </Label>
-                    <Input
-                      id="reg-xmid"
-                      type="text"
-                      value={regXmId}
-                      onChange={(e) => setRegXmId(e.target.value)}
-                      placeholder={t('home.reg.xmId.placeholder', language)}
-                      className="bg-secondary/50 border-border focus:border-primary"
-                    />
-                  </div>
-
-                  {/* Proof of deposit upload */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-foreground">
-                      {t('home.reg.proof', language)}
-                    </Label>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      className="hidden"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) handleFileSelect(f);
-                      }}
-                    />
-                    <div
-                      onClick={() => fileInputRef.current?.click()}
-                      onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                      onDrop={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const f = e.dataTransfer.files?.[0];
-                        if (f) handleFileSelect(f);
-                      }}
-                      className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-5 cursor-pointer transition-colors ${
-                        proofFile
-                          ? 'border-primary/40 bg-primary/5'
-                          : 'border-border hover:border-primary/30 hover:bg-secondary/30'
-                      }`}
-                    >
-                      {proofFile ? (
-                        <>
-                          <CheckCircle2 size={24} className="text-primary" />
-                          <span className="text-xs font-medium text-primary">{t('home.reg.proof.uploaded', language)}</span>
-                          <span className="text-[10px] text-muted-foreground truncate max-w-full">{proofFile.name}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Upload size={24} className="text-muted-foreground" />
-                          <span className="text-xs text-muted-foreground text-center">
-                            {t('home.reg.proof.hint', language)}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Status messages */}
-                  {regSuccess && (
-                    <div className="flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20">
-                      <CheckCircle2 size={16} className="text-primary shrink-0" />
-                      <p className="text-sm text-primary font-medium">{regSuccess}</p>
-                    </div>
-                  )}
-                  {regError && (
-                    <div className="flex items-center gap-2 p-3 rounded-xl bg-ct-red/10 border border-ct-red/20">
-                      <CircleDot size={16} className="text-ct-red shrink-0" />
-                      <p className="text-sm text-ct-red font-medium">{regError}</p>
-                    </div>
-                  )}
-
-                  <Button
-                    onClick={handleRegister}
-                    disabled={regSubmitting}
-                    className="w-full py-3.5 bg-primary text-primary-foreground hover:bg-primary/90 font-bold"
-                  >
-                    {regSubmitting ? (
-                      <>
-                        <Loader2 size={16} className="mr-2 animate-spin" />
-                        {t('home.reg.submitting', language)}
-                      </>
-                    ) : (
-                      t('home.reg.submit', language)
-                    )}
-                  </Button>
-                </div>
-
-                {/* Note */}
-                <p className="text-center text-xs text-muted-foreground mt-4">
-                  ℹ️ {t('home.reg.note', language)}
-                </p>
-              </div>
-            </Card>
-          </SectionReveal>
-        </div>
-      </section>
 
       {/* ═══════════════════════════════════════════════════════════
           SECTION 8: TESTIMONIALS
@@ -1059,37 +1124,150 @@ export function HomePage() {
 
           <SectionReveal>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-              {dbTestimonials.map((item) => (
-                <Card
-                  key={item.id}
-                  className="bg-card border border-border rounded-2xl p-6 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
-                >
-                  {/* Stars */}
-                  <div className="flex items-center gap-0.5 mb-4">
-                    {Array.from({ length: item.stars }).map((_, i) => (
-                      <Star key={i} size={16} className="text-ct-gold fill-ct-gold" />
-                    ))}
+              {/* DB testimonials */}
+              {dbTestimonials.length > 0 ? (
+                dbTestimonials.map((item) => (
+                  <Card
+                    key={item.id}
+                    className="bg-card border border-border rounded-2xl p-6 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-0.5 mb-4">
+                      {Array.from({ length: item.stars }).map((_, i) => (
+                        <Star key={i} size={16} className="text-ct-gold fill-ct-gold" />
+                      ))}
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed italic mb-6">
+                      &ldquo;{pickLang(item, 'text', language)}&rdquo;
+                    </p>
+                    <Separator className="mb-4" />
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs">
+                        {item.initials}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-foreground">{item.name}</p>
+                        <p className="text-xs text-muted-foreground">{pickLang(item, 'title', language)}</p>
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              ) : (
+                /* Static fallback testimonials */
+                [
+                  { initials: 'AK', name: t('test.1.name', language), quote: t('test.1.quote', language), duration: t('test.1.duration', language), gradient: 'from-primary to-ct-blue', stars: 5 },
+                  { initials: 'SB', name: t('test.2.name', language), quote: t('test.2.quote', language), duration: t('test.2.duration', language), gradient: 'from-ct-gold to-ct-red', stars: 5 },
+                  { initials: 'MH', name: t('test.3.name', language), quote: t('test.3.quote', language), duration: t('test.3.duration', language), gradient: 'from-ct-purple to-ct-blue', stars: 4.5 },
+                ].map((item) => (
+                  <Card
+                    key={item.initials}
+                    className="bg-card border border-border rounded-2xl p-6 hover:-translate-y-1 hover:shadow-xl hover:shadow-primary/5 transition-all duration-300"
+                  >
+                    <div className="flex items-center gap-0.5 mb-4">
+                      {Array.from({ length: Math.floor(item.stars) }).map((_, i) => (
+                        <Star key={i} size={16} className="text-ct-gold fill-ct-gold" />
+                      ))}
+                      {item.stars % 1 !== 0 && <Star size={16} className="text-ct-gold fill-ct-gold/50" />}
+                    </div>
+                    <div className="border-l-2 border-primary/30 pl-4 mb-6">
+                      <p className="text-sm text-muted-foreground leading-relaxed italic">
+                        &ldquo;{item.quote}&rdquo;
+                      </p>
+                    </div>
+                    <Separator className="mb-4" />
+                    <div className="flex items-center gap-3">
+                      <div className={`w-10 h-10 rounded-full bg-gradient-to-br ${item.gradient} flex items-center justify-center text-white font-bold text-xs`}>
+                        {item.initials}
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-foreground">{item.name}</p>
+                        <p className="text-xs text-muted-foreground">{item.duration}</p>
+                      </div>
+                    </div>
+                  </Card>
+                ))
+              )}
+            </div>
+          </SectionReveal>
+        </div>
+      </section>
+
+      {/* ═══════════════════════════════════════════════════════════
+          SECTION 8.5: XM MID-PAGE CTA
+          ═══════════════════════════════════════════════════════════ */}
+      <section className="py-16 lg:py-20 relative overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-ct-red/5 via-background to-primary/5 pointer-events-none" />
+        <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-ct-red to-primary" />
+
+        <div className="max-w-7xl mx-auto px-5 relative z-10">
+          <SectionReveal>
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center">
+              {/* Left: Headline + Benefits */}
+              <div>
+                <Badge className="bg-ct-red/10 text-ct-red border-ct-red/20 mb-4 text-sm">
+                  XM Global
+                </Badge>
+                <h2 className="text-3xl lg:text-4xl font-extrabold text-foreground mb-2">
+                  {t('xmcta.title', language)}{' '}
+                  <span className="text-gradient-green">{t('xmcta.title.highlight', language)}</span>
+                </h2>
+                <p className="text-muted-foreground mb-8 max-w-md">
+                  {t('xmcta.subtitle', language)}
+                </p>
+
+                <div className="space-y-3">
+                  {[
+                    t('xmcta.b1', language),
+                    t('xmcta.b2', language),
+                    t('xmcta.b3', language),
+                    t('xmcta.b4', language),
+                    t('xmcta.b5', language),
+                    t('xmcta.b6', language),
+                  ].map((benefit) => (
+                    <div key={benefit} className="flex items-center gap-3">
+                      <div className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                        <CheckCircle2 size={14} className="text-primary" />
+                      </div>
+                      <span className="text-sm text-foreground">{benefit}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Right: Profile Card */}
+              <div className="flex justify-center">
+                <Card className="bg-card border border-border rounded-2xl p-8 max-w-sm w-full shadow-xl shadow-primary/5">
+                  <div className="text-center mb-6">
+                    <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-primary/30" style={{ boxShadow: '0 0 30px rgba(16,185,129,0.15)' }}>
+                      <img src="https://i.imgur.com/MrRODMe.png" alt="Amine Chebbi" className="w-full h-full object-cover" />
+                    </div>
+                    <h3 className="text-lg font-bold text-foreground">{t('pres.name', language)}</h3>
+                    <p className="text-sm text-muted-foreground">{t('xmcta.trader', language)}</p>
+                    <div className="flex items-center justify-center gap-1 mt-2">
+                      <ShieldCheck size={14} className="text-primary" />
+                      <span className="text-xs text-primary font-semibold">{t('xmcta.secure', language)}</span>
+                    </div>
                   </div>
 
-                  {/* Quote */}
-                  <p className="text-sm text-muted-foreground leading-relaxed italic mb-6">
-                    &ldquo;{pickLang(item, 'text', language)}&rdquo;
+                  <p className="text-xs text-muted-foreground text-center mb-6">
+                    {t('xmcta.years', language)}
                   </p>
 
-                  <Separator className="mb-4" />
-
-                  {/* Author */}
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xs">
-                      {item.initials}
-                    </div>
-                    <div>
-                      <p className="text-sm font-bold text-foreground">{item.name}</p>
-                      <p className="text-xs text-muted-foreground">{pickLang(item, 'title', language)}</p>
-                    </div>
+                  <div className="space-y-3">
+                    <a href={XM_LINK} target="_blank" rel="noopener noreferrer" className="w-full">
+                      <Button className="w-full bg-ct-red hover:bg-ct-red/90 text-white font-bold py-3 rounded-xl">
+                        <ExternalLink size={16} className="mr-2" />
+                        {t('xmcta.open', language)}
+                      </Button>
+                    </a>
+                    <a href={XM_LINK} target="_blank" rel="noopener noreferrer" className="w-full">
+                      <Button variant="outline" className="w-full border-primary/30 text-primary hover:bg-primary/5 font-bold py-3 rounded-xl">
+                        {t('xmcta.demo', language)}
+                      </Button>
+                    </a>
                   </div>
                 </Card>
-              ))}
+              </div>
             </div>
           </SectionReveal>
         </div>
@@ -1248,7 +1426,7 @@ export function HomePage() {
           ═══════════════════════════════════════════════════════════ */}
       <footer className="mt-auto border-t border-border bg-card/50">
         <div className="max-w-7xl mx-auto px-5 py-12 lg:py-16">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 lg:gap-16 mb-10">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12 mb-10">
             {/* Column 1: Logo + Description */}
             <div>
               <div className="flex items-center gap-3 mb-4">
@@ -1259,9 +1437,33 @@ export function HomePage() {
                   Chebbi <em className="not-italic text-primary">Trading</em>
                 </span>
               </div>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+              <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mb-5">
                 {t('hero.subtitle', language)}
               </p>
+              <div className="flex items-center gap-2.5">
+                <a
+                  href={TELEGRAM_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all"
+                >
+                  <MessageCircle size={16} />
+                </a>
+                <a
+                  href={YOUTUBE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-ct-red/10 border border-ct-red/20 flex items-center justify-center text-ct-red hover:bg-ct-red/20 hover:border-ct-red/40 transition-all"
+                >
+                  <Youtube size={16} />
+                </a>
+                <a
+                  href="mailto:contact@chebbitrade.com"
+                  className="w-9 h-9 rounded-lg bg-ct-blue/10 border border-ct-blue/20 flex items-center justify-center text-ct-blue hover:bg-ct-blue/20 hover:border-ct-blue/40 transition-all"
+                >
+                  <Mail size={16} />
+                </a>
+              </div>
             </div>
 
             {/* Column 2: Navigation */}
@@ -1270,11 +1472,13 @@ export function HomePage() {
               <div className="space-y-2.5">
                 {[
                   { label: t('nav.home', language), view: 'home' as const },
+                  { label: t('nav.join', language), view: 'home' as const },
                   { label: t('nav.results', language), view: 'results' as const },
                   { label: t('nav.blog', language), view: 'blog' as const },
+                  { label: t('nav.faq', language), view: 'home' as const },
                 ].map((item) => (
                   <button
-                    key={item.view}
+                    key={item.label}
                     onClick={() => handleNav(item.view)}
                     className="block text-sm text-muted-foreground hover:text-primary transition-colors"
                   >
@@ -1284,41 +1488,40 @@ export function HomePage() {
               </div>
             </div>
 
-            {/* Column 3: Social + Copyright */}
+            {/* Column 3: Resources */}
             <div>
-              <h4 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">Social</h4>
-              <div className="flex items-center gap-3 mb-6">
-                <a
-                  href={TELEGRAM_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center text-primary hover:bg-primary/20 hover:border-primary/40 transition-all"
-                >
-                  <MessageCircle size={18} />
+              <h4 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">
+                {t('foot.resources', language)}
+              </h4>
+              <div className="space-y-2.5">
+                <a href={YOUTUBE_URL} target="_blank" rel="noopener noreferrer" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  YouTube
                 </a>
-                <a
-                  href={YOUTUBE_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-10 h-10 rounded-lg bg-ct-red/10 border border-ct-red/20 flex items-center justify-center text-ct-red hover:bg-ct-red/20 hover:border-ct-red/40 transition-all"
-                >
-                  <Youtube size={18} />
+                <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  Telegram
                 </a>
-                <a
-                  href="mailto:contact@chebbitrade.com"
-                  className="w-10 h-10 rounded-lg bg-ct-blue/10 border border-ct-blue/20 flex items-center justify-center text-ct-blue hover:bg-ct-blue/20 hover:border-ct-blue/40 transition-all"
-                >
-                  <Mail size={18} />
+                <a href={XM_LINK} target="_blank" rel="noopener noreferrer" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                  {t('xmcta.open', language)}
                 </a>
               </div>
-              <p className="text-xs text-muted-foreground">
-                {t('foot.copy', language)}
-              </p>
+            </div>
+
+            {/* Column 4: Contact */}
+            <div>
+              <h4 className="text-sm font-bold text-foreground uppercase tracking-wider mb-4">Contact</h4>
+              <div className="space-y-2.5">
+                <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <MessageCircle size={14} /> @ChebbiTrading
+                </a>
+                <a href="mailto:contact@chebbitrade.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+                  <Mail size={14} /> Email
+                </a>
+              </div>
             </div>
           </div>
 
           {/* Risk Disclaimer Banner */}
-          <div className="rounded-xl bg-ct-red/5 border border-ct-red/15 px-5 py-4">
+          <div className="rounded-xl bg-ct-red/5 border border-ct-red/15 px-5 py-4 mb-6">
             <div className="flex items-start gap-3">
               <div className="w-8 h-8 rounded-lg bg-ct-red/10 flex items-center justify-center shrink-0 mt-0.5">
                 <Target size={16} className="text-ct-red" />
@@ -1331,6 +1534,18 @@ export function HomePage() {
                   {t('risk.warn', language)}
                 </p>
               </div>
+            </div>
+          </div>
+
+          {/* Bottom bar — copyright + legal */}
+          <div className="border-t border-border pt-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-muted-foreground">
+              {t('foot.copy', language)}
+            </p>
+            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+              <span className="hover:text-primary cursor-pointer transition-colors">{t('foot.privacy', language)}</span>
+              <span>•</span>
+              <span className="hover:text-primary cursor-pointer transition-colors">{t('foot.legal', language)}</span>
             </div>
           </div>
         </div>

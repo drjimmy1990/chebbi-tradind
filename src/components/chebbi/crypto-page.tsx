@@ -150,7 +150,7 @@ function InfoCard({ icon, title, children, highlight, highlightType = 'gold' }: 
               ? 'bg-red-500/[0.06] border-red-500 text-muted-foreground'
               : 'bg-amber-500/[0.06] border-amber-500 text-muted-foreground'
           }`}>
-            <span>{highlight}</span>
+            <span dangerouslySetInnerHTML={{ __html: typeof highlight === 'string' ? highlight : '' }} />
           </div>
         )}
       </div>
@@ -388,11 +388,11 @@ export function CryptoPage() {
               )}
               highlightType="red"
             >
-              <p>{L(language,
+              <p dangerouslySetInnerHTML={{ __html: L(language,
                 'Tout le monde est contacté <strong class="text-amber-400">le 28 de chaque mois</strong> pour rejoindre le mois suivant.',
                 'Everyone is contacted on the <strong class="text-amber-400">28th of each month</strong> to join the next month.',
                 'يتم التواصل مع الجميع <strong class="text-amber-400">يوم 28 من كل شهر</strong> للانضمام في الشهر الجديد.',
-              )}</p>
+              ) as string }} />
             </InfoCard>
           </div>
         </div>
@@ -465,11 +465,11 @@ export function CryptoPage() {
             {/* Notice */}
             <div className="rounded-xl bg-amber-500/[0.06] border border-amber-500/20 px-5 py-3 mb-5 text-sm text-muted-foreground">
               <strong className="text-amber-400">📅 {L(language, 'Important :', 'Important:', 'مهم :')}</strong>{' '}
-              {L(language,
+              <span dangerouslySetInnerHTML={{ __html: L(language,
                 'Tout le monde est contacté le <strong>28 de chaque mois</strong>. Impossible de rejoindre en milieu de mois.',
                 'Everyone is contacted on the <strong>28th of each month</strong>. Cannot join mid-month.',
                 'يتم التواصل مع الجميع يوم <strong>28 من كل شهر</strong>. لا يمكن الدخول في منتصف الشهر.',
-              )}
+              ) as string }} />
             </div>
 
             {/* Email form (visual only) */}
