@@ -472,18 +472,8 @@ export function CryptoPage() {
               ) as string }} />
             </div>
 
-            {/* Email form (visual only) */}
-            <div className="flex gap-3 max-w-md mx-auto mb-5 flex-wrap">
-              <input
-                type="email"
-                placeholder={Ls(language, 'Votre email', 'Your email', 'بريدك الإلكتروني')}
-                className="flex-1 min-w-[200px] bg-card border border-border rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:border-amber-500/50 transition-colors"
-              />
-              <button className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-400 text-black font-bold text-sm hover:-translate-y-0.5 hover:shadow-lg hover:shadow-amber-500/30 transition-all">
-                <Send size={14} />
-                {L(language, 'Envoyer', 'Send', 'إرسال')}
-              </button>
-            </div>
+            {/* Email form */}
+            <CryptoEmailForm language={language} />
 
             <p className="text-xs text-muted-foreground">
               {L(language,
@@ -500,5 +490,97 @@ export function CryptoPage() {
         </FadeIn>
       </section>
     </div>
+  );
+}
+
+/* ================================================================
+   CRYPTO EMAIL FORM
+   ================================================================ */
+
+function CryptoEmailForm({ language }: { language: Language }) {
+  const [email, setEmail] = useState('');
+  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'duplicate' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim() || !email.includes('@')) return;
+    setStatus('loading');
+    try {
+      const res = await fetch('/api/crypto-subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const json = await res.json();
+      if (json.message === 'already_subscribed') {
+        setStatus('duplicate');
+      } else if (res.ok) {
+        setStatus('success');
+        setEmail('');
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    }
+  };
+
+  if (status === 'success') {
+    return (
+      <div className="max-w-md mx-auto mb-5 rounded-xl bg-green-500/10 border border-green-500/30 px-5 py-4 text-center">
+        <div className="text-2xl mb-1">✅</div>
+        <p className="text-sm font-semibold text-green-400">
+          {L(language,
+            'Merci ! Vous serez contacté le 28 du mois.',
+            'Thank you! You will be contacted on the 28th.',
+            'شكراً! سيتم التواصل معك في يوم 28 من الشهر.',
+          )}
+        </p>
+      </div>
+    );
+  }
+
+  if (status === 'duplicate') {
+    return (
+      <div className="max-w-md mx-auto mb-5 rounded-xl bg-amber-500/10 border border-amber-500/30 px-5 py-4 text-center">
+        <div className="text-2xl mb-1">📧</div>
+        <p className="text-sm font-semibold text-amber-400">
+          {L(language,
+            'Cet email est déjà inscrit. Vous serez contacté le 28.',
+            'This email is already subscribed. You will be contacted on the 28th.',
+            'هذا البريد مسجل بالفعل. سيتم التواصل معك في الموعد.',
+          )}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="flex gap-3 max-w-md mx-auto mb-5 flex-wrap">
+      <input
+        type="email"
+        value={email}
+        onChange={(e) => { setEmail(e.target.value); if (status === 'error') setStatus('idle'); }}
+        placeholder={Ls(language, 'Votre email', 'Your email', 'بريدك الإلكتروني')}
+        className="flex-1 min-w-[200px] bg-card border border-border rounded-xl px-4 py-3 text-sm text-foreground outline-none focus:border-amber-500/50 transition-colors"
+        required
+        disabled={status === 'loading'}
+      />
+      <button
+        type="submit"
+        disabled={status === 'loading'}
+        className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-400 text-black font-bold text-sm hover:-translate-y-0.5 hover:shadow-lg hover:shadow-amber-500/30 transition-all disabled:opacity-60 disabled:cursor-not-allowed"
+      >
+        <Send size={14} />
+        {status === 'loading'
+          ? '...'
+          : L(language, 'Envoyer', 'Send', 'إرسال')}
+      </button>
+      {status === 'error' && (
+        <p className="w-full text-xs text-red-400 text-center mt-1">
+          {L(language, 'Erreur, réessayez.', 'Error, please try again.', 'حدث خطأ، حاول مجدداً.')}
+        </p>
+      )}
+    </form>
   );
 }

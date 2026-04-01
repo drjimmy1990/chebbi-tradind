@@ -144,3 +144,11 @@ model CryptoMonthly {
 
   @@unique([year, monthIndex])
 }
+
+model CryptoSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  status    String   @default("new") // new, contacted, active, rejected
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

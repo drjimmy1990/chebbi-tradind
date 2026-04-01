@@ -2820,7 +2820,31 @@ interface CryptoRow {
   percentage: number;
 }
 
+interface CryptoSub {
+  id: string;
+  email: string;
+  status: string;
+  createdAt: string;
+}
+
+const STATUS_COLORS: Record<string, string> = {
+  new: 'bg-blue-500/15 text-blue-400 border-blue-500/30',
+  contacted: 'bg-amber-500/15 text-amber-400 border-amber-500/30',
+  active: 'bg-green-500/15 text-green-400 border-green-500/30',
+  rejected: 'bg-red-500/15 text-red-400 border-red-500/30',
+};
+
+const STATUS_LABELS: Record<string, string> = {
+  new: '🆕 New',
+  contacted: '📤 Contacted',
+  active: '✅ Active',
+  rejected: '❌ Rejected',
+};
+
 function CryptoView({ language, showToast }: { language: string; showToast: (msg: string, type: 'success' | 'error') => void }) {
+  const L = (ar: string, en: string, fr: string) =>
+    language === 'ar' ? ar : language === 'en' ? en : fr;
+
   const [records, setRecords] = useState<CryptoRow[]>([]);
   const [loading, setLoading] = useState(true);
   const [addOpen, setAddOpen] = useState(false);
@@ -2831,6 +2855,10 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
     percentage: '',
   });
 
+  // Subscribers state
+  const [subscribers, setSubscribers] = useState<CryptoSub[]>([]);
+  const [subsLoading, setSubsLoading] = useState(true);
+
   const fetchData = useCallback(async () => {
     try {
       const res = await fetch('/api/crypto').then(r => r.json());
@@ -2839,7 +2867,15 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
     setLoading(false);
   }, []);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  const fetchSubscribers = useCallback(async () => {
+    try {
+      const res = await fetch('/api/crypto-subscribers').then(r => r.json());
+      setSubscribers(res.data || []);
+    } catch (_e) { /* ignore */ }
+    setSubsLoading(false);
+  }, []);
+
+  useEffect(() => { fetchData(); fetchSubscribers(); }, [fetchData, fetchSubscribers]);
 
   const handleAdd = async () => {
     try {
@@ -2872,6 +2908,30 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
     }
   };
 
+  const handleDeleteSub = async (id: string) => {
+    try {
+      await fetch(`/api/crypto-subscribers?id=${id}`, { method: 'DELETE' });
+      showToast('Subscriber removed', 'success');
+      fetchSubscribers();
+    } catch (_e) {
+      showToast('Error removing subscriber', 'error');
+    }
+  };
+
+  const handleStatusChange = async (id: string, status: string) => {
+    try {
+      await fetch('/api/crypto-subscribers', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      });
+      showToast(`Status updated to ${status}`, 'success');
+      fetchSubscribers();
+    } catch (_e) {
+      showToast('Error updating status', 'error');
+    }
+  };
+
   // Group by year
   const grouped = useMemo(() => {
     const g: Record<string, CryptoRow[]> = {};
@@ -2886,7 +2946,8 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
   const years = Object.keys(grouped).sort().reverse();
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
+      {/* ═══ Monthly Performance Section ═══ */}
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <h1 className="text-2xl font-bold text-foreground">₿ Crypto VIP Management</h1>
@@ -2942,6 +3003,72 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
           );
         })
       )}
+
+      {/* ═══ Email Subscribers Section ═══ */}
+      <div className="pt-4 border-t border-border">
+        <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
+          <div>
+            <h2 className="text-xl font-bold text-foreground">
+              📧 {L('المشتركين بالبريد', 'Email Subscribers', 'Abonnés email')}
+            </h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {L('قائمة الأشخاص الذين أرسلوا بريدهم للانضمام', 'People who submitted their email to join VIP Crypto', 'Personnes ayant soumis leur email pour rejoindre VIP Crypto')}
+            </p>
+          </div>
+          <Badge variant="secondary" className="text-xs font-bold">
+            {subscribers.length} {L('مشترك', 'subscribers', 'abonnés')}
+          </Badge>
+        </div>
+
+        {subsLoading ? (
+          <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-10 w-full rounded-lg" />)}</div>
+        ) : subscribers.length === 0 ? (
+          <Card className="rounded-xl">
+            <CardContent className="py-8 text-center text-muted-foreground">
+              {L('لا يوجد مشتركين بعد', 'No subscribers yet', 'Aucun abonné pour le moment')}
+            </CardContent>
+          </Card>
+        ) : (
+          <Card className="rounded-xl overflow-hidden">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{L('البريد', 'Email', 'Email')}</TableHead>
+                  <TableHead>{L('الحالة', 'Status', 'Statut')}</TableHead>
+                  <TableHead>{L('التاريخ', 'Date', 'Date')}</TableHead>
+                  <TableHead></TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {subscribers.map(sub => (
+                  <TableRow key={sub.id}>
+                    <TableCell className="font-mono text-sm">{sub.email}</TableCell>
+                    <TableCell>
+                      <select
+                        value={sub.status}
+                        onChange={(e) => handleStatusChange(sub.id, e.target.value)}
+                        className={`text-xs font-bold px-2.5 py-1 rounded-full border cursor-pointer outline-none ${STATUS_COLORS[sub.status] || STATUS_COLORS.new}`}
+                      >
+                        {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                          <option key={key} value={key}>{label}</option>
+                        ))}
+                      </select>
+                    </TableCell>
+                    <TableCell className="text-xs text-muted-foreground">
+                      {new Date(sub.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                    </TableCell>
+                    <TableCell>
+                      <button onClick={() => handleDeleteSub(sub.id)} className="text-red-400 hover:text-red-300 text-xs" title="Delete">
+                        🗑️
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </Card>
+        )}
+      </div>
 
       {/* Add Crypto Dialog */}
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
