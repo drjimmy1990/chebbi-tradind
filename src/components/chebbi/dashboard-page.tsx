@@ -212,6 +212,7 @@ function SidebarContent({
         { id: 'faq', label: t('dash.faq', language), icon: '❓' },
         { id: 'trades', label: 'Trades', icon: '📋' },
         { id: 'crypto', label: 'Crypto VIP', icon: '₿' },
+        { id: 'crypto-subs', label: 'E-mails VIP', icon: '📧' },
       ],
     },
     {
@@ -1960,6 +1961,11 @@ export function DashboardPage() {
           {dashboardView === 'crypto' && (
             <CryptoView language={language} showToast={(msg, type) => setToast({ message: msg, type })} />
           )}
+
+          {/* ======================= CRYPTO SUBS ======================= */}
+          {dashboardView === 'crypto-subs' && (
+            <CryptoSubscribersView language={language} showToast={(msg, type) => setToast({ message: msg, type })} />
+          )}
         </div>
       </main>
 
@@ -2855,10 +2861,6 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
     percentage: '',
   });
 
-  // Subscribers state
-  const [subscribers, setSubscribers] = useState<CryptoSub[]>([]);
-  const [subsLoading, setSubsLoading] = useState(true);
-
   const fetchData = useCallback(async () => {
     try {
       const res = await fetch('/api/crypto').then(r => r.json());
@@ -2867,15 +2869,7 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
     setLoading(false);
   }, []);
 
-  const fetchSubscribers = useCallback(async () => {
-    try {
-      const res = await fetch('/api/crypto-subscribers').then(r => r.json());
-      setSubscribers(res.data || []);
-    } catch (_e) { /* ignore */ }
-    setSubsLoading(false);
-  }, []);
-
-  useEffect(() => { fetchData(); fetchSubscribers(); }, [fetchData, fetchSubscribers]);
+  useEffect(() => { fetchData(); }, [fetchData]);
 
   const handleAdd = async () => {
     try {
@@ -2908,30 +2902,6 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
     }
   };
 
-  const handleDeleteSub = async (id: string) => {
-    try {
-      await fetch(`/api/crypto-subscribers?id=${id}`, { method: 'DELETE' });
-      showToast('Subscriber removed', 'success');
-      fetchSubscribers();
-    } catch (_e) {
-      showToast('Error removing subscriber', 'error');
-    }
-  };
-
-  const handleStatusChange = async (id: string, status: string) => {
-    try {
-      await fetch('/api/crypto-subscribers', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id, status }),
-      });
-      showToast(`Status updated to ${status}`, 'success');
-      fetchSubscribers();
-    } catch (_e) {
-      showToast('Error updating status', 'error');
-    }
-  };
-
   // Group by year
   const grouped = useMemo(() => {
     const g: Record<string, CryptoRow[]> = {};
@@ -2948,127 +2918,6 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
   return (
     <div className="space-y-8">
       {/* ═══ Monthly Performance Section ═══ */}
-      <div className="flex items-center justify-between flex-wrap gap-3">
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">₿ Crypto VIP Management</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Monthly % results for the Crypto VIP page</p>
-        </div>
-        <Button onClick={() => setAddOpen(true)} className="bg-amber-600 hover:bg-amber-700 text-white">
-          ➕ Add Month
-        </Button>
-      </div>
-
-      {loading ? (
-        <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-10 w-full rounded-lg" />)}</div>
-      ) : years.length === 0 ? (
-        <Card className="rounded-xl"><CardContent className="py-8 text-center text-muted-foreground">No crypto records yet</CardContent></Card>
-      ) : (
-        years.map(year => {
-          const months = grouped[year].sort((a, b) => a.monthIndex - b.monthIndex);
-          let compound = 1;
-          for (const m of months) compound *= (1 + m.percentage / 100);
-          const total = Math.round((compound - 1) * 10000) / 100;
-
-          return (
-            <Card key={year} className="rounded-xl overflow-hidden">
-              <CardHeader className="py-3 px-4 flex flex-row items-center justify-between">
-                <span className="font-bold font-mono">{year}</span>
-                <span className={`font-mono text-sm font-bold ${total >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                  {total >= 0 ? '+' : ''}{total.toFixed(2)}%
-                </span>
-              </CardHeader>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Month</TableHead>
-                    <TableHead>Percentage</TableHead>
-                    <TableHead></TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {months.map(r => (
-                    <TableRow key={r.id}>
-                      <TableCell className="text-sm">{MONTH_NAMES[r.monthIndex]}</TableCell>
-                      <TableCell className={`font-mono font-bold text-sm ${r.percentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                        {r.percentage >= 0 ? '+' : ''}{r.percentage.toFixed(2)}%
-                      </TableCell>
-                      <TableCell>
-                        <button onClick={() => handleDelete(r.id)} className="text-red-400 hover:text-red-300 text-xs">🗑️</button>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-            </Card>
-          );
-        })
-      )}
-
-      {/* ═══ Email Subscribers Section ═══ */}
-      <div className="pt-4 border-t border-border">
-        <div className="flex items-center justify-between flex-wrap gap-3 mb-4">
-          <div>
-            <h2 className="text-xl font-bold text-foreground">
-              📧 {L('المشتركين بالبريد', 'Email Subscribers', 'Abonnés email')}
-            </h2>
-            <p className="mt-1 text-sm text-muted-foreground">
-              {L('قائمة الأشخاص الذين أرسلوا بريدهم للانضمام', 'People who submitted their email to join VIP Crypto', 'Personnes ayant soumis leur email pour rejoindre VIP Crypto')}
-            </p>
-          </div>
-          <Badge variant="secondary" className="text-xs font-bold">
-            {subscribers.length} {L('مشترك', 'subscribers', 'abonnés')}
-          </Badge>
-        </div>
-
-        {subsLoading ? (
-          <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-10 w-full rounded-lg" />)}</div>
-        ) : subscribers.length === 0 ? (
-          <Card className="rounded-xl">
-            <CardContent className="py-8 text-center text-muted-foreground">
-              {L('لا يوجد مشتركين بعد', 'No subscribers yet', 'Aucun abonné pour le moment')}
-            </CardContent>
-          </Card>
-        ) : (
-          <Card className="rounded-xl overflow-hidden">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>{L('البريد', 'Email', 'Email')}</TableHead>
-                  <TableHead>{L('الحالة', 'Status', 'Statut')}</TableHead>
-                  <TableHead>{L('التاريخ', 'Date', 'Date')}</TableHead>
-                  <TableHead></TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {subscribers.map(sub => (
-                  <TableRow key={sub.id}>
-                    <TableCell className="font-mono text-sm">{sub.email}</TableCell>
-                    <TableCell>
-                      <select
-                        value={sub.status}
-                        onChange={(e) => handleStatusChange(sub.id, e.target.value)}
-                        className={`text-xs font-bold px-2.5 py-1 rounded-full border cursor-pointer outline-none ${STATUS_COLORS[sub.status] || STATUS_COLORS.new}`}
-                      >
-                        {Object.entries(STATUS_LABELS).map(([key, label]) => (
-                          <option key={key} value={key}>{label}</option>
-                        ))}
-                      </select>
-                    </TableCell>
-                    <TableCell className="text-xs text-muted-foreground">
-                      {new Date(sub.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
-                    </TableCell>
-                    <TableCell>
-                      <button onClick={() => handleDeleteSub(sub.id)} className="text-red-400 hover:text-red-300 text-xs" title="Delete">
-                        🗑️
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Card>
-        )}
-      </div>
 
       {/* Add Crypto Dialog */}
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
@@ -3098,6 +2947,119 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
           </Button>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  CRYPTO SUBSCRIBERS VIEW                                           */
+/* ------------------------------------------------------------------ */
+
+function CryptoSubscribersView({ language, showToast }: { language: string; showToast: (msg: string, type: 'success' | 'error') => void }) {
+  const L = (ar: string, en: string, fr: string) =>
+    language === 'ar' ? ar : language === 'en' ? en : fr;
+
+  const [subscribers, setSubscribers] = useState<CryptoSub[]>([]);
+  const [subsLoading, setSubsLoading] = useState(true);
+
+  const fetchSubscribers = useCallback(async () => {
+    try {
+      const res = await fetch('/api/crypto-subscribers').then(r => r.json());
+      setSubscribers(res.data || []);
+    } catch (_e) { /* ignore */ }
+    setSubsLoading(false);
+  }, []);
+
+  useEffect(() => { fetchSubscribers(); }, [fetchSubscribers]);
+
+  const handleDeleteSub = async (id: string) => {
+    try {
+      await fetch(`/api/crypto-subscribers?id=${id}`, { method: 'DELETE' });
+      showToast('Subscriber removed', 'success');
+      fetchSubscribers();
+    } catch (_e) {
+      showToast('Error removing subscriber', 'error');
+    }
+  };
+
+  const handleStatusChange = async (id: string, status: string) => {
+    try {
+      await fetch('/api/crypto-subscribers', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      });
+      showToast(`Status updated to ${status}`, 'success');
+      fetchSubscribers();
+    } catch (_e) {
+      showToast('Error updating status', 'error');
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">
+            📧 {L('المشتركين بالبريد', 'Email Subscribers', 'Abonnés email VIP')}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {L('قائمة الأشخاص الذين أرسلوا بريدهم للانضمام', 'People who submitted their email to join VIP Crypto', 'Personnes ayant soumis leur email pour rejoindre VIP Crypto')}
+          </p>
+        </div>
+        <Badge variant="secondary" className="text-xs font-bold text-background bg-foreground hover:bg-foreground/90 py-1.5 px-3">
+          {subscribers.length} {L('مشترك', 'subscribers', 'abonnés')}
+        </Badge>
+      </div>
+
+      {subsLoading ? (
+        <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-10 w-full rounded-lg" />)}</div>
+      ) : subscribers.length === 0 ? (
+        <Card className="rounded-xl">
+          <CardContent className="py-8 text-center text-muted-foreground">
+            {L('لا يوجد مشتركين بعد', 'No subscribers yet', 'Aucun abonné pour le moment')}
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="rounded-xl overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{L('البريد', 'Email', 'Email')}</TableHead>
+                <TableHead>{L('الحالة', 'Status', 'Statut')}</TableHead>
+                <TableHead>{L('التاريخ', 'Date', 'Date')}</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {subscribers.map(sub => (
+                <TableRow key={sub.id}>
+                  <TableCell className="font-mono text-sm font-medium">{sub.email}</TableCell>
+                  <TableCell>
+                    <select
+                      value={sub.status}
+                      onChange={(e) => handleStatusChange(sub.id, e.target.value)}
+                      className={`text-xs font-bold px-2.5 py-1 rounded-full border cursor-pointer outline-none ${STATUS_COLORS[sub.status] || STATUS_COLORS.new}`}
+                    >
+                      {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                        <option key={key} value={key}>{label}</option>
+                      ))}
+                    </select>
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground lowercase">
+                    {new Date(sub.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <button onClick={() => handleDeleteSub(sub.id)} className="text-red-400 hover:text-red-300 text-xs px-2 py-1 rounded-md hover:bg-red-500/10 transition-colors" title="Delete">
+                      🗑️
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
     </div>
   );
 }
