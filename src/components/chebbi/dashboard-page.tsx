@@ -2918,6 +2918,61 @@ function CryptoView({ language, showToast }: { language: string; showToast: (msg
   return (
     <div className="space-y-8">
       {/* ═══ Monthly Performance Section ═══ */}
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">₿ Crypto VIP Management</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Monthly % results for the Crypto VIP page</p>
+        </div>
+        <Button onClick={() => setAddOpen(true)} className="bg-amber-600 hover:bg-amber-700 text-white">
+          ➕ Add Month
+        </Button>
+      </div>
+
+      {loading ? (
+        <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-10 w-full rounded-lg" />)}</div>
+      ) : years.length === 0 ? (
+        <Card className="rounded-xl"><CardContent className="py-8 text-center text-muted-foreground">No crypto records yet</CardContent></Card>
+      ) : (
+        years.map(year => {
+          const months = grouped[year].sort((a, b) => a.monthIndex - b.monthIndex);
+          let compound = 1;
+          for (const m of months) compound *= (1 + m.percentage / 100);
+          const total = Math.round((compound - 1) * 10000) / 100;
+
+          return (
+            <Card key={year} className="rounded-xl overflow-hidden">
+              <CardHeader className="py-3 px-4 flex flex-row items-center justify-between">
+                <span className="font-bold font-mono">{year}</span>
+                <span className={`font-mono text-sm font-bold ${total >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                  {total >= 0 ? '+' : ''}{total.toFixed(2)}%
+                </span>
+              </CardHeader>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Month</TableHead>
+                    <TableHead>Percentage</TableHead>
+                    <TableHead></TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {months.map(r => (
+                    <TableRow key={r.id}>
+                      <TableCell className="text-sm">{MONTH_NAMES[r.monthIndex]}</TableCell>
+                      <TableCell className={`font-mono font-bold text-sm ${r.percentage >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        {r.percentage >= 0 ? '+' : ''}{r.percentage.toFixed(2)}%
+                      </TableCell>
+                      <TableCell>
+                        <button onClick={() => handleDelete(r.id)} className="text-red-400 hover:text-red-300 text-xs">🗑️</button>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Card>
+          );
+        })
+      )}
 
       {/* Add Crypto Dialog */}
       <Dialog open={addOpen} onOpenChange={setAddOpen}>
