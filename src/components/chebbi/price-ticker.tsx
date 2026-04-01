@@ -16,12 +16,12 @@ export function PriceTicker() {
     // Create the widget wrapper
     const wrapper = document.createElement('div');
     wrapper.className = 'tradingview-widget-container';
-    wrapper.style.height = '48px';
+    wrapper.style.height = '56px';
     wrapper.style.width = '100%';
 
     const inner = document.createElement('div');
     inner.className = 'tradingview-widget-container__widget';
-    inner.style.height = '48px';
+    inner.style.height = '56px';
     wrapper.appendChild(inner);
 
     // Create the script element with TradingView config
@@ -59,14 +59,14 @@ export function PriceTicker() {
 
   return (
     <div
-      className="fixed top-0 left-0 w-full h-12 z-[1001] overflow-hidden border-b border-white/[0.05]"
+      className="fixed top-0 left-0 w-full h-14 z-[1001] overflow-hidden border-b border-white/[0.05]"
       style={{
         background: 'rgba(8, 12, 22, 0.96)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
       }}
     >
-      <div ref={containerRef} className="h-12 w-full" />
+      <div ref={containerRef} className="h-14 w-full" />
     </div>
   );
 }

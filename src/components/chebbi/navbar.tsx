@@ -82,7 +82,7 @@ export function Navbar() {
   return (
     <>
       <nav
-        className={`fixed left-0 w-full transition-all duration-300 top-12 ${
+        className={`fixed left-0 w-full transition-all duration-300 top-14 ${
           scrolled
             ? 'bg-background/95 glass border-b border-border shadow-lg py-2'
             : 'bg-transparent py-4'
