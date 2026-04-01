@@ -404,3 +404,15 @@ cd /www/wwwroot/chebbi-trading
 git pull
 npm run build
 pm2 restart chebbi-trading
+
+
+
+
+
+
+cd /www/wwwroot/chebbi-trading
+git pull
+npx prisma db push
+npm run build
+pm2 restart chebbi-trading
+pm2 restart all
