@@ -1,9 +1,8 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useRef, useEffect } from 'react';
 
 export function PriceTicker() {
-  const [visible, setVisible] = useState(true);
   const containerRef = useRef<HTMLDivElement>(null);
   const widgetLoaded = useRef(false);
 
@@ -58,21 +57,13 @@ export function PriceTicker() {
     };
   }, []);
 
-  // Hide on scroll (same as reference chebbi.html)
-  useEffect(() => {
-    const onScroll = () => setVisible(window.scrollY <= 50);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    return () => window.removeEventListener('scroll', onScroll);
-  }, []);
-
   return (
     <div
-      className="fixed top-0 left-0 w-full h-12 z-[1001] overflow-hidden border-b border-white/[0.05] transition-transform duration-[400ms]"
+      className="fixed top-0 left-0 w-full h-12 z-[1001] overflow-hidden border-b border-white/[0.05]"
       style={{
         background: 'rgba(8, 12, 22, 0.96)',
         backdropFilter: 'blur(16px)',
         WebkitBackdropFilter: 'blur(16px)',
-        transform: visible ? 'translateY(0)' : 'translateY(-100%)',
       }}
     >
       <div ref={containerRef} className="h-12 w-full" />

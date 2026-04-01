@@ -82,10 +82,10 @@ export function Navbar() {
   return (
     <>
       <nav
-        className={`fixed left-0 w-full transition-all duration-300 ${
+        className={`fixed left-0 w-full transition-all duration-300 top-12 ${
           scrolled
-            ? 'bg-background/95 glass border-b border-border shadow-lg py-2 top-0'
-            : 'bg-transparent py-4 top-12'
+            ? 'bg-background/95 glass border-b border-border shadow-lg py-2'
+            : 'bg-transparent py-4'
         }`}
         style={{ zIndex: 1000 }}
       >
@@ -144,7 +144,7 @@ export function Navbar() {
             </button>
 
             {/* Language switcher */}
-            <div className="hidden sm:block relative">
+            <div className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
                 className="flex items-center gap-1.5 bg-secondary/50 border border-border rounded-lg px-3 py-2 text-sm font-semibold text-muted-foreground hover:text-primary hover:border-primary transition-all"
@@ -180,11 +180,11 @@ export function Navbar() {
               </AnimatePresence>
             </div>
 
-            {/* XM Button */}
+            {/* XM Button (desktop only) */}
             <a
               href="https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1"
               target="_blank"
-              className="hidden sm:flex items-center gap-2 bg-ct-xm text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ct-xm/40"
+              className="hidden md:flex items-center gap-2 bg-ct-xm text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ct-xm/40"
             >
               <span className="icon-user-plus" style={{fontSize:14}}>👤</span>
               {t('nav.register', language)}
@@ -231,21 +231,14 @@ export function Navbar() {
                 >
                   {t('nav.dashboard', language)}
                 </button>
-                <div className="flex items-center gap-2 mt-2">
-                  <button
-                    onClick={toggleTheme}
-                    className="w-9 h-9 rounded-lg flex items-center justify-center text-muted-foreground hover:text-primary border border-border transition-all"
-                  >
-                    {theme === 'dark' ? <Sun size={16} /> : <Moon size={16} />}
-                  </button>
-                  <a
-                    href="https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1"
-                    target="_blank"
-                    className="flex-1 flex items-center justify-center gap-2 bg-ct-xm text-white px-4 py-2.5 rounded-lg text-sm font-bold"
-                  >
-                    {t('nav.register', language)}
-                  </a>
-                </div>
+                {/* Mobile XM Button */}
+                <a
+                  href="https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1"
+                  target="_blank"
+                  className="flex items-center justify-center gap-2 bg-ct-xm text-white px-4 py-2.5 rounded-lg text-sm font-bold mt-2"
+                >
+                  {t('nav.register', language)}
+                </a>
               </div>
             </motion.div>
           )}

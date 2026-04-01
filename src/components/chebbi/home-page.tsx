@@ -290,7 +290,7 @@ export function HomePage() {
       {/* ═══════════════════════════════════════════════════════════
           SECTION 1: HERO
           ═══════════════════════════════════════════════════════════ */}
-      <section className="relative min-h-screen flex items-center pt-24 pb-16 overflow-hidden">
+      <section className="relative min-h-screen flex items-center pt-36 pb-16 overflow-hidden">
         {/* Background grid pattern */}
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none"

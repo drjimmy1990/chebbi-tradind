@@ -17,7 +17,7 @@
 
 ```bash
 cd /www/wwwroot
-git clone <your-repo-url> chebbi-trading
+git clone https://github.com/drjimmy1990/chebbi-tradind chebbi-trading
 cd chebbi-trading
 ```
 
@@ -55,6 +55,7 @@ npm run build
 ```
 
 > The `build` script in package.json already copies `.next/static` and `public/` into the standalone folder.
+> **⚠️ IMPORTANT:** After every build, you MUST recreate the standalone `.env` (Step 3 below).
 
 ---
 
@@ -64,14 +65,14 @@ Create the production `.env` in the **standalone** folder:
 
 ```bash
 cat > /www/wwwroot/chebbi-trading/.next/standalone/.env << 'EOF'
-DATABASE_URL=file:../../prisma/db/dev.db
+DATABASE_URL=file:/www/wwwroot/chebbi-trading/prisma/db/dev.db
 NODE_ENV=production
 PORT=3001
 HOSTNAME=0.0.0.0
 EOF
 ```
 
-> **Important:** The database path is relative to the standalone server location (`.next/standalone/`), so `../../prisma/db/dev.db` points back to the project root.
+> **⚠️ CRITICAL:** Must use **absolute path** for DATABASE_URL. The build wipes the standalone folder, so you must recreate this `.env` after every `npm run build`.
 
 Also keep the root `.env` for Prisma CLI operations:
 
