@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   // Public endpoint — no auth required (users register themselves)
   try {
     const body = await request.json();
-    const { name, email, xmId, proofFile } = body;
+    const { name, email, xmId, proofBase64, proofFilename } = body;
 
     if (!name || !email || !xmId) {
       return NextResponse.json(
@@ -39,13 +39,12 @@ export async function POST(request: NextRequest) {
         name: name.trim(),
         email: email.trim().toLowerCase(),
         xmId: xmId.trim(),
-        proofFile: proofFile || null,
         status: "pending",
       },
     });
 
-    // Fire webhook to n8n (non-blocking)
-    fireWebhook(member).catch((err) =>
+    // Fire webhook to n8n with file data (non-blocking)
+    fireWebhook(member, proofBase64, proofFilename).catch((err) =>
       console.error("Webhook fire failed (non-blocking):", err)
     );
 
@@ -59,15 +58,16 @@ export async function POST(request: NextRequest) {
   }
 }
 
-/** Send registration data to n8n webhook URL (fire-and-forget) */
-async function fireWebhook(member: {
-  id: string;
-  name: string;
-  email: string;
-  xmId: string;
-  proofFile?: string | null;
-  createdAt: Date;
-}) {
+/**
+ * Send registration data + proof file (as base64) to n8n webhook.
+ * n8n will save the file to the VPS and process verification.
+ * Fire-and-forget — does not block the registration response.
+ */
+async function fireWebhook(
+  member: { id: string; name: string; email: string; xmId: string; createdAt: Date },
+  proofBase64?: string,
+  proofFilename?: string,
+) {
   try {
     // Read webhook URL from settings
     const setting = await db.siteSetting.findUnique({
@@ -81,12 +81,11 @@ async function fireWebhook(member: {
 
     const webhookUrl = setting.value;
 
-    // Build the full proof URL if proofFile exists
+    // Read callback URL for n8n to use
     const siteUrlSetting = await db.siteSetting.findUnique({
       where: { key: "siteUrl" },
     });
     const siteUrl = siteUrlSetting?.value || "https://chebbi-trading.com";
-    const proofUrl = member.proofFile ? `${siteUrl}${member.proofFile}` : null;
 
     await fetch(webhookUrl, {
       method: "POST",
@@ -97,8 +96,12 @@ async function fireWebhook(member: {
         name: member.name,
         email: member.email,
         xmId: member.xmId,
-        proofFile: proofUrl,
         createdAt: member.createdAt.toISOString(),
+        // File data for n8n to save on VPS
+        proofBase64: proofBase64 || null,
+        proofFilename: proofFilename || null,
+        // Callback info for n8n
+        callbackUrl: `${siteUrl}/api/webhook/member-status`,
       }),
     });
 

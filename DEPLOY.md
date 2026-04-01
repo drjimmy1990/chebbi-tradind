@@ -51,17 +51,10 @@ mkdir -p prisma/db
 npx prisma db push
 
 # Build the production bundle
-npx next build
+npm run build
 ```
 
-After build completes, copy static assets into the standalone folder:
-
-```bash
-cp -r .next/static .next/standalone/.next/
-cp -r public .next/standalone/
-```
-
-> **Note:** The `build` script in package.json already does this, so you can also just run `npm run build`.
+> The `build` script in package.json already copies `.next/static` and `public/` into the standalone folder.
 
 ---
 
@@ -127,19 +120,7 @@ mkdir -p /www/wwwroot/chebbi-trading/logs
 
 ---
 
-## Step 5: Ensure Upload Directory Exists
-
-```bash
-mkdir -p /www/wwwroot/chebbi-trading/public/uploads/proofs
-chmod 755 /www/wwwroot/chebbi-trading/public/uploads/proofs
-
-# Also ensure it exists inside standalone
-mkdir -p /www/wwwroot/chebbi-trading/.next/standalone/public/uploads/proofs
-```
-
----
-
-## Step 6: Start with PM2
+## Step 5: Start with PM2
 
 ```bash
 cd /www/wwwroot/chebbi-trading
@@ -165,21 +146,21 @@ curl -s http://localhost:3001 | head -20
 
 ---
 
-## Step 7: aaPanel Nginx Reverse Proxy
+## Step 6: aaPanel Nginx Reverse Proxy
 
-### 7.1 Create Website in aaPanel
+### 6.1 Create Website in aaPanel
 
 1. Open **aaPanel** → **Website** → **Add site**
 2. Domain: `chebbi-trading.com` (your actual domain)
 3. PHP Version: **Pure Static** (we don't need PHP)
 4. Click **Submit**
 
-### 7.2 Configure SSL (Optional but recommended)
+### 6.2 Configure SSL (Optional but recommended)
 
 1. Click on the site → **SSL** → **Let's Encrypt**
 2. Select your domain → **Apply**
 
-### 7.3 Set Up Reverse Proxy
+### 6.3 Set Up Reverse Proxy
 
 1. Click on the site → **Reverse proxy** → **Add reverse proxy**
 2. Fill in:
@@ -188,7 +169,7 @@ curl -s http://localhost:3001 | head -20
    - **Send domain:** `$host`
 3. Click **Submit**
 
-### 7.4 Custom Nginx Configuration (recommended)
+### 6.4 Custom Nginx Configuration (recommended)
 
 For better performance, click on the site → **Config** (Nginx conf), and replace the location block with:
 
@@ -212,13 +193,9 @@ location / {
     proxy_buffers 4 256k;
     proxy_busy_buffers_size 256k;
     large_client_header_buffers 4 32k;
-}
 
-# Serve uploaded files directly via Nginx (faster)
-location /uploads/ {
-    alias /www/wwwroot/chebbi-trading/public/uploads/;
-    expires 30d;
-    add_header Cache-Control "public, immutable";
+    # Allow large file uploads (proof of deposit via base64)
+    client_max_body_size 10M;
 }
 
 # Serve static assets directly via Nginx
@@ -227,13 +204,20 @@ location /_next/static/ {
     expires 365d;
     add_header Cache-Control "public, immutable";
 }
+
+# Serve proof files saved by n8n directly via Nginx
+location /uploads/ {
+    alias /www/wwwroot/chebbi-trading/public/uploads/;
+    expires 30d;
+    add_header Cache-Control "public, immutable";
+}
 ```
 
 Save and restart Nginx from aaPanel.
 
 ---
 
-## Step 8: Seed Data (if fresh database)
+## Step 7: Seed Data (if fresh database)
 
 ```bash
 cd /www/wwwroot/chebbi-trading
@@ -242,7 +226,7 @@ node prisma/seed.js
 
 ---
 
-## Step 9: Create Admin User
+## Step 8: Create Admin User
 
 ```bash
 cd /www/wwwroot/chebbi-trading
@@ -267,6 +251,63 @@ const db = new PrismaClient();
 
 ---
 
+## Step 9: Configure Webhook in Dashboard
+
+1. Go to `https://yourdomain.com` → login to Dashboard
+2. Navigate to **Settings**
+3. Fill in:
+   - **Registration Webhook URL**: Your n8n webhook URL (e.g. `https://n8n.yourdomain.com/webhook/xxx`)
+   - **Webhook Secret Key**: A strong secret string (n8n will send this back for verification)
+   - **Site URL** (in general settings): Your domain (e.g. `https://chebbi-trading.com`)
+4. Click **Save**
+
+---
+
+## Registration & n8n Webhook Flow
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│  1. USER fills form + picks proof screenshot                 │
+│     → File converted to base64 on client                     │
+│                                                              │
+│  2. POST /api/register                                       │
+│     → Member created (status: "pending")                     │
+│     → Fires webhook to n8n with:                             │
+│        {                                                     │
+│          event: "new_registration",                          │
+│          memberId, name, email, xmId,                        │
+│          proofBase64,           ← file as base64 string      │
+│          proofFilename,         ← original filename          │
+│          callbackUrl            ← your API callback URL      │
+│        }                                                     │
+│                                                              │
+│  3. n8n RECEIVES webhook                                     │
+│     → Decodes base64 → saves file to VPS:                    │
+│       /www/wwwroot/chebbi-trading/public/uploads/proofs/      │
+│     → Processes verification logic                           │
+│     → Decides: accept or reject                              │
+│                                                              │
+│  4. n8n CALLS BACK                                           │
+│     POST https://yourdomain.com/api/webhook/member-status    │
+│     {                                                        │
+│       memberId: "xxx",                                       │
+│       status: "active" | "rejected",                         │
+│       secret: "your-webhook-secret",                         │
+│       proofFile: "/uploads/proofs/filename.jpg"  (optional)  │
+│     }                                                        │
+│     → Member status updated in database                      │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### n8n Workflow Tips
+
+1. **Receive webhook**: Use "Webhook" trigger node
+2. **Save file**: Use "Write Binary File" node to decode base64 and save to `/www/wwwroot/chebbi-trading/public/uploads/proofs/`
+3. **Verify**: Add your business logic (check XM ID, validate deposit, etc.)
+4. **Callback**: Use "HTTP Request" node to POST to the callbackUrl with `memberId`, `status`, `secret`, and optionally `proofFile`
+
+---
+
 ## Updating the App (future deployments)
 
 ```bash
@@ -280,13 +321,6 @@ npm install
 
 # Rebuild
 npm run build
-
-# Copy static + public into standalone (already done by build script)
-# But also copy uploads (they live in public/)
-cp -r public/uploads .next/standalone/public/ 2>/dev/null || true
-
-# Ensure standalone has the .env
-cp .next/standalone/.env .next/standalone/.env.bak 2>/dev/null || true
 
 # Restart PM2
 pm2 restart chebbi-trading
@@ -319,14 +353,6 @@ cd /www/wwwroot/chebbi-trading
 npx prisma db push
 ```
 
-### Uploaded files not showing
-```bash
-# Ensure the upload directory exists and is writable
-chmod -R 755 /www/wwwroot/chebbi-trading/public/uploads/
-# Make sure it's also copied to standalone
-cp -r public/uploads .next/standalone/public/
-```
-
 ---
 
 ## Architecture Overview
@@ -337,8 +363,13 @@ Internet → Nginx (aaPanel, port 80/443)
            PM2 → Next.js standalone (port 3001)
                ↓
            SQLite (prisma/db/dev.db)
-               ↓
-           n8n webhook (external, configured in Settings)
+
+Registration flow:
+  User → Website form → /api/register → n8n webhook (+ base64 file)
+                                            ↓
+                          n8n saves file to VPS + verifies
+                                            ↓
+                          n8n → /api/webhook/member-status (accept/reject)
 ```
 
 ## Quick Reference
@@ -348,8 +379,9 @@ Internet → Nginx (aaPanel, port 80/443)
 | App Port | `3001` |
 | App Path | `/www/wwwroot/chebbi-trading` |
 | Database | `/www/wwwroot/chebbi-trading/prisma/db/dev.db` |
-| Uploads | `/www/wwwroot/chebbi-trading/public/uploads/proofs/` |
+| Proof Files | `/www/wwwroot/chebbi-trading/public/uploads/proofs/` (managed by n8n) |
 | PM2 Name | `chebbi-trading` |
 | Logs | `/www/wwwroot/chebbi-trading/logs/` |
 | Admin URL | `https://yourdomain.com` → click Dashboard |
+| Register API | `POST https://yourdomain.com/api/register` |
 | Webhook Callback | `POST https://yourdomain.com/api/webhook/member-status` |

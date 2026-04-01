@@ -4,16 +4,21 @@ import { db } from "@/lib/db";
 /**
  * POST /api/webhook/member-status
  * 
- * Called by n8n to accept or reject a member.
+ * Called by n8n to accept or reject a member after verification.
  * 
- * Body: { memberId: string, status: "active" | "rejected", secret: string }
+ * Body: {
+ *   memberId: string,
+ *   status: "active" | "rejected",
+ *   secret: string,
+ *   proofFile?: string  // optional: path where n8n saved the proof on VPS
+ * }
  * 
  * Security: Requires a shared secret that matches the "webhookSecret" SiteSetting.
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { memberId, status, secret } = body;
+    const { memberId, status, secret, proofFile } = body;
 
     if (!memberId || !status || !secret) {
       return NextResponse.json(
@@ -41,10 +46,16 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Update member status
+    // Build update data
+    const updateData: { status: string; proofFile?: string } = { status };
+    if (proofFile) {
+      updateData.proofFile = proofFile;
+    }
+
+    // Update member status (and optionally proofFile path)
     const member = await db.member.update({
       where: { id: memberId },
-      data: { status },
+      data: updateData,
     });
 
     return NextResponse.json({

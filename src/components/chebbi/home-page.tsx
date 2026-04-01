@@ -213,8 +213,7 @@ export function HomePage() {
   const [regSuccess, setRegSuccess] = useState('');
   const [regError, setRegError] = useState('');
   const [proofFile, setProofFile] = useState<File | null>(null);
-  const [proofPath, setProofPath] = useState('');
-  const [proofUploading, setProofUploading] = useState(false);
+  const [proofBase64, setProofBase64] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileSelect = useCallback(async (file: File) => {
@@ -230,25 +229,15 @@ export function HomePage() {
     setProofFile(file);
     setRegError('');
 
-    // Upload immediately
-    setProofUploading(true);
-    try {
-      const formData = new FormData();
-      formData.append('file', file);
-      const res = await fetch('/api/upload', { method: 'POST', body: formData });
-      if (res.ok) {
-        const json = await res.json();
-        setProofPath(json.path);
-      } else {
-        setRegError(language === 'ar' ? 'فشل رفع الملف' : language === 'en' ? 'File upload failed' : 'Échec du téléchargement');
-        setProofFile(null);
-      }
-    } catch {
-      setRegError(language === 'ar' ? 'خطأ في الشبكة' : language === 'en' ? 'Network error' : 'Erreur réseau');
-      setProofFile(null);
-    } finally {
-      setProofUploading(false);
-    }
+    // Convert to base64 (will be sent to n8n via webhook)
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      // Remove the data:image/...;base64, prefix
+      const base64 = result.split(',')[1] || result;
+      setProofBase64(base64);
+    };
+    reader.readAsDataURL(file);
   }, [language]);
 
   const handleRegister = useCallback(async () => {
@@ -267,7 +256,8 @@ export function HomePage() {
           name: regName.trim(),
           email: regEmail.trim(),
           xmId: regXmId.trim(),
-          proofFile: proofPath || null,
+          proofBase64: proofBase64 || null,
+          proofFilename: proofFile?.name || null,
         }),
       });
       const json = await res.json();
@@ -281,14 +271,14 @@ export function HomePage() {
         setRegEmail('');
         setRegXmId('');
         setProofFile(null);
-        setProofPath('');
+        setProofBase64('');
       }
     } catch {
       setRegError(t('home.reg.error', language));
     } finally {
       setRegSubmitting(false);
     }
-  }, [regName, regEmail, regXmId, proofPath, language]);
+  }, [regName, regEmail, regXmId, proofBase64, proofFile, language]);
 
   const handleNav = (view: 'results' | 'blog' | 'home') => {
     setCurrentView(view);
@@ -998,12 +988,7 @@ export function HomePage() {
                           : 'border-border hover:border-primary/30 hover:bg-secondary/30'
                       }`}
                     >
-                      {proofUploading ? (
-                        <>
-                          <Loader2 size={24} className="text-primary animate-spin" />
-                          <span className="text-xs text-muted-foreground">{t('home.reg.uploading', language)}</span>
-                        </>
-                      ) : proofFile ? (
+                      {proofFile ? (
                         <>
                           <CheckCircle2 size={24} className="text-primary" />
                           <span className="text-xs font-medium text-primary">{t('home.reg.proof.uploaded', language)}</span>
