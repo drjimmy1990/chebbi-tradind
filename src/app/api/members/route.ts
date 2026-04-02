@@ -3,22 +3,12 @@ import { db } from "@/lib/db";
 import { requireAuth, unauthorizedResponse } from "@/lib/auth-guard";
 
 export async function GET(request: NextRequest) {
+  const session = await requireAuth(request);
+  if (!session) return unauthorizedResponse();
+
   try {
     const { searchParams } = new URL(request.url);
-    const secret = searchParams.get("secret");
     const status = searchParams.get("status");
-
-    // Verify shared secret (same one used by n8n webhook)
-    const secretSetting = await db.siteSetting.findUnique({
-      where: { key: "webhookSecret" },
-    });
-
-    if (!secretSetting?.value || secretSetting.value !== secret) {
-      return NextResponse.json(
-        { error: "Unauthorized: invalid or missing secret" },
-        { status: 401 }
-      );
-    }
 
     const where: Record<string, unknown> = {};
     if (status) where.status = status;
