@@ -91,3 +91,27 @@ export async function PATCH(request: NextRequest) {
     return NextResponse.json({ error: "Failed to update member" }, { status: 500 });
   }
 }
+
+export async function DELETE(request: NextRequest) {
+  // Auth guard
+  const session = await requireAuth(request);
+  if (!session) return unauthorizedResponse();
+
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json({ error: "Member ID is required" }, { status: 400 });
+    }
+
+    await db.member.delete({
+      where: { id },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting member:", error);
+    return NextResponse.json({ error: "Failed to delete member" }, { status: 500 });
+  }
+}

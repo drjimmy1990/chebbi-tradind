@@ -52,6 +52,7 @@ interface Member {
   xmId: string;
   date: string;
   status: 'pending' | 'active' | 'rejected';
+  proofFile?: string;
 }
 
 interface Signal {
@@ -342,7 +343,7 @@ export function DashboardPage() {
 
   /* delete confirm */
   const [deleteTarget, setDeleteTarget] = useState<{
-    type: 'article' | 'faq';
+    type: 'article' | 'faq' | 'member';
     id: string;
   } | null>(null);
 
@@ -586,11 +587,15 @@ export function DashboardPage() {
   const handleDelete = async () => {
     if (!deleteTarget) return;
     try {
-      const endpoint = deleteTarget.type === 'article' ? `/api/blog` : `/api/faq`;
+      let endpoint = `/api/faq`;
+      if (deleteTarget.type === 'article') endpoint = `/api/blog`;
+      else if (deleteTarget.type === 'member') endpoint = `/api/members`;
+
       const res = await fetch(`${endpoint}?id=${deleteTarget.id}`, { method: 'DELETE' });
       if (res.ok) {
         showToast(L('تم الحذف بنجاح', 'Deleted successfully', 'Supprimé avec succès'));
         if (deleteTarget.type === 'article') fetchArticles();
+        else if (deleteTarget.type === 'member') fetchMembers();
         else fetchFaqs();
       } else {
         showToast(
@@ -1322,6 +1327,7 @@ export function DashboardPage() {
                       <TableHead className="text-muted-foreground">{L('الاسم', 'Name', 'Nom')}</TableHead>
                       <TableHead className="text-muted-foreground">{L('البريد', 'Email', 'Email')}</TableHead>
                       <TableHead className="text-muted-foreground">{L('معرف XM', 'XM ID', 'ID XM')}</TableHead>
+                      <TableHead className="text-muted-foreground">{L('إثبات', 'Proof', 'Preuve')}</TableHead>
                       <TableHead className="text-muted-foreground hidden md:table-cell">{L('التاريخ', 'Date', 'Date')}</TableHead>
                       <TableHead className="text-muted-foreground">{L('الحالة', 'Status', 'Statut')}</TableHead>
                       <TableHead className="text-muted-foreground text-right">{L('إجراء', 'Action', 'Action')}</TableHead>
@@ -1330,7 +1336,7 @@ export function DashboardPage() {
                   <TableBody>
                     {filteredMembers.length === 0 ? (
                       <TableRow>
-                        <TableCell colSpan={6} className="py-12 text-center text-sm text-muted-foreground">
+                        <TableCell colSpan={7} className="py-12 text-center text-sm text-muted-foreground">
                           {memberSearch
                             ? L('لم يتم العثور على عضو', 'No member found', 'Aucun membre trouvé')
                             : L('لا يوجد أعضاء مسجلين', 'No members registered', 'Aucun membre inscrit')}
@@ -1347,6 +1353,15 @@ export function DashboardPage() {
                           </TableCell>
                           <TableCell className="font-mono text-sm text-amber-400">
                             {member.xmId}
+                          </TableCell>
+                          <TableCell>
+                            {member.proofFile ? (
+                              <a href={member.proofFile} target="_blank" rel="noreferrer" className="text-blue-400 font-medium hover:text-blue-300 hover:underline text-[11px] truncate block max-w-[100px]">
+                                {L('عرض', 'View', 'Voir')}
+                              </a>
+                            ) : (
+                              <span className="text-muted-foreground text-xs">—</span>
+                            )}
                           </TableCell>
                           <TableCell className="hidden md:table-cell text-sm text-muted-foreground">
                             {member.date ? new Date(member.date).toLocaleDateString('fr-FR') : '—'}
@@ -1369,31 +1384,36 @@ export function DashboardPage() {
                             )}
                           </TableCell>
                           <TableCell className="text-right">
-                            {member.status === 'pending' && (
-                              <div className="flex items-center justify-end gap-1">
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="h-7 px-2 text-xs text-green-400 hover:bg-green-500/10 hover:text-green-300"
-                                  onClick={() => handleUpdateMemberStatus(member.id, 'active')}
-                                >
-                                  ✓ {L('قبول', 'Approve', 'Approuver')}
-                                </Button>
-                                <Button
-                                  size="sm"
-                                  variant="ghost"
-                                  className="h-7 px-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300"
-                                  onClick={() => handleUpdateMemberStatus(member.id, 'rejected')}
-                                >
-                                  ✕ {L('رفض', 'Reject', 'Rejeter')}
-                                </Button>
-                              </div>
-                            )}
-                            {member.status !== 'pending' && (
-                              <Button size="sm" variant="ghost" className="h-7 px-2 text-xs text-muted-foreground">
-                                👁 {L('عرض', 'View', 'Voir')}
+                            <div className="flex items-center justify-end gap-1">
+                              {member.status === 'pending' && (
+                                <>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-7 px-2 text-xs text-green-400 hover:bg-green-500/10 hover:text-green-300"
+                                    onClick={() => handleUpdateMemberStatus(member.id, 'active')}
+                                  >
+                                    ✓ {L('قبول', 'Approve', 'Approuver')}
+                                  </Button>
+                                  <Button
+                                    size="sm"
+                                    variant="ghost"
+                                    className="h-7 px-2 text-xs text-red-400 hover:bg-red-500/10 hover:text-red-300"
+                                    onClick={() => handleUpdateMemberStatus(member.id, 'rejected')}
+                                  >
+                                    ✕ {L('رفض', 'Reject', 'Rejeter')}
+                                  </Button>
+                                </>
+                              )}
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                className="h-7 px-2 text-xs text-red-500 hover:bg-red-500/20"
+                                onClick={() => setDeleteTarget({ type: 'member', id: member.id })}
+                              >
+                                🗑
                               </Button>
-                            )}
+                            </div>
                           </TableCell>
                         </TableRow>
                       ))
