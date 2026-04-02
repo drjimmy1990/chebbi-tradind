@@ -17,7 +17,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   // Auth guard
-  const session = requireAuth(request);
+  const session = await requireAuth(request);
   if (!session) return unauthorizedResponse();
 
   try {

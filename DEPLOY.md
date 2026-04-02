@@ -416,3 +416,7 @@ npx prisma db push
 npm run build
 pm2 restart chebbi-trading
 pm2 restart all
+
+
+
+rm -rf /www/server/nginx/proxy_cache_dir/*

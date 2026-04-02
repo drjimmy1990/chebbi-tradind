@@ -7,56 +7,73 @@
 
 ## 🔐 Authentication
 
-Admin-only endpoints require a valid session token.  
-Login once to get a `token`, then pass it as `Authorization: Bearer TOKEN` header in every request.  
-**No cookies.txt file needed.**
+There are **two ways** to authenticate:
+
+| Method | Best for | Expires? |
+|--------|----------|----------|
+| **Webhook Secret** (permanent) | n8n, API automations | ❌ Never |
+| **Session token** (temporary) | Manual curl testing | ✅ On server restart |
 
 ---
 
-## 1. 🔑 AUTH
+### ✅ Method 1 — Permanent API Key (recommended for n8n)
 
-### Step 1 — Login and save your token
+Use your **Webhook Secret** (set in Admin → Settings → Webhook Secret) — it lives in the database and survives server restarts.
+
+Pass it as a Bearer token:
 ```bash
-# Login and extract the token in one command
-TOKEN=$(curl -s -X POST https://chebbi-trading.com/api/auth \
-  -H "Content-Type: application/json" \
-  -d '{"username": "admin", "password": "YOUR_PASSWORD"}' \
-  | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
-
-echo "Your token: $TOKEN"
+curl https://chebbi-trading.com/api/crypto-subscribers \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
-Then use it in all subsequent requests:
+Or as a query param (same secret):
 ```bash
-curl https://chebbi-trading.com/api/some-endpoint \
-  -H "Authorization: Bearer $TOKEN"
+curl "https://chebbi-trading.com/api/members?secret=YOUR_WEBHOOK_SECRET"
 ```
 
-Or manually (copy the token from the login response and paste it):
+> ✅ This is what you should use in **n8n HTTP Request nodes**. No login step needed, never expires.
+
+---
+
+### Method 2 — Session Token (temporary, for manual testing)
+
+Login to get a short-lived token. Disappears on server restart.
+
 ```bash
 # Login — copy the "token" value from the response
 curl -X POST https://chebbi-trading.com/api/auth \
   -H "Content-Type: application/json" \
   -d '{"username": "admin", "password": "YOUR_PASSWORD"}'
 
-# Then use it like this (replace TOKEN_HERE with what you copied)
+# Use it
 curl https://chebbi-trading.com/api/crypto-subscribers \
-  -H "Authorization: Bearer TOKEN_HERE"
+  -H "Authorization: Bearer SESSION_TOKEN_HERE"
 ```
 
 ### Check Session
 ```bash
 curl https://chebbi-trading.com/api/auth \
-  -H "Authorization: Bearer $TOKEN"
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Logout
 ```bash
 curl -X DELETE https://chebbi-trading.com/api/auth \
-  -H "Authorization: Bearer $TOKEN"
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
-> **Note:** The dashboard login in the browser still uses cookies as normal. The Bearer token method is only for API/curl/n8n usage.
+---
+
+## 🔑 For n8n — HTTP Request Node Setup
+
+| Field | Value |
+|-------|-------|
+| **Authentication** | `None` |
+| **Send Headers** | ✅ ON |
+| **Header Name** | `Authorization` |
+| **Header Value** | `Bearer YOUR_WEBHOOK_SECRET` |
+
+That's it. One secret, all endpoints, never expires.
 
 ---
 

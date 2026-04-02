@@ -4,7 +4,7 @@ import { requireAuth, unauthorizedResponse } from "@/lib/auth-guard";
 
 // GET — list all subscribers (admin only)
 export async function GET(request: NextRequest) {
-  const session = requireAuth(request);
+  const session = await requireAuth(request);
   if (!session) return unauthorizedResponse();
 
   try {
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
 
 // DELETE — admin only: remove subscriber
 export async function DELETE(request: NextRequest) {
-  const session = requireAuth(request);
+  const session = await requireAuth(request);
   if (!session) return unauthorizedResponse();
 
   try {
@@ -72,7 +72,7 @@ export async function DELETE(request: NextRequest) {
 
 // PATCH — admin only: update subscriber status
 export async function PATCH(request: NextRequest) {
-  const session = requireAuth(request);
+  const session = await requireAuth(request);
   if (!session) return unauthorizedResponse();
 
   try {

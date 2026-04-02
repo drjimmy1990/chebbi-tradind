@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   // Auth guard
-  const session = requireAuth(request);
+  const session = await requireAuth(request);
   if (!session) return unauthorizedResponse();
 
   try {
@@ -64,7 +64,7 @@ export async function POST(request: NextRequest) {
 
 export async function PATCH(request: NextRequest) {
   // Auth guard
-  const session = requireAuth(request);
+  const session = await requireAuth(request);
   if (!session) return unauthorizedResponse();
 
   try {
