@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { name, email, xmId, status = "pending" } = body;
+    const { name, email, xmId, status = "pending", proofFile } = body;
 
     if (!name || !email || !xmId) {
       return NextResponse.json(
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     }
 
     const member = await db.member.create({
-      data: { name, email, xmId, status },
+      data: { name, email, xmId, status, proofFile },
     });
 
     return NextResponse.json({ data: member }, { status: 201 });
@@ -59,7 +59,7 @@ export async function PATCH(request: NextRequest) {
 
   try {
     const body = await request.json();
-    const { id, status } = body;
+    const { id, status, proofFile } = body;
 
     if (!id || !status) {
       return NextResponse.json(
@@ -75,9 +75,14 @@ export async function PATCH(request: NextRequest) {
       );
     }
 
+    const updateData: { status: string; proofFile?: string } = { status };
+    if (proofFile) {
+      updateData.proofFile = proofFile;
+    }
+
     const member = await db.member.update({
       where: { id },
-      data: { status },
+      data: updateData,
     });
 
     return NextResponse.json({ data: member });
