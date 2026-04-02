@@ -42,7 +42,7 @@ export function PriceTicker() {
       ],
       showSymbolLogo: true,
       isTransparent: true,
-      displayMode: 'adaptive',
+      displayMode: 'regular',
       colorTheme: 'dark',
       locale: 'fr',
     });

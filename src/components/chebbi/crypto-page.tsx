@@ -210,10 +210,18 @@ export function CryptoPage() {
       });
     }
 
-    results.push({
-      label: Ls(language, 'Année de création', 'Founded', 'سنة التأسيس'),
-      value: '2022',
-    });
+    if (years.length > 0) {
+      const earliestYear = Math.min(...years.map(Number));
+      results.push({
+        label: Ls(language, 'Année de création', 'Founded', 'سنة التأسيس'),
+        value: String(earliestYear),
+      });
+    } else {
+      results.push({
+        label: Ls(language, 'Année de création', 'Founded', 'سنة التأسيس'),
+        value: '2022',
+      });
+    }
 
     return results;
   }, [data, language]);
@@ -288,9 +296,9 @@ export function CryptoPage() {
           <div className="max-w-3xl mx-auto rounded-2xl bg-gradient-to-br from-amber-500/[0.05] to-purple-500/[0.03] border border-amber-500/20 p-7 sm:p-9 text-foreground leading-loose text-[0.95rem]">
             <p>
               {L(language,
-                <>Notre groupe a débuté en <strong className="text-amber-400">2022</strong> avec des résultats mixtes entre <strong className="text-amber-400">Spot</strong> et <strong className="text-amber-400">Future</strong>. Nous avons commencé à documenter les résultats à partir de <strong className="text-amber-400">mai 2023</strong> après avoir trouvé une méthode adaptée qui donne les mêmes résultats que vous tradez en Spot ou en Future.</>,
-                <>Our group started in <strong className="text-amber-400">2022</strong> with mixed results between <strong className="text-amber-400">Spot</strong> and <strong className="text-amber-400">Future</strong>. We started documenting results from <strong className="text-amber-400">May 2023</strong> after finding a suitable method that gives the same results whether you trade Spot or Future.</>,
-                <>مجموعتنا بدأت سنة <strong className="text-amber-400">2022</strong> وكانت النتائج مختلطة بين <strong className="text-amber-400">Spot</strong> و<strong className="text-amber-400">Future</strong>. بدأنا توثيق النتائج من <strong className="text-amber-400">مايو 2023</strong> بعد أن وجدنا طريقة مناسبة تجعل النتيجة نفسها سواء كان الشخص يتداول Spot أو Future.</>,
+                <>Notre groupe a débuté en <strong className="text-amber-400">{sortedYears.length > 0 ? Math.min(...sortedYears.map(Number)) : '2022'}</strong> avec des résultats mixtes entre <strong className="text-amber-400">Spot</strong> et <strong className="text-amber-400">Future</strong>. Nous avons commencé à documenter les résultats à partir de <strong className="text-amber-400">mai 2023</strong> après avoir trouvé une méthode adaptée qui donne les mêmes résultats que vous tradez en Spot ou en Future.</>,
+                <>Our group started in <strong className="text-amber-400">{sortedYears.length > 0 ? Math.min(...sortedYears.map(Number)) : '2022'}</strong> with mixed results between <strong className="text-amber-400">Spot</strong> and <strong className="text-amber-400">Future</strong>. We started documenting results from <strong className="text-amber-400">May 2023</strong> after finding a suitable method that gives the same results whether you trade Spot or Future.</>,
+                <>مجموعتنا بدأت سنة <strong className="text-amber-400">{sortedYears.length > 0 ? Math.min(...sortedYears.map(Number)) : '2022'}</strong> وكانت النتائج مختلطة بين <strong className="text-amber-400">Spot</strong> و<strong className="text-amber-400">Future</strong>. بدأنا توثيق النتائج من <strong className="text-amber-400">مايو 2023</strong> بعد أن وجدنا طريقة مناسبة تجعل النتيجة نفسها سواء كان الشخص يتداول Spot أو Future.</>,
               )}
             </p>
           </div>

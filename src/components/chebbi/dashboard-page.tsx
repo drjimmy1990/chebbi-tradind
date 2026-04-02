@@ -942,12 +942,7 @@ export function DashboardPage() {
         .map(([year, value]) => ({ year, value: Math.round(value * 100) / 100 }));
     }
     // fallback if no results data
-    return [
-      { year: '2023', value: 62 },
-      { year: '2024', value: 43 },
-      { year: '2025', value: 128 },
-      { year: '2026', value: 17 },
-    ];
+    return [];
   }, [results]);
 
   /* dynamic max for perf bars */
