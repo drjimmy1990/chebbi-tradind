@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   // Public endpoint — no auth required (users register themselves)
   try {
     const body = await request.json();
-    const { name, email, xmId, proofBase64, proofFile, proofFilename } = body;
+    const { name, email, xmId, proofBase64, proofFile, proofFilename, language } = body;
 
     if (!email || !xmId) {
       return NextResponse.json(
@@ -44,14 +44,23 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Fire webhook to n8n with file data (non-blocking)
-    fireWebhook(member, proofBase64, proofFilename).catch((err) =>
-      console.error("Webhook fire failed (non-blocking):", err)
-    );
+    // Fire webhook to n8n and WAIT for the response (Synchronous verification)
+    const webhookResponse = await fireWebhook(member, proofBase64, proofFilename, language);
+
+    // If n8n responds with a failure (e.g. { "success": false, "message": "Not an affiliate" })
+    if (webhookResponse && webhookResponse.success === false) {
+      // Delete the pending member since they failed the immediate n8n verification
+      await db.member.delete({ where: { id: member.id } });
+      
+      return NextResponse.json(
+        { error: webhookResponse.message || "not_affiliate" },
+        { status: 400 }
+      );
+    }
 
     return NextResponse.json({
       data: member,
-      message: "Registration successful! We will verify your XM account and activate your access.",
+      message: webhookResponse && webhookResponse.message ? webhookResponse.message : "Registration successful! We will verify your XM account and activate your access.",
     }, { status: 201 });
   } catch (error) {
     console.error("Error registering member:", error);
@@ -60,14 +69,13 @@ export async function POST(request: NextRequest) {
 }
 
 /**
- * Send registration data + proof file (as base64) to n8n webhook.
- * n8n will save the file to the VPS and process verification.
- * Fire-and-forget — does not block the registration response.
+ * Send registration data to n8n webhook and wait for verification response.
  */
 async function fireWebhook(
   member: { id: string; name: string; email: string; xmId: string; createdAt: Date },
   proofBase64?: string,
   proofFilename?: string,
+  language?: string
 ) {
   try {
     // Read webhook URL from settings
@@ -77,7 +85,7 @@ async function fireWebhook(
 
     if (!setting?.value) {
       console.log("No webhookRegister URL configured — skipping webhook.");
-      return;
+      return null;
     }
 
     const webhookUrl = setting.value;
@@ -100,7 +108,7 @@ async function fireWebhook(
       headers["x-webhook-secret"] = webhookSecret;
     }
 
-    await fetch(webhookUrl, {
+    const res = await fetch(webhookUrl, {
       method: "POST",
       headers,
       body: JSON.stringify({
@@ -109,6 +117,7 @@ async function fireWebhook(
         name: member.name,
         email: member.email,
         xmId: member.xmId,
+        language: language || "fr",
         createdAt: member.createdAt.toISOString(),
         // File data for n8n to save on VPS
         proofBase64: proofBase64 || null,
@@ -118,8 +127,14 @@ async function fireWebhook(
       }),
     });
 
-    console.log(`Webhook sent for member ${member.id}`);
+    if (res.ok) {
+      const data = await res.json().catch(() => ({}));
+      return data;
+    }
+    
+    return null;
   } catch (err) {
     console.error("Webhook error:", err);
+    return null;
   }
 }

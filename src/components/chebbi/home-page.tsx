@@ -264,6 +264,7 @@ export function HomePage() {
           name: `XM User ${regXmId.trim()}`,
           email: regEmail.trim(),
           xmId: regXmId.trim(),
+          language,
           proofBase64: proofBase64 || null,
           proofFilename: proofFile?.name || null,
         }),
@@ -272,7 +273,16 @@ export function HomePage() {
       if (res.status === 409) {
         setRegError(t('home.reg.duplicate', language));
       } else if (!res.ok) {
-        setRegError(json.error || t('home.reg.error', language));
+        if (json.error === "not_affiliate") {
+          setRegError(
+            language === 'ar' ? 'حساب XM الخاص بك غير مسجل عبر رابط الإحالة الخاص بنا.' :
+            language === 'en' ? 'Your XM account is not registered under our affiliate link.' :
+            language === 'fr' ? "Votre identifiant n'est pas enregistré via notre lien" :
+            "Votre identifiant n'est pas enregistré via notre lien"
+          );
+        } else {
+          setRegError(json.error || t('home.reg.error', language));
+        }
       } else {
         setRegSuccess(t('home.reg.success', language));
         setRegEmail('');

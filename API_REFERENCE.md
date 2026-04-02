@@ -27,6 +27,44 @@ This key lives in the database and **never expires**, even after server restarts
 
 ---
 
+## 🔔 Outbound Webhooks (to n8n)
+
+The dashboard will automatically fire POST requests to the `webhookRegister` URL you define in the settings panel. These requests are authenticated using the `webhookSecret` you secure the dashboard with.
+
+### Authentication Headers sent to n8n
+When your n8n webhook receives a request from Chebbi Trading, it will contain these headers. *(Configure your n8n Webhook node to use Header Auth matching your Webhook Secret)*:
+- `Authorization: Bearer YOUR_WEBHOOK_SECRET`
+- `x-webhook-secret: YOUR_WEBHOOK_SECRET`
+
+### Event: `new_registration`
+Fired when a user successfully submits the registration form on the site.
+```json
+{
+  "event": "new_registration",
+  "memberId": "cuid_database_id_here",
+  "name": "Ahmed Ben Ali",
+  "email": "ahmed@example.com",
+  "xmId": "12345678",
+  "createdAt": "2026-04-02T20:10:00.000Z",
+  "proofBase64": "data:image/png;base64,iVBOR...",
+  "proofFilename": "deposit.png",
+  "callbackUrl": "https://tawriqa-sys.giize.com/api/webhook/member-status"
+}
+```
+
+### Event: `member_approved`
+Fired when you click the **Approve** button in the Admin Dashboard.
+```json
+{
+  "event": "member_approved",
+  "id": "cuid_database_id_here",
+  "xmId": "12345678",
+  "email": "ahmed@example.com"
+}
+```
+
+---
+
 ## 1. 🔑 AUTH *(Admin login — only needed for manual testing)*
 
 ### Login
