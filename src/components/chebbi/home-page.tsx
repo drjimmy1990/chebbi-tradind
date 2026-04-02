@@ -974,9 +974,9 @@ export function HomePage() {
                   {/* Right: Profile card */}
                   <div className="flex justify-center lg:justify-end">
                     <Card className="bg-card border border-border rounded-2xl p-8 text-center max-w-sm w-full shadow-2xl shadow-primary/5">
-                      <div className="w-24 h-24 rounded-full border-3 border-primary overflow-hidden mx-auto mb-4 relative">
-                        <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-cover" />
-                        <span className="absolute bottom-1 right-1 w-4 h-4 bg-primary rounded-full border-2 border-card">
+                      <div className="w-24 h-24 rounded-full border-[3px] border-primary overflow-hidden mx-auto mb-4 relative bg-[#06090f] flex items-center justify-center p-2">
+                        <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-contain" />
+                        <span className="absolute bottom-1 right-1 w-4 h-4 bg-primary rounded-full border-2 border-[#06090f] z-10">
                           <span className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75" />
                         </span>
                       </div>
