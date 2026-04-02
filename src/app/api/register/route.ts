@@ -82,15 +82,27 @@ async function fireWebhook(
 
     const webhookUrl = setting.value;
 
+    // Read webhook secret for authentication
+    const secretSetting = await db.siteSetting.findUnique({
+      where: { key: "webhookSecret" },
+    });
+    const webhookSecret = secretSetting?.value || "";
+
     // Read callback URL for n8n to use
     const siteUrlSetting = await db.siteSetting.findUnique({
       where: { key: "siteUrl" },
     });
     const siteUrl = siteUrlSetting?.value || "https://chebbi-trading.com";
 
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (webhookSecret) {
+      headers["Authorization"] = `Bearer ${webhookSecret}`;
+      headers["x-webhook-secret"] = webhookSecret;
+    }
+
     await fetch(webhookUrl, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({
         event: "new_registration",
         memberId: member.id,

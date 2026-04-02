@@ -93,9 +93,20 @@ export async function PATCH(request: NextRequest) {
         });
 
         if (setting?.value && setting.value.startsWith("http")) {
+          const secretSetting = await db.siteSetting.findUnique({
+            where: { key: "webhookSecret" },
+          });
+          const webhookSecret = secretSetting?.value || "";
+
+          const headers: Record<string, string> = { "Content-Type": "application/json" };
+          if (webhookSecret) {
+            headers["Authorization"] = `Bearer ${webhookSecret}`;
+            headers["x-webhook-secret"] = webhookSecret;
+          }
+
           fetch(setting.value, {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers,
             body: JSON.stringify({
               event: "member_approved",
               id: member.id, // Internal database ID
