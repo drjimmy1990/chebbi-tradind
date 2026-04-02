@@ -40,6 +40,7 @@ export async function POST(request: NextRequest) {
         email: email.trim().toLowerCase(),
         xmId: xmId.trim(),
         status: "pending",
+        proofFile: proofBase64 || null,
       },
     });
 

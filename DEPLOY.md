@@ -417,3 +417,37 @@ npx prisma db push
 npm run build
 pm2 restart all
 rm -rf /www/server/nginx/proxy_cache_dir/*
+
+
+
+
+# 1. Update PM2 to use the exact Absolute Path to the database you just uploaded
+cat > /www/wwwroot/chebbi-trading/ecosystem.config.js << 'EOF'
+module.exports = {
+  apps: [
+    {
+      name: 'chebbi-trading',
+      script: '.next/standalone/server.js',
+      cwd: '/www/wwwroot/chebbi-trading',
+      env: {
+        NODE_ENV: 'production',
+        PORT: 3001,
+        HOSTNAME: '0.0.0.0',
+        DATABASE_URL: 'file:/www/wwwroot/chebbi-trading/prisma/db/dev.db'
+      },
+      instances: 1,
+      exec_mode: 'fork',
+      autorestart: true,
+      max_memory_restart: '500M'
+    }
+  ]
+};
+EOF
+
+# 2. Unlock the database permissions so Next.js can read/write to your uploaded file
+chmod -R 777 /www/wwwroot/chebbi-trading/prisma/db
+
+# 3. Reload PM2 to apply the fix
+pm2 delete chebbi-trading
+pm2 start /www/wwwroot/chebbi-trading/ecosystem.config.js
+pm2 save
