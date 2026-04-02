@@ -19,6 +19,7 @@ import {
   Percent,
   MessageCircle,
   Send,
+  Mail,
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { t, type Language } from '@/lib/i18n';
@@ -228,12 +229,14 @@ export function FaqPage() {
   const [xmLinkFr, setXmLinkFr] = useState(DEFAULT_XM);
   const [xmLinkEn, setXmLinkEn] = useState(DEFAULT_XM);
   const [xmLinkAr, setXmLinkAr] = useState(DEFAULT_XM);
+  const [CONTACT_EMAIL, setContactEmail] = useState('contact@chebbitrading.com');
   const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
 
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(json => {
       const s = json?.data;
       if (s) {
+        if (s.EMAIL) setContactEmail(s.EMAIL);
         if (s.XM_LINK_FR) setXmLinkFr(s.XM_LINK_FR);
         if (s.XM_LINK_EN) setXmLinkEn(s.XM_LINK_EN);
         if (s.XM_LINK_AR) setXmLinkAr(s.XM_LINK_AR);
@@ -453,11 +456,10 @@ export function FaqPage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <a
-                    href={TELEGRAM_URL}
-                    target="_blank"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 bg-[#0088cc]/15 border border-[#0088cc]/30 text-[#29b6f6] hover:bg-[#0088cc]/25 hover:shadow-lg"
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 bg-ct-blue/15 border border-ct-blue/30 text-ct-blue hover:bg-ct-blue/25 hover:shadow-lg"
                   >
-                    <Send size={16} />
+                    <Mail size={16} />
                     {t('faq.cta.telegram', language)}
                   </a>
                   <a

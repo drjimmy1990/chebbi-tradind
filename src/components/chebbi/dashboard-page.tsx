@@ -456,7 +456,7 @@ export function DashboardPage() {
       const res = await fetch('/api/results');
       if (res.ok) {
         const json = await res.json();
-        setResults(json.data || json);
+        setResults(json); // json contains { data: grouped, all: all }
       }
     } catch {
       /* silent */
@@ -1199,9 +1199,15 @@ export function DashboardPage() {
                     </h3>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    {yearPerf.map((y) => (
-                      <PerfBar key={y.year} year={y.year} value={y.value} maxVal={perfMaxVal} />
-                    ))}
+                    {yearPerf.length === 0 ? (
+                      <p className="py-8 text-center text-sm text-muted-foreground">
+                        {L('لا توجد بيانات متاحة', 'No data available', 'Aucune donnée disponible')}
+                      </p>
+                    ) : (
+                      yearPerf.map((y) => (
+                        <PerfBar key={y.year} year={y.year} value={y.value} maxVal={perfMaxVal} />
+                      ))
+                    )}
                   </CardContent>
                 </Card>
 

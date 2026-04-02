@@ -136,6 +136,7 @@ export function HomePage() {
   const [LOGO_URL, setLogoUrl] = useState(DEFAULT_LOGO);
   const [YOUTUBE_URL, setYoutubeUrl] = useState(DEFAULT_YOUTUBE);
   const [TELEGRAM_URL, setTelegramUrl] = useState(DEFAULT_TELEGRAM);
+  const [CONTACT_EMAIL, setContactEmail] = useState('contact@chebbitrading.com');
   const [xmLinkFr, setXmLinkFr] = useState(DEFAULT_XM);
   const [xmLinkEn, setXmLinkEn] = useState(DEFAULT_XM);
   const [xmLinkAr, setXmLinkAr] = useState(DEFAULT_XM);
@@ -158,6 +159,7 @@ export function HomePage() {
           if (s.LOGO_URL) setLogoUrl(s.LOGO_URL);
           if (s.YOUTUBE_URL) setYoutubeUrl(s.YOUTUBE_URL);
           if (s.TELEGRAM_URL) setTelegramUrl(s.TELEGRAM_URL);
+          if (s.EMAIL) setContactEmail(s.EMAIL);
           if (s.XM_LINK_FR) setXmLinkFr(s.XM_LINK_FR);
           if (s.XM_LINK_EN) setXmLinkEn(s.XM_LINK_EN);
           if (s.XM_LINK_AR) setXmLinkAr(s.XM_LINK_AR);
@@ -1255,8 +1257,8 @@ export function HomePage() {
               <div className="flex justify-center">
                 <Card className="bg-card border border-border rounded-2xl p-8 max-w-sm w-full shadow-xl shadow-primary/5">
                   <div className="text-center mb-6">
-                    <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-primary/30" style={{ boxShadow: '0 0 30px rgba(16,185,129,0.15)' }}>
-                      <img src="https://i.imgur.com/MrRODMe.png" alt="Amine Chebbi" className="w-full h-full object-cover" />
+                    <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-primary/30 bg-[#06090f] p-2 flex items-center justify-center" style={{ boxShadow: '0 0 30px rgba(16,185,129,0.15)' }}>
+                      <img src={LOGO_URL} alt="Chebbi Trading" className="w-[150%] h-[150%] object-contain max-w-none" />
                     </div>
                     <h3 className="text-lg font-bold text-foreground">{t('pres.name', language)}</h3>
                     <p className="text-sm text-muted-foreground">{t('xmcta.trader', language)}</p>
@@ -1336,12 +1338,10 @@ export function HomePage() {
                 </p>
                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
                   <a
-                    href={TELEGRAM_URL}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 bg-[#0088cc]/15 border border-[#0088cc]/30 text-[#29b6f6] hover:bg-[#0088cc]/25 hover:shadow-lg"
+                    href={`mailto:${CONTACT_EMAIL}`}
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold transition-all hover:-translate-y-0.5 bg-ct-blue/15 border border-ct-blue/30 text-ct-blue hover:bg-ct-blue/25 hover:shadow-lg"
                   >
-                    <MessageCircle size={16} />
+                    <Mail size={16} />
                     {t('faq.cta.telegram', language)}
                   </a>
                   <a
@@ -1475,7 +1475,7 @@ export function HomePage() {
                   <Youtube size={16} />
                 </a>
                 <a
-                  href="mailto:contact@chebbitrade.com"
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="w-9 h-9 rounded-lg bg-ct-blue/10 border border-ct-blue/20 flex items-center justify-center text-ct-blue hover:bg-ct-blue/20 hover:border-ct-blue/40 transition-all"
                 >
                   <Mail size={16} />
@@ -1530,7 +1530,7 @@ export function HomePage() {
                 <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
                   <MessageCircle size={14} /> @ChebbiTrading
                 </a>
-                <a href="mailto:contact@chebbitrade.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
+                <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
                   <Mail size={14} /> Email
                 </a>
               </div>
