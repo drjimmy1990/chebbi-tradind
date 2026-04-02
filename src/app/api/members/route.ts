@@ -85,6 +85,30 @@ export async function PATCH(request: NextRequest) {
       data: updateData,
     });
 
+    // Fire webhook if approved
+    if (status === "active") {
+      try {
+        const setting = await db.siteSetting.findUnique({
+          where: { key: "webhookRegister" }, // This is the webhook field in dashboard
+        });
+
+        if (setting?.value && setting.value.startsWith("http")) {
+          fetch(setting.value, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              event: "member_approved",
+              id: member.id, // Internal database ID
+              xmId: member.xmId, // Trading ID
+              email: member.email,
+            }),
+          }).catch(err => console.error("Webhook approve failed:", err));
+        }
+      } catch (err) {
+        console.error("Failed to read webhook setting", err);
+      }
+    }
+
     return NextResponse.json({ data: member });
   } catch (error) {
     console.error("Error updating member:", error);
