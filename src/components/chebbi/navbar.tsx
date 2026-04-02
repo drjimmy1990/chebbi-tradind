@@ -111,8 +111,8 @@ export function Navbar() {
         <div className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-5">
           {/* Logo */}
           <button onClick={() => handleNav('home')} className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl overflow-hidden border border-border group-hover:border-primary transition-all group-hover:shadow-lg group-hover:shadow-primary/20">
-              <img src={LOGO_URL} alt="Logo" className="w-full h-full object-cover" />
+            <div className="w-10 h-10 rounded-xl overflow-hidden border border-border bg-[#06090f] flex items-center justify-center p-1 group-hover:border-primary transition-all group-hover:shadow-lg group-hover:shadow-primary/20">
+              <img src={LOGO_URL} alt="Logo" className="w-full h-full object-contain" />
             </div>
             <span className="text-xl font-extrabold text-foreground">
               Chebbi <em className="not-italic text-primary">Trading</em>
