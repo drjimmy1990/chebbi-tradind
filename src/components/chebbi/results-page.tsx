@@ -19,7 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 // ──────────────────────── Constants ────────────────────────
 
-const LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
+const DEFAULT_LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
 const YOUTUBE_URL = 'https://www.youtube.com/@ChebbiTrading/streams';
 const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 
@@ -1042,7 +1042,7 @@ function RiskDisclaimer({ lang }: { lang: Language }) {
 
 // ──────────────────────── SECTION 9: Footer ────────────────────────
 
-function Footer({ lang }: { lang: Language }) {
+function Footer({ lang, logoUrl }: { lang: Language, logoUrl: string }) {
   const { setCurrentView } = useAppStore();
 
   const navItems: { key: string; labelKey: string }[] = [
@@ -1058,8 +1058,8 @@ function Footer({ lang }: { lang: Language }) {
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg overflow-hidden border border-border">
-              <img src={LOGO_URL} alt="Logo" className="w-full h-full object-cover" />
+            <div className="w-9 h-9 rounded-lg overflow-hidden border border-border bg-[#06090f] p-1">
+              <img src={logoUrl} alt="Logo" className="w-full h-full object-contain scale-[1.5]" />
             </div>
             <span className="text-sm font-bold text-foreground">
               Chebbi <em className="not-italic text-ct-green">Trading</em>
@@ -1124,6 +1124,8 @@ export function ResultsPage() {
   const [xmLinkAr, setXmLinkAr] = useState(DEFAULT_XM);
   const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
 
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
+
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(json => {
       const s = json?.data;
@@ -1134,6 +1136,7 @@ export function ResultsPage() {
         if (!s.XM_LINK_FR && s.XM_LINK) setXmLinkFr(s.XM_LINK);
         if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
         if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
+        if (s.LOGO_URL) setLogoUrl(s.LOGO_URL);
       }
     }).catch(() => {});
   }, []);
@@ -1199,7 +1202,7 @@ export function ResultsPage() {
       <RiskDisclaimer lang={language} />
 
       {/* Footer */}
-      <Footer lang={language} />
+      <Footer lang={language} logoUrl={logoUrl} />
     </div>
   );
 }

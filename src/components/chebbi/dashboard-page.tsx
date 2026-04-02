@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Loader2 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { t, type Language } from '@/lib/i18n';
 
@@ -1982,6 +1983,11 @@ export function DashboardPage() {
           {dashboardView === 'crypto-subs' && (
             <CryptoSubscribersView language={language} showToast={(msg, type) => setToast({ message: msg, type })} />
           )}
+
+          {/* ======================= SETTINGS ======================= */}
+          {dashboardView === 'settings' && (
+            <SettingsView language={language} showToast={(msg, type) => setToast({ message: msg, type })} />
+          )}
         </div>
       </main>
 
@@ -3129,6 +3135,98 @@ function CryptoSubscribersView({ language, showToast }: { language: string; show
               ))}
             </TableBody>
           </Table>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  SETTINGS VIEW                                                     */
+/* ------------------------------------------------------------------ */
+
+function SettingsView({ language, showToast }: { language: string; showToast: (msg: string, type: 'success' | 'error') => void }) {
+  const L = (ar: string, en: string, fr: string) =>
+    language === 'ar' ? ar : language === 'en' ? en : fr;
+
+  const [logoUrl, setLogoUrl] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(r => r.json())
+      .then(res => {
+        if (res.data?.LOGO_URL) setLogoUrl(res.data.LOGO_URL);
+        else setLogoUrl('https://i.imgur.com/USEEiyC.png');
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, []);
+
+  const handleSave = async () => {
+    try {
+      setSaving(true);
+      const res = await fetch('/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ key: 'LOGO_URL', value: logoUrl })
+      });
+      if (!res.ok) throw new Error();
+      showToast(L('تم حفظ التغييرات', 'Settings saved', 'Paramètres enregistrés'), 'success');
+    } catch (_e) {
+      showToast(L('حدث خطأ', 'Error saving', 'Erreur de sauvegarde'), 'error');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="space-y-6 max-w-2xl">
+      <div>
+        <h1 className="text-2xl font-bold text-foreground">
+          ⚙️ {L('إعدادات الموقع', 'Site Settings', 'Paramètres du site')}
+        </h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          {L('تخصيص الإعدادات العامة للمتجر', 'Customize general site settings', 'Personnaliser les paramètres généraux')}
+        </p>
+      </div>
+
+      {loading ? (
+        <Skeleton className="h-64 w-full rounded-xl" />
+      ) : (
+        <Card className="rounded-xl">
+          <CardHeader>
+            <h2 className="text-lg font-bold text-foreground">{L('الشعار والهوية', 'Branding & Logo', 'Identité Visuelle')}</h2>
+            <p className="text-sm text-muted-foreground">
+              {L('رابط صورة الشعار الذي يظهر في أعلى الموقع.', 'URL of the logo image appearing on the site.', 'URL du logo qui apparaît sur le site.')}
+            </p>
+          </CardHeader>
+          <CardContent className="space-y-5">
+            <div className="space-y-2">
+              <Label className="text-sm font-semibold">{L('رابط الشعار', 'Logo URL', 'URL du Logo')}</Label>
+              <Input
+                value={logoUrl}
+                onChange={e => setLogoUrl(e.target.value)}
+                placeholder="https://example.com/logo.png"
+                className="font-mono text-sm"
+              />
+            </div>
+            {logoUrl && (
+              <div className="mt-4 flex flex-col gap-2">
+                <Label className="text-sm font-semibold">{L('معاينة الشعار', 'Logo Preview', 'Aperçu du Logo')}</Label>
+                <div className="p-4 rounded-xl border border-white/10 bg-[#06090f] w-fit shadow-lg shadow-black/20">
+                  <img src={logoUrl} alt="Logo Preview" className="h-16 w-16 object-contain scale-[1.5]" />
+                </div>
+              </div>
+            )}
+            <div className="pt-4 border-t border-border">
+              <Button onClick={handleSave} disabled={saving} className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto">
+                {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : '💾 '}
+                {L('حفظ الإعدادات', 'Save Settings', 'Enregistrer')}
+              </Button>
+            </div>
+          </CardContent>
         </Card>
       )}
     </div>

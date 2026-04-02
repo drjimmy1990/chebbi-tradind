@@ -171,7 +171,7 @@ export function HomePage() {
         }
         if (json.testimonials) setDbTestimonials(json.testimonials);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // ── Fetch FAQs from DB ──
@@ -181,7 +181,7 @@ export function HomePage() {
       .then((json) => {
         if (json.data) setDbFaqs(json.data);
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // ── Live signals state ──
@@ -211,7 +211,7 @@ export function HomePage() {
           setSignals(mapped);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   // ── Registration form state ──
@@ -276,9 +276,9 @@ export function HomePage() {
         if (json.error === "not_affiliate") {
           setRegError(
             language === 'ar' ? 'حساب XM الخاص بك غير مسجل عبر رابط الإحالة الخاص بنا.' :
-            language === 'en' ? 'Your XM account is not registered under our affiliate link.' :
-            language === 'fr' ? "Votre identifiant n'est pas enregistré via notre lien" :
-            "Votre identifiant n'est pas enregistré via notre lien"
+              language === 'en' ? 'Your XM account is not registered under our affiliate link.' :
+                language === 'fr' ? "Votre identifiant n'est pas enregistré via notre lien" :
+                  "Votre identifiant n'est pas enregistré via notre lien"
           );
         } else {
           setRegError(json.error || t('home.reg.error', language));
@@ -419,10 +419,10 @@ export function HomePage() {
               {/* Profile photo with green border + online pulse */}
               <div className="flex items-center gap-3 mb-6">
                 <div className="relative">
-                  <div className="w-12 h-12 rounded-full border-2 border-primary overflow-hidden">
-                    <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-cover" />
+                  <div className="w-14 h-14 rounded-full border-2 border-primary overflow-hidden bg-[#06090f] p-1 flex items-center justify-center">
+                    <img src={LOGO_URL} alt="Chebbi Trading" className="w-[200%] h-[200%] object-contain max-w-none" />
                   </div>
-                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-primary rounded-full border-2 border-background">
+                  <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-primary rounded-full border-2 border-background z-10">
                     <span className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75" />
                   </span>
                 </div>
@@ -654,7 +654,7 @@ export function HomePage() {
                 {/* The Form embedded inside Step 2 */}
                 <Card className="w-full bg-[#111827] border border-primary/20 rounded-[20px] overflow-hidden shadow-2xl">
                   {/* Subtle top indicator */}
-                  
+
                   <div className="p-6 md:p-7 text-left">
                     <div className="flex items-center gap-2 mb-4">
                       <div className="p-1 rounded-md bg-primary/10 border border-primary/20 flex shrink-0">
@@ -720,11 +720,10 @@ export function HomePage() {
                             const f = e.dataTransfer.files?.[0];
                             if (f) handleFileSelect(f);
                           }}
-                          className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-6 cursor-pointer transition-colors ${
-                            proofFile
-                              ? 'border-primary/40 bg-primary/5'
-                              : 'border-slate-800 hover:border-primary/30 bg-[#0b1018] hover:bg-slate-900/50'
-                          }`}
+                          className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-6 cursor-pointer transition-colors ${proofFile
+                            ? 'border-primary/40 bg-primary/5'
+                            : 'border-slate-800 hover:border-primary/30 bg-[#0b1018] hover:bg-slate-900/50'
+                            }`}
                         >
                           {proofFile ? (
                             <div className="flex flex-col items-center">
@@ -749,7 +748,7 @@ export function HomePage() {
                           <p className="text-sm text-primary font-medium">{regSuccess}</p>
                         </div>
                       )}
-                      
+
                       {regError && (
                         <div className="flex items-center gap-2 p-3 rounded-xl bg-ct-red/10 border border-ct-red/20">
                           <CircleDot size={16} className="text-ct-red shrink-0" />
@@ -1448,8 +1447,8 @@ export function HomePage() {
             {/* Column 1: Logo + Description */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl overflow-hidden border border-border">
-                  <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-cover" />
+                <div className="w-11 h-11 rounded-xl overflow-hidden border border-border bg-[#06090f] p-1">
+                  <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-contain scale-[2]" />
                 </div>
                 <span className="text-xl font-extrabold text-foreground">
                   Chebbi <em className="not-italic text-primary">Trading</em>

@@ -32,7 +32,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 // ──────────────────────── Constants ────────────────────────
 
-const LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
+const DEFAULT_LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
 const YOUTUBE_URL = 'https://www.youtube.com/@ChebbiTrading/streams';
 const TELEGRAM_URL = 'https://t.me/ChebbiTrading';
 const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
@@ -208,6 +208,8 @@ export function BlogPage() {
   const [xmLinkAr, setXmLinkAr] = useState(DEFAULT_XM);
   const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
 
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
+
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(json => {
       const s = json?.data;
@@ -218,6 +220,7 @@ export function BlogPage() {
         if (!s.XM_LINK_FR && s.XM_LINK) setXmLinkFr(s.XM_LINK);
         if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
         if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
+        if (s.LOGO_URL) setLogoUrl(s.LOGO_URL);
       }
     }).catch(() => {});
   }, []);
@@ -705,11 +708,11 @@ export function BlogPage() {
                             <div className="flex items-center justify-between pt-3 border-t border-border">
                               {/* Author */}
                               <div className="flex items-center gap-2">
-                                <div className="w-6 h-6 rounded-full border border-primary/50 overflow-hidden">
+                                <div className="w-7 h-7 rounded-full border border-primary/50 overflow-hidden bg-[#06090f]">
                                   <img
-                                    src={LOGO_URL}
+                                    src={logoUrl}
                                     alt="Chebbi Trading"
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-contain scale-[1.5]"
                                   />
                                 </div>
                                 <span className="text-xs font-medium text-muted-foreground">
@@ -982,11 +985,11 @@ export function BlogPage() {
             {/* Brand */}
             <div>
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center">
+                <div className="w-11 h-11 rounded-xl bg-[#06090f] border border-primary/20 flex items-center justify-center p-1">
                   <img
-                    src={LOGO_URL}
+                    src={logoUrl}
                     alt="Chebbi Trading"
-                    className="w-full h-full object-cover rounded-lg"
+                    className="w-full h-full object-contain scale-[1.5]"
                   />
                 </div>
                 <div>

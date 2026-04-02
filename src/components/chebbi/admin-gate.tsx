@@ -10,7 +10,7 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 
-const LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
+const DEFAULT_LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -26,6 +26,7 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
 
   // Check session on mount
   useEffect(() => {
@@ -41,6 +42,15 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
       .catch(() => {
         setAuth({ isAuthenticated: false, username: null, loading: false });
       });
+
+    fetch('/api/settings')
+      .then((r) => r.json())
+      .then((res) => {
+        if (res.data?.LOGO_URL) {
+          setLogoUrl(res.data.LOGO_URL);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const handleLogin = useCallback(async (e: React.FormEvent) => {
@@ -118,8 +128,8 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
             <div className="p-6 lg:p-8">
               {/* Logo */}
               <div className="flex items-center justify-center mb-6">
-                <div className="w-14 h-14 rounded-xl overflow-hidden border-2 border-primary shadow-lg shadow-primary/20">
-                  <img src={LOGO_URL} alt="Logo" className="w-full h-full object-cover" />
+                <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-primary shadow-lg shadow-primary/20 bg-[#06090f] p-1">
+                  <img src={logoUrl} alt="Logo" className="w-full h-full object-contain scale-[1.5]" />
                 </div>
               </div>
 

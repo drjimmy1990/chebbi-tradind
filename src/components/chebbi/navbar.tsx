@@ -6,7 +6,7 @@ import { Menu, Sun, Moon, Globe, ChevronDown } from 'lucide-react';
 import { useAppStore, type View } from '@/lib/store';
 import { t, type Language } from '@/lib/i18n';
 
-const LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
+const DEFAULT_LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
 
 export function Navbar() {
   const { currentView, setCurrentView, language, setLanguage, mobileMenuOpen, setMobileMenuOpen } = useAppStore();
@@ -16,6 +16,7 @@ export function Navbar() {
   const [xmLinkEn, setXmLinkEn] = useState('https://clicks.pipaffiliates.com/c?c=CHEBBI&l=en&p=1');
   const [xmLinkAr, setXmLinkAr] = useState('https://clicks.pipaffiliates.com/c?c=CHEBBI&l=ar&p=1');
   const xmLink = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
+  const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('theme');
@@ -45,8 +46,9 @@ export function Navbar() {
         if (!s.XM_LINK_FR && s.XM_LINK) setXmLinkFr(s.XM_LINK);
         if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
         if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
+        if (s.LOGO_URL) setLogoUrl(s.LOGO_URL);
       }
-    }).catch(() => {});
+    }).catch(() => { });
   }, []);
 
   useEffect(() => {
@@ -101,18 +103,17 @@ export function Navbar() {
   return (
     <>
       <nav
-        className={`fixed left-0 w-full transition-all duration-300 top-14 ${
-          scrolled
-            ? 'bg-background/95 glass border-b border-border shadow-lg py-2'
-            : 'bg-transparent py-4'
-        }`}
+        className={`fixed left-0 w-full transition-all duration-300 top-14 ${scrolled
+          ? 'bg-background/95 glass border-b border-border shadow-lg py-2'
+          : 'bg-transparent py-4'
+          }`}
         style={{ zIndex: 1000 }}
       >
         <div className="max-w-7xl mx-auto px-5 flex items-center justify-between gap-5">
           {/* Logo */}
           <button onClick={() => handleNav('home')} className="flex items-center gap-3 group">
             <div className="w-10 h-10 rounded-xl overflow-hidden border border-border bg-[#06090f] flex items-center justify-center p-1 group-hover:border-primary transition-all group-hover:shadow-lg group-hover:shadow-primary/20">
-              <img src={LOGO_URL} alt="Logo" className="w-full h-full object-contain" />
+              <img src={logoUrl} alt="Logo" className="w-full h-full object-contain scale-[3]" />
             </div>
             <span className="text-xl font-extrabold text-foreground">
               Chebbi <em className="not-italic text-primary">Trading</em>
@@ -125,11 +126,10 @@ export function Navbar() {
               <li key={item.key}>
                 <button
                   onClick={() => handleNav(item.key)}
-                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                    currentView === item.key
-                      ? 'text-primary'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
-                  }`}
+                  className={`relative px-4 py-2 rounded-lg text-sm font-medium transition-all ${currentView === item.key
+                    ? 'text-primary'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary/50'
+                    }`}
                 >
                   {t(item.labelKey, language)}
                   {currentView === item.key && (
@@ -177,11 +177,10 @@ export function Navbar() {
                       <button
                         key={l.code}
                         onClick={() => { setLanguage(l.code); setLangOpen(false); }}
-                        className={`flex items-center gap-2.5 px-4 py-2.5 text-sm transition-all w-full text-left ${
-                          language === l.code
-                            ? 'bg-primary/10 text-primary'
-                            : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
-                        }`}
+                        className={`flex items-center gap-2.5 px-4 py-2.5 text-sm transition-all w-full text-left ${language === l.code
+                          ? 'bg-primary/10 text-primary'
+                          : 'text-muted-foreground hover:bg-secondary hover:text-foreground'
+                          }`}
                       >
                         <span>{l.flag}</span>
                         <span className="font-medium">{l.label}</span>
@@ -198,7 +197,7 @@ export function Navbar() {
               target="_blank"
               className="hidden md:flex items-center gap-2 bg-ct-xm text-white px-5 py-2.5 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-ct-xm/40"
             >
-              <span className="icon-user-plus" style={{fontSize:14}}>👤</span>
+              <span className="icon-user-plus" style={{ fontSize: 14 }}>👤</span>
               {t('nav.register', language)}
             </a>
 
@@ -228,11 +227,10 @@ export function Navbar() {
                   <button
                     key={item.key}
                     onClick={() => handleNav(item.key)}
-                    className={`px-4 py-3 rounded-lg text-left text-sm font-medium transition-all ${
-                      currentView === item.key
-                        ? 'bg-primary/10 text-primary'
-                        : 'text-muted-foreground hover:bg-secondary/50'
-                    }`}
+                    className={`px-4 py-3 rounded-lg text-left text-sm font-medium transition-all ${currentView === item.key
+                      ? 'bg-primary/10 text-primary'
+                      : 'text-muted-foreground hover:bg-secondary/50'
+                      }`}
                   >
                     {t(item.labelKey, language)}
                   </button>
