@@ -93,14 +93,6 @@ function SectionHeading({ badge, title, titleGradient, subtitle }: { badge: stri
   );
 }
 
-// ─── Sample Signals Data (fallback) ────────────────────────────
-const sampleSignals = [
-  { id: 1, symbol: 'XAU/USD', direction: 'BUY' as const, entry: '2,342.50', tp: '2,358.00', sl: '2,334.00', result: 'win' as const, pips: '+155 pips' },
-  { id: 2, symbol: 'EUR/USD', direction: 'SELL' as const, entry: '1.0842', tp: '1.0790', sl: '1.0868', result: 'win' as const, pips: '+52 pips' },
-  { id: 3, symbol: 'GBP/USD', direction: 'BUY' as const, entry: '1.2680', tp: '1.2750', sl: '1.2645', result: 'loss' as const, pips: '-35 pips' },
-  { id: 4, symbol: 'XAU/USD', direction: 'SELL' as const, entry: '2,361.20', tp: '2,342.00', sl: '2,370.00', result: 'win' as const, pips: '+192 pips' },
-  { id: 5, symbol: 'USD/JPY', direction: 'BUY' as const, entry: '149.82', tp: '150.40', sl: '149.40', result: 'live' as const, pips: '' },
-];
 
 // ─── Types for dynamic data ──────────────────────────────────
 interface DbTestimonial {
@@ -186,35 +178,6 @@ export function HomePage() {
       .catch(() => { });
   }, []);
 
-  // ── Live signals state ──
-  const [signals, setSignals] = useState(sampleSignals);
-
-  useEffect(() => {
-    fetch('/api/signals')
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.data && Array.isArray(json.data) && json.data.length > 0) {
-          const mapped = json.data.slice(0, 5).map((s: Record<string, string>) => {
-            const resultStr = s.result || 'open';
-            const isWin = resultStr.startsWith('+');
-            const isLoss = resultStr.startsWith('-');
-            const isOpen = resultStr === 'open';
-            return {
-              id: s.id,
-              symbol: s.instrument || '—',
-              direction: (s.direction || 'BUY').toUpperCase() as 'BUY' | 'SELL',
-              entry: s.entry || '—',
-              tp: s.takeProfit || '—',
-              sl: s.stopLoss || '—',
-              result: (isOpen ? 'live' : isWin ? 'win' : 'loss') as 'live' | 'win' | 'loss',
-              pips: isOpen ? '' : isWin || isLoss ? `${resultStr} pips` : '',
-            };
-          });
-          setSignals(mapped);
-        }
-      })
-      .catch(() => { });
-  }, []);
 
   // ── Registration form state ──
   const [regEmail, setRegEmail] = useState('');
@@ -954,92 +917,7 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════════════
-          SECTION 6: SIGNALS PREVIEW
-          ═══════════════════════════════════════════════════════════ */}
-      <section className="py-16 lg:py-20">
-        <div className="max-w-7xl mx-auto px-5">
-          <SectionHeading
-            badge="📡 Signals"
-            title={t('sig.title', language)}
-            subtitle={t('sig.subtitle', language)}
-          />
 
-          <SectionReveal>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
-              {signals.map((signal) => (
-                <Card
-                  key={signal.id}
-                  className="bg-card border border-border rounded-2xl p-5 hover:-translate-y-1 hover:shadow-xl transition-all duration-300"
-                >
-                  {/* Direction Badge */}
-                  <div className="flex items-center justify-between mb-4">
-                    <Badge
-                      className={
-                        signal.direction === 'BUY'
-                          ? 'bg-primary/10 text-primary border-primary/20 font-bold text-xs'
-                          : 'bg-ct-red/10 text-ct-red border-ct-red/20 font-bold text-xs'
-                      }
-                    >
-                      {signal.direction === 'BUY' ? '↗' : '↘'} {signal.direction}
-                    </Badge>
-                    {/* Result indicator */}
-                    <div className="flex items-center gap-1.5">
-                      {signal.result === 'live' ? (
-                        <>
-                          <span className="w-2 h-2 bg-primary rounded-full animate-pulse" />
-                          <span className="text-xs text-primary font-semibold">Live</span>
-                        </>
-                      ) : signal.result === 'win' ? (
-                        <>
-                          <CheckCircle2 size={14} className="text-primary" />
-                          <span className="text-xs text-primary font-semibold">Win</span>
-                        </>
-                      ) : (
-                        <>
-                          <CircleDot size={14} className="text-ct-red" />
-                          <span className="text-xs text-ct-red font-semibold">Loss</span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Symbol */}
-                  <p className="text-lg font-extrabold text-foreground mb-3">{signal.symbol}</p>
-
-                  {/* Entry */}
-                  <div className="space-y-1.5 mb-3">
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">Entry</span>
-                      <span className="text-foreground font-semibold">{signal.entry}</span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">TP</span>
-                      <span className="text-primary font-semibold">{signal.tp}</span>
-                    </div>
-                    <div className="flex justify-between text-xs">
-                      <span className="text-muted-foreground">SL</span>
-                      <span className="text-ct-red font-semibold">{signal.sl}</span>
-                    </div>
-                  </div>
-
-                  <Separator className="my-2" />
-
-                  {/* Pips */}
-                  {signal.pips && (
-                    <p className={`text-xs font-bold ${signal.result === 'win' ? 'text-primary' : 'text-ct-red'}`}>
-                      {signal.pips}
-                    </p>
-                  )}
-                  {signal.result === 'live' && (
-                    <p className="text-xs text-muted-foreground font-medium">{t('home.live.progress', language)}</p>
-                  )}
-                </Card>
-              ))}
-            </div>
-          </SectionReveal>
-        </div>
-      </section>
 
       {/* ═══════════════════════════════════════════════════════════
           SECTION 7: XM CTA
