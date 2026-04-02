@@ -910,6 +910,11 @@ export function DashboardPage() {
 
   /* ---- computed ---- */
   const pendingCount = members.filter((m) => m.status === 'pending').length;
+  const activeCount = members.filter((m) => m.status === 'active').length;
+
+  const totalArticleViews = useMemo(() => {
+    return articles.reduce((sum, art) => sum + (art.views || 0), 0);
+  }, [articles]);
 
   const filteredMembers = useMemo(() => {
     if (!memberSearch.trim()) return members;
@@ -1084,12 +1089,9 @@ export function DashboardPage() {
                           {L('أعضاء نشطين', 'Active members', 'Membres actifs')}
                         </p>
                         <p className="mt-2 text-3xl font-bold font-mono text-foreground">
-                          {members.length.toLocaleString()}
+                          {activeCount.toLocaleString()}
                         </p>
                       </div>
-                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30">
-                        +12%
-                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
@@ -1117,13 +1119,12 @@ export function DashboardPage() {
                     <div className="flex items-center justify-between">
                       <div>
                         <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                          {L('زيارات / أسبوع', 'Visits / week', 'Visites / semaine')}
+                          {L('مشاهدات المقالات', 'Article views', 'Vues des articles')}
                         </p>
-                        <p className="mt-2 text-3xl font-bold font-mono text-foreground">4,821</p>
+                        <p className="mt-2 text-3xl font-bold font-mono text-foreground">
+                          {totalArticleViews.toLocaleString()}
+                        </p>
                       </div>
-                      <Badge className="bg-green-500/20 text-green-400 border-green-500/30 hover:bg-green-500/30">
-                        +8%
-                      </Badge>
                     </div>
                   </CardContent>
                 </Card>
