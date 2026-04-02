@@ -7,9 +7,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name, email, xmId, proofBase64, proofFile, proofFilename } = body;
 
-    if (!name || !email || !xmId) {
+    if (!email || !xmId) {
       return NextResponse.json(
-        { error: "Name, email, and XM ID are required" },
+        { error: "Email and XM ID are required" },
         { status: 400 }
       );
     }
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
 
     const member = await db.member.create({
       data: {
-        name: name.trim(),
+        name: name ? name.trim() : `XM Trader ${xmId.trim()}`,
         email: email.trim().toLowerCase(),
         xmId: xmId.trim(),
         status: "pending",
