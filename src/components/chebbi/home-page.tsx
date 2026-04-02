@@ -215,7 +215,6 @@ export function HomePage() {
   }, []);
 
   // ── Registration form state ──
-  const [regName, setRegName] = useState('');
   const [regEmail, setRegEmail] = useState('');
   const [regXmId, setRegXmId] = useState('');
   const [regSubmitting, setRegSubmitting] = useState(false);
@@ -250,7 +249,7 @@ export function HomePage() {
   }, [language]);
 
   const handleRegister = useCallback(async () => {
-    if (!regName.trim() || !regEmail.trim() || !regXmId.trim()) {
+    if (!regEmail.trim() || !regXmId.trim()) {
       setRegError(t('home.reg.required', language));
       return;
     }
@@ -262,7 +261,7 @@ export function HomePage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: regName.trim(),
+          name: `XM User ${regXmId.trim()}`,
           email: regEmail.trim(),
           xmId: regXmId.trim(),
           proofBase64: proofBase64 || null,
@@ -276,7 +275,6 @@ export function HomePage() {
         setRegError(json.error || t('home.reg.error', language));
       } else {
         setRegSuccess(t('home.reg.success', language));
-        setRegName('');
         setRegEmail('');
         setRegXmId('');
         setProofFile(null);
@@ -287,7 +285,7 @@ export function HomePage() {
     } finally {
       setRegSubmitting(false);
     }
-  }, [regName, regEmail, regXmId, proofBase64, proofFile, language]);
+  }, [regEmail, regXmId, proofBase64, proofFile, language]);
 
   const handleNav = (view: 'results' | 'blog' | 'home') => {
     setCurrentView(view);
@@ -588,10 +586,11 @@ export function HomePage() {
       </section>
 
       {/* ═══════════════════════════════════════════════════════════
-          SECTION 3: JOIN STEPS
+          SECTION 3: JOIN STEPS AND REGISTRATION
           ═══════════════════════════════════════════════════════════ */}
-      <section className="py-16 lg:py-20 bg-secondary/50">
-        <div className="max-w-7xl mx-auto px-5">
+      <section className="relative py-16 lg:py-24 bg-card/10 z-10 overflow-hidden">
+        <div className="absolute top-[40%] left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-primary/5 blur-[120px] rounded-[100%] pointer-events-none" />
+        <div className="max-w-[1100px] mx-auto px-5">
           <SectionHeading
             badge={t('hero.badge', language)}
             title={t('join.title', language)}
@@ -599,195 +598,195 @@ export function HomePage() {
           />
 
           <SectionReveal>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-              {[
-                { step: 1, icon: <Send size={28} className="text-ct-red" />, color: 'ct-red', title: t('join.step1.title', language), desc: t('join.step1.desc', language), label: 'XM', href: XM_LINK },
-                { step: 2, icon: <MessageCircle size={28} className="text-primary" />, color: 'primary', title: t('join.step2.title', language), desc: t('join.step2.desc', language), label: 'Telegram', href: TELEGRAM_URL },
-                { step: 3, icon: <ShieldCheck size={28} className="text-ct-gold" />, color: 'ct-gold', title: t('join.step3.title', language), desc: t('join.step3.desc', language), label: 'YouTube', href: YOUTUBE_URL },
-              ].map((s) => (
-                <div key={s.step} className="flex flex-col items-center text-center group">
-                  {/* Number + Icon circle */}
-                  <div className="relative mb-6">
-                    <div className={`w-24 h-24 rounded-full bg-${s.color}/10 border-2 border-${s.color}/30 flex items-center justify-center group-hover:bg-${s.color}/20 group-hover:border-${s.color}/50 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-${s.color}/20`}>
-                      <div className={`w-16 h-16 rounded-full bg-${s.color}/20 flex items-center justify-center`}>
-                        {s.icon}
-                      </div>
-                    </div>
-                    <div className={`absolute -top-2 -right-2 w-8 h-8 rounded-full bg-${s.color} flex items-center justify-center text-white text-xs font-bold shadow-lg z-10`}>
-                      {s.step}
-                    </div>
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_minmax(auto,_420px)_1fr] gap-10 md:gap-14 relative w-full items-start mt-12">
+              {/* Decorative line behind steps (desktop only) */}
+              <div className="hidden lg:block absolute top-[28px] left-[15%] right-[15%] h-[1px] bg-gradient-to-r from-ct-red/40 via-primary/40 to-ct-gold/40 pointer-events-none" />
+
+              {/* STEP 1: Ouvrir un compte */}
+              <div className="flex flex-col items-center text-center group relative z-10">
+                <div className="relative mb-8 mx-auto">
+                  <div className="w-14 h-14 rounded-full bg-ct-red/10 border border-ct-red/30 flex items-center justify-center group-hover:bg-ct-red/20 transition-all duration-300">
+                    <UserPlus size={20} className="text-ct-red" />
                   </div>
-                  {/* Text + CTA */}
-                  <h3 className="text-lg font-bold text-foreground mb-2">{s.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed mb-5 max-w-[260px]">
-                    {s.desc}
-                  </p>
-                  <a
-                    href={s.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`inline-flex items-center gap-2 bg-${s.color} text-white px-6 py-2.5 rounded-lg text-sm font-bold transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-${s.color}/40`}
-                  >
-                    {s.label} <ArrowRight size={14} />
-                  </a>
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-ct-red flex items-center justify-center text-white text-[10px] font-bold shadow-[0_0_10px_rgba(239,68,68,0.5)] z-10">
+                    1
+                  </div>
                 </div>
-              ))}
-            </div>
-          </SectionReveal>
-        </div>
-      </section>
-
-      {/* ═══════════════════════════════════════════════════════════
-          SECTION 3.5: REGISTRATION FORM
-          ═══════════════════════════════════════════════════════════ */}
-      <section className="py-16 lg:py-20 bg-secondary/50">
-        <div className="max-w-xl mx-auto px-5">
-          <SectionReveal>
-            <Card className="bg-card border border-border rounded-2xl overflow-hidden shadow-xl shadow-primary/5">
-              {/* Gradient top border */}
-              <div className="h-1 bg-gradient-to-r from-primary via-ct-blue to-primary" />
-
-              <div className="p-6 lg:p-8">
-                {/* Header */}
-                <div className="text-center mb-6">
-                  <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center mx-auto mb-4">
-                    <UserPlus size={28} className="text-primary" />
-                  </div>
-                  <h2 className="text-xl font-extrabold text-foreground mb-1">
-                    {t('home.reg.title', language)}
-                  </h2>
-                  <p className="text-sm text-muted-foreground">
-                    {t('home.reg.subtitle', language)}
-                  </p>
-                </div>
-
-                {/* Form */}
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="reg-name" className="text-sm font-medium text-foreground">
-                      {t('home.reg.name', language)}
-                    </Label>
-                    <Input
-                      id="reg-name"
-                      type="text"
-                      value={regName}
-                      onChange={(e) => setRegName(e.target.value)}
-                      placeholder={t('home.reg.name', language)}
-                      className="bg-secondary/50 border-border focus:border-primary"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="reg-email" className="text-sm font-medium text-foreground">
-                      {t('home.reg.email', language)}
-                    </Label>
-                    <Input
-                      id="reg-email"
-                      type="email"
-                      value={regEmail}
-                      onChange={(e) => setRegEmail(e.target.value)}
-                      placeholder={t('home.reg.email', language)}
-                      className="bg-secondary/50 border-border focus:border-primary"
-                    />
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="reg-xmid" className="text-sm font-medium text-foreground">
-                      {t('home.reg.xmId', language)}
-                    </Label>
-                    <Input
-                      id="reg-xmid"
-                      type="text"
-                      value={regXmId}
-                      onChange={(e) => setRegXmId(e.target.value)}
-                      placeholder={t('home.reg.xmId.placeholder', language)}
-                      className="bg-secondary/50 border-border focus:border-primary"
-                    />
-                  </div>
-
-                  {/* Proof of deposit upload */}
-                  <div className="space-y-2">
-                    <Label className="text-sm font-medium text-foreground">
-                      {t('home.reg.proof', language)}
-                    </Label>
-                    <input
-                      ref={fileInputRef}
-                      type="file"
-                      accept="image/jpeg,image/png,image/webp"
-                      className="hidden"
-                      onChange={(e) => {
-                        const f = e.target.files?.[0];
-                        if (f) handleFileSelect(f);
-                      }}
-                    />
-                    <div
-                      onClick={() => fileInputRef.current?.click()}
-                      onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
-                      onDrop={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        const f = e.dataTransfer.files?.[0];
-                        if (f) handleFileSelect(f);
-                      }}
-                      className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed px-4 py-5 cursor-pointer transition-colors ${
-                        proofFile
-                          ? 'border-primary/40 bg-primary/5'
-                          : 'border-border hover:border-primary/30 hover:bg-secondary/30'
-                      }`}
-                    >
-                      {proofFile ? (
-                        <>
-                          <CheckCircle2 size={24} className="text-primary" />
-                          <span className="text-xs font-medium text-primary">{t('home.reg.proof.uploaded', language)}</span>
-                          <span className="text-[10px] text-muted-foreground truncate max-w-full">{proofFile.name}</span>
-                        </>
-                      ) : (
-                        <>
-                          <Upload size={24} className="text-muted-foreground" />
-                          <span className="text-xs text-muted-foreground text-center">
-                            {t('home.reg.proof.hint', language)}
-                          </span>
-                        </>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Status messages */}
-                  {regSuccess && (
-                    <div className="flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20">
-                      <CheckCircle2 size={16} className="text-primary shrink-0" />
-                      <p className="text-sm text-primary font-medium">{regSuccess}</p>
-                    </div>
-                  )}
-                  {regError && (
-                    <div className="flex items-center gap-2 p-3 rounded-xl bg-ct-red/10 border border-ct-red/20">
-                      <CircleDot size={16} className="text-ct-red shrink-0" />
-                      <p className="text-sm text-ct-red font-medium">{regError}</p>
-                    </div>
-                  )}
-
-                  <Button
-                    onClick={handleRegister}
-                    disabled={regSubmitting}
-                    className="w-full py-3.5 bg-primary text-primary-foreground hover:bg-primary/90 font-bold"
-                  >
-                    {regSubmitting ? (
-                      <>
-                        <Loader2 size={16} className="mr-2 animate-spin" />
-                        {t('home.reg.submitting', language)}
-                      </>
-                    ) : (
-                      t('home.reg.submit', language)
-                    )}
-                  </Button>
-                </div>
-
-                {/* Note */}
-                <p className="text-center text-xs text-muted-foreground mt-4">
-                  ℹ️ {t('home.reg.note', language)}
+                <h3 className="text-base font-bold text-foreground mb-2">{t('join.step1.title', language)}</h3>
+                <p className="text-[13px] text-muted-foreground leading-relaxed mb-6 max-w-[240px]">
+                  {t('join.step1.desc', language)}
                 </p>
+                <a
+                  href={XM_LINK}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-ct-red hover:bg-ct-red/90 text-white px-8 py-2.5 rounded-lg text-sm font-bold shadow-[0_0_15px_rgba(239,68,68,0.2)] hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:-translate-y-0.5"
+                >
+                  <ExternalLink size={16} /> Ouvrir
+                </a>
               </div>
-            </Card>
+
+              {/* STEP 2: Formulaire */}
+              <div className="flex flex-col items-center text-center group relative z-10 w-full mx-auto">
+                <div className="relative mb-8 mx-auto">
+                  <div className="w-14 h-14 rounded-full bg-primary/10 border border-primary/30 flex items-center justify-center group-hover:bg-primary/20 transition-all duration-300">
+                    <Send size={20} className="text-primary" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-primary flex items-center justify-center text-[#06090f] text-[10px] font-bold shadow-[0_0_10px_rgba(16,185,129,0.5)] z-10">
+                    2
+                  </div>
+                </div>
+                <h3 className="text-base font-bold text-foreground mb-2">{t('join.step2.title', language)}</h3>
+                <p className="text-[13px] text-muted-foreground leading-relaxed mb-6 max-w-[280px]">
+                  {t('join.step2.desc', language)}
+                </p>
+
+                {/* The Form embedded inside Step 2 */}
+                <Card className="w-full bg-[#111827] border border-primary/20 rounded-[20px] overflow-hidden shadow-2xl">
+                  {/* Subtle top indicator */}
+                  
+                  <div className="p-6 md:p-7 text-left">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="p-1 rounded-md bg-primary/10 border border-primary/20 flex shrink-0">
+                        <MessageCircle size={14} className="text-primary" />
+                      </div>
+                      <h4 className="font-bold text-[15px] text-white tracking-wide">
+                        Informations d'inscription
+                      </h4>
+                    </div>
+                    <p className="text-[12px] text-slate-400 mb-6 leading-relaxed">
+                      Vos données sont sécurisées et utilisées uniquement pour vérifier votre compte XM.
+                    </p>
+
+                    <div className="space-y-4">
+                      <div className="space-y-1.5">
+                        <Label htmlFor="reg-xmid" className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
+                          NUMÉRO DE COMPTE XM *
+                        </Label>
+                        <Input
+                          id="reg-xmid"
+                          type="text"
+                          value={regXmId}
+                          onChange={(e) => setRegXmId(e.target.value)}
+                          placeholder="Ex: 123456789"
+                          className="bg-[#0b1018] border-slate-800/60 focus:border-primary/50 rounded-xl px-4 py-5 text-sm placeholder:text-slate-500"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label htmlFor="reg-email" className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
+                          ADRESSE EMAIL *
+                        </Label>
+                        <Input
+                          id="reg-email"
+                          type="email"
+                          value={regEmail}
+                          onChange={(e) => setRegEmail(e.target.value)}
+                          placeholder="votre@email.com"
+                          className="bg-[#0b1018] border-slate-800/60 focus:border-primary/50 rounded-xl px-4 py-5 text-sm placeholder:text-slate-500"
+                        />
+                      </div>
+
+                      <div className="space-y-1.5">
+                        <Label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
+                          CAPTURE D'ÉCRAN DU COMPTE XM
+                        </Label>
+                        <input
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp"
+                          className="hidden"
+                          onChange={(e) => {
+                            const f = e.target.files?.[0];
+                            if (f) handleFileSelect(f);
+                          }}
+                        />
+                        <div
+                          onClick={() => fileInputRef.current?.click()}
+                          onDragOver={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                          onDrop={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            const f = e.dataTransfer.files?.[0];
+                            if (f) handleFileSelect(f);
+                          }}
+                          className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border border-dashed px-4 py-6 cursor-pointer transition-colors ${
+                            proofFile
+                              ? 'border-primary/40 bg-primary/5'
+                              : 'border-slate-800 hover:border-primary/30 bg-[#0b1018] hover:bg-slate-900/50'
+                          }`}
+                        >
+                          {proofFile ? (
+                            <div className="flex flex-col items-center">
+                              <CheckCircle2 size={24} className="text-primary mb-1" />
+                              <span className="text-xs font-semibold text-primary">{t('home.reg.proof.uploaded', language)}</span>
+                              <span className="text-[10px] text-muted-foreground truncate w-full max-w-[200px] text-center mt-1">{proofFile.name}</span>
+                            </div>
+                          ) : (
+                            <div className="flex flex-col items-center">
+                              <Upload size={20} className="text-slate-400 mb-2" />
+                              <span className="text-xs font-medium text-slate-400">
+                                Cliquez ou glissez une image ici
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {regSuccess && (
+                        <div className="flex items-center gap-2 p-3 rounded-xl bg-primary/10 border border-primary/20">
+                          <CheckCircle2 size={16} className="text-primary shrink-0" />
+                          <p className="text-sm text-primary font-medium">{regSuccess}</p>
+                        </div>
+                      )}
+                      
+                      {regError && (
+                        <div className="flex items-center gap-2 p-3 rounded-xl bg-ct-red/10 border border-ct-red/20">
+                          <CircleDot size={16} className="text-ct-red shrink-0" />
+                          <p className="text-sm text-ct-red font-medium">{regError}</p>
+                        </div>
+                      )}
+
+                      <Button
+                        onClick={handleRegister}
+                        disabled={regSubmitting}
+                        className="w-full h-12 bg-slate-800/80 border border-slate-700/50 hover:bg-slate-800 hover:border-primary/50 text-slate-300 hover:text-white transition-all shadow-none mt-2 font-semibold rounded-xl"
+                      >
+                        {regSubmitting ? (
+                          <>
+                            <Loader2 size={16} className="mr-2 animate-spin" />
+                            {t('home.reg.submitting', language)}
+                          </>
+                        ) : (
+                          "Vérifier mon compte XM"
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </Card>
+              </div>
+
+              {/* STEP 3: Accès immédiat */}
+              <div className="flex flex-col items-center text-center group relative z-10 pt-4 lg:pt-0">
+                <div className="relative mb-8 mx-auto">
+                  <div className="w-14 h-14 rounded-full bg-ct-gold/10 border border-ct-gold/30 flex items-center justify-center group-hover:bg-ct-gold/20 transition-all duration-300">
+                    <ShieldCheck size={20} className="text-ct-gold" />
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-ct-gold flex items-center justify-center text-[#06090f] text-[10px] font-bold shadow-[0_0_10px_rgba(245,158,11,0.5)] z-10">
+                    3
+                  </div>
+                </div>
+                <h3 className="text-base font-bold text-foreground mb-2">{t('join.step3.title', language)}</h3>
+                <p className="text-[13px] text-muted-foreground leading-relaxed mb-6 max-w-[240px]">
+                  {t('join.step3.desc', language)}
+                </p>
+                <div
+                  className="inline-flex items-center gap-2 bg-primary/20 text-primary px-8 py-2.5 rounded-lg text-sm font-bold cursor-default"
+                >
+                  <CheckCircle2 size={16} /> Gratuit
+                </div>
+              </div>
+            </div>
           </SectionReveal>
         </div>
       </section>

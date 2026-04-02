@@ -1,5 +1,5 @@
 # 📡 Chebbi Trading — Full API Reference
-> **Base URL:** `https://chebbi-trading.com`  
+> **Base URL:** `https://tawriqa-sys.giize.com`  
 > **Local dev:** `http://localhost:3000`
 
 ---
@@ -31,7 +31,7 @@ This key lives in the database and **never expires**, even after server restarts
 
 ### Login
 ```bash
-curl -X POST https://chebbi-trading.com/api/auth \
+curl -X POST https://tawriqa-sys.giize.com/api/auth \
   -H "Content-Type: application/json" \
   -d '{"username": "admin", "password": "YOUR_PASSWORD"}'
 ```
@@ -39,13 +39,13 @@ Response includes a `token` you can also use as a Bearer token (short-lived, los
 
 ### Check Session
 ```bash
-curl https://chebbi-trading.com/api/auth \
+curl https://tawriqa-sys.giize.com/api/auth \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Logout
 ```bash
-curl -X DELETE https://chebbi-trading.com/api/auth \
+curl -X DELETE https://tawriqa-sys.giize.com/api/auth \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
@@ -55,31 +55,31 @@ curl -X DELETE https://chebbi-trading.com/api/auth \
 
 ### Get All Members
 ```bash
-curl https://chebbi-trading.com/api/members \
+curl https://tawriqa-sys.giize.com/api/members \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Get Only Pending Members *(waiting for deposit verification)*
 ```bash
-curl "https://chebbi-trading.com/api/members?status=pending" \
+curl "https://tawriqa-sys.giize.com/api/members?status=pending" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Get Only Active Members
 ```bash
-curl "https://chebbi-trading.com/api/members?status=active" \
+curl "https://tawriqa-sys.giize.com/api/members?status=active" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Get Only Rejected Members
 ```bash
-curl "https://chebbi-trading.com/api/members?status=rejected" \
+curl "https://tawriqa-sys.giize.com/api/members?status=rejected" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Create a Member *(admin only)*
 ```bash
-curl -X POST https://chebbi-trading.com/api/members \
+curl -X POST https://tawriqa-sys.giize.com/api/members \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -92,7 +92,7 @@ curl -X POST https://chebbi-trading.com/api/members \
 
 ### Update Member Status
 ```bash
-curl -X PATCH https://chebbi-trading.com/api/members \
+curl -X PATCH https://tawriqa-sys.giize.com/api/members \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -108,7 +108,7 @@ curl -X PATCH https://chebbi-trading.com/api/members \
 
 ### Register a New Member
 ```bash
-curl -X POST https://chebbi-trading.com/api/register \
+curl -X POST https://tawriqa-sys.giize.com/api/register \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Ahmed Ben Ali",
@@ -124,7 +124,7 @@ curl -X POST https://chebbi-trading.com/api/register \
 
 ### Approve a Member After Deposit Verification
 ```bash
-curl -X POST https://chebbi-trading.com/api/webhook/member-status \
+curl -X POST https://tawriqa-sys.giize.com/api/webhook/member-status \
   -H "Content-Type: application/json" \
   -d '{
     "memberId": "MEMBER_ID_HERE",
@@ -135,7 +135,7 @@ curl -X POST https://chebbi-trading.com/api/webhook/member-status \
 
 ### Reject a Member
 ```bash
-curl -X POST https://chebbi-trading.com/api/webhook/member-status \
+curl -X POST https://tawriqa-sys.giize.com/api/webhook/member-status \
   -H "Content-Type: application/json" \
   -d '{
     "memberId": "MEMBER_ID_HERE",
@@ -152,12 +152,12 @@ curl -X POST https://chebbi-trading.com/api/webhook/member-status \
 
 ### Get All Signals *(public)*
 ```bash
-curl https://chebbi-trading.com/api/signals
+curl https://tawriqa-sys.giize.com/api/signals
 ```
 
 ### Create a Signal
 ```bash
-curl -X POST https://chebbi-trading.com/api/signals \
+curl -X POST https://tawriqa-sys.giize.com/api/signals \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -179,24 +179,24 @@ curl -X POST https://chebbi-trading.com/api/signals \
 
 ### Get All Trades *(public)*
 ```bash
-curl https://chebbi-trading.com/api/trades
+curl https://tawriqa-sys.giize.com/api/trades
 ```
 
 ### Get Trades Filtered *(public)*
 ```bash
 # By year
-curl "https://chebbi-trading.com/api/trades?year=2026"
+curl "https://tawriqa-sys.giize.com/api/trades?year=2026"
 
 # By year + month (0=Jan, 1=Feb, ...)
-curl "https://chebbi-trading.com/api/trades?year=2026&month=3"
+curl "https://tawriqa-sys.giize.com/api/trades?year=2026&month=3"
 
 # Only winning trades
-curl "https://chebbi-trading.com/api/trades?result=W"
+curl "https://tawriqa-sys.giize.com/api/trades?result=W"
 ```
 
 ### Create a Trade *(no auth required)*
 ```bash
-curl -X POST https://chebbi-trading.com/api/trades \
+curl -X POST https://tawriqa-sys.giize.com/api/trades \
   -H "Content-Type: application/json" \
   -d '{
     "year": 2026,
@@ -214,7 +214,7 @@ curl -X POST https://chebbi-trading.com/api/trades \
 
 ### Delete a Trade *(no auth required)*
 ```bash
-curl -X DELETE "https://chebbi-trading.com/api/trades?id=TRADE_ID_HERE"
+curl -X DELETE "https://tawriqa-sys.giize.com/api/trades?id=TRADE_ID_HERE"
 ```
 
 ---
@@ -223,12 +223,12 @@ curl -X DELETE "https://chebbi-trading.com/api/trades?id=TRADE_ID_HERE"
 
 ### Get All Monthly Results
 ```bash
-curl https://chebbi-trading.com/api/results
+curl https://tawriqa-sys.giize.com/api/results
 ```
 
 ### Get Results for a Specific Year
 ```bash
-curl "https://chebbi-trading.com/api/results?year=2026"
+curl "https://tawriqa-sys.giize.com/api/results?year=2026"
 ```
 > Returns `lowRisk` and `mediumRisk` percentages computed automatically from pips.
 
@@ -238,12 +238,12 @@ curl "https://chebbi-trading.com/api/results?year=2026"
 
 ### Get All Crypto Monthly Records *(public)*
 ```bash
-curl https://chebbi-trading.com/api/crypto
+curl https://tawriqa-sys.giize.com/api/crypto
 ```
 
 ### Add/Update a Monthly Crypto Record *(no auth required)*
 ```bash
-curl -X POST https://chebbi-trading.com/api/crypto \
+curl -X POST https://tawriqa-sys.giize.com/api/crypto \
   -H "Content-Type: application/json" \
   -d '{
     "year": 2026,
@@ -255,7 +255,7 @@ curl -X POST https://chebbi-trading.com/api/crypto \
 
 ### Update a Record by ID *(no auth required)*
 ```bash
-curl -X PUT https://chebbi-trading.com/api/crypto \
+curl -X PUT https://tawriqa-sys.giize.com/api/crypto \
   -H "Content-Type: application/json" \
   -d '{
     "id": "RECORD_ID_HERE",
@@ -265,7 +265,7 @@ curl -X PUT https://chebbi-trading.com/api/crypto \
 
 ### Delete a Crypto Record *(no auth required)*
 ```bash
-curl -X DELETE "https://chebbi-trading.com/api/crypto?id=RECORD_ID_HERE"
+curl -X DELETE "https://tawriqa-sys.giize.com/api/crypto?id=RECORD_ID_HERE"
 ```
 
 ---
@@ -274,7 +274,7 @@ curl -X DELETE "https://chebbi-trading.com/api/crypto?id=RECORD_ID_HERE"
 
 ### Subscribe an Email *(public — called by the crypto page form)*
 ```bash
-curl -X POST https://chebbi-trading.com/api/crypto-subscribers \
+curl -X POST https://tawriqa-sys.giize.com/api/crypto-subscribers \
   -H "Content-Type: application/json" \
   -d '{"email": "client@example.com"}'
 ```
@@ -282,13 +282,13 @@ curl -X POST https://chebbi-trading.com/api/crypto-subscribers \
 
 ### Get All Subscribers
 ```bash
-curl https://chebbi-trading.com/api/crypto-subscribers \
+curl https://tawriqa-sys.giize.com/api/crypto-subscribers \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Update Subscriber Status
 ```bash
-curl -X PATCH https://chebbi-trading.com/api/crypto-subscribers \
+curl -X PATCH https://tawriqa-sys.giize.com/api/crypto-subscribers \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -300,7 +300,7 @@ curl -X PATCH https://chebbi-trading.com/api/crypto-subscribers \
 
 ### Delete a Subscriber
 ```bash
-curl -X DELETE "https://chebbi-trading.com/api/crypto-subscribers?id=SUBSCRIBER_ID_HERE" \
+curl -X DELETE "https://tawriqa-sys.giize.com/api/crypto-subscribers?id=SUBSCRIBER_ID_HERE" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
@@ -310,18 +310,18 @@ curl -X DELETE "https://chebbi-trading.com/api/crypto-subscribers?id=SUBSCRIBER_
 
 ### Get All Articles *(public)*
 ```bash
-curl https://chebbi-trading.com/api/blog
+curl https://tawriqa-sys.giize.com/api/blog
 ```
 
 ### Get Articles by Category *(public)*
 ```bash
-curl "https://chebbi-trading.com/api/blog?category=gold"
+curl "https://tawriqa-sys.giize.com/api/blog?category=gold"
 ```
 > Categories: `gold` | `education` | `strategie` | `analyse`
 
 ### Create an Article
 ```bash
-curl -X POST https://chebbi-trading.com/api/blog \
+curl -X POST https://tawriqa-sys.giize.com/api/blog \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -346,7 +346,7 @@ curl -X POST https://chebbi-trading.com/api/blog \
 
 ### Update an Article
 ```bash
-curl -X PUT https://chebbi-trading.com/api/blog \
+curl -X PUT https://tawriqa-sys.giize.com/api/blog \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -358,7 +358,7 @@ curl -X PUT https://chebbi-trading.com/api/blog \
 
 ### Delete an Article
 ```bash
-curl -X DELETE "https://chebbi-trading.com/api/blog?id=ARTICLE_ID_HERE" \
+curl -X DELETE "https://tawriqa-sys.giize.com/api/blog?id=ARTICLE_ID_HERE" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
@@ -368,12 +368,12 @@ curl -X DELETE "https://chebbi-trading.com/api/blog?id=ARTICLE_ID_HERE" \
 
 ### Get All FAQs *(public)*
 ```bash
-curl https://chebbi-trading.com/api/faq
+curl https://tawriqa-sys.giize.com/api/faq
 ```
 
 ### Create a FAQ
 ```bash
-curl -X POST https://chebbi-trading.com/api/faq \
+curl -X POST https://tawriqa-sys.giize.com/api/faq \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -391,7 +391,7 @@ curl -X POST https://chebbi-trading.com/api/faq \
 
 ### Update a FAQ
 ```bash
-curl -X PUT https://chebbi-trading.com/api/faq \
+curl -X PUT https://tawriqa-sys.giize.com/api/faq \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -402,7 +402,7 @@ curl -X PUT https://chebbi-trading.com/api/faq \
 
 ### Delete a FAQ
 ```bash
-curl -X DELETE "https://chebbi-trading.com/api/faq?id=FAQ_ID_HERE" \
+curl -X DELETE "https://tawriqa-sys.giize.com/api/faq?id=FAQ_ID_HERE" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
@@ -412,12 +412,12 @@ curl -X DELETE "https://chebbi-trading.com/api/faq?id=FAQ_ID_HERE" \
 
 ### Get All Settings *(public)*
 ```bash
-curl https://chebbi-trading.com/api/settings
+curl https://tawriqa-sys.giize.com/api/settings
 ```
 
 ### Update a Setting
 ```bash
-curl -X PUT https://chebbi-trading.com/api/settings \
+curl -X PUT https://tawriqa-sys.giize.com/api/settings \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{"key": "TELEGRAM_URL", "value": "https://t.me/chebbi_trading"}'
