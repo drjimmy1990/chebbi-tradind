@@ -1,54 +1,41 @@
 # 📡 Chebbi Trading — Full API Reference
 > **Base URL:** `https://chebbi-trading.com`  
-> **Local dev:** `http://localhost:3000`  
-> Replace `YOUR_SECRET` with the value set in Admin → Settings → **Webhook Secret**
+> **Local dev:** `http://localhost:3000`
 
 ---
 
 ## 🔐 Authentication
 
-There are **two ways** to authenticate:
+All protected endpoints use **one permanent key** — your **Webhook Secret** (set in Admin → Settings).
 
-| Method | Best for | Expires? |
-|--------|----------|----------|
-| **Webhook Secret** (permanent) | n8n, API automations | ❌ Never |
-| **Session token** (temporary) | Manual curl testing | ✅ On server restart |
+```
+Authorization: Bearer YOUR_WEBHOOK_SECRET
+```
+
+This key lives in the database and **never expires**, even after server restarts.
 
 ---
 
-### ✅ Method 1 — Permanent API Key (recommended for n8n)
+## 🔑 For n8n — HTTP Request Node Setup
 
-Use your **Webhook Secret** (set in Admin → Settings → Webhook Secret) — it lives in the database and survives server restarts.
-
-Pass it as a Bearer token:
-```bash
-curl https://chebbi-trading.com/api/crypto-subscribers \
-  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
-```
-
-Or as a query param (same secret):
-```bash
-curl "https://chebbi-trading.com/api/members?secret=YOUR_WEBHOOK_SECRET"
-```
-
-> ✅ This is what you should use in **n8n HTTP Request nodes**. No login step needed, never expires.
+| Field | Value |
+|-------|-------|
+| **Authentication** | `None` |
+| **Send Headers** | ✅ ON |
+| **Header Name** | `Authorization` |
+| **Header Value** | `Bearer YOUR_WEBHOOK_SECRET` |
 
 ---
 
-### Method 2 — Session Token (temporary, for manual testing)
+## 1. 🔑 AUTH *(Admin login — only needed for manual testing)*
 
-Login to get a short-lived token. Disappears on server restart.
-
+### Login
 ```bash
-# Login — copy the "token" value from the response
 curl -X POST https://chebbi-trading.com/api/auth \
   -H "Content-Type: application/json" \
   -d '{"username": "admin", "password": "YOUR_PASSWORD"}'
-
-# Use it
-curl https://chebbi-trading.com/api/crypto-subscribers \
-  -H "Authorization: Bearer SESSION_TOKEN_HERE"
 ```
+Response includes a `token` you can also use as a Bearer token (short-lived, lost on restart).
 
 ### Check Session
 ```bash
@@ -64,46 +51,37 @@ curl -X DELETE https://chebbi-trading.com/api/auth \
 
 ---
 
-## 🔑 For n8n — HTTP Request Node Setup
-
-| Field | Value |
-|-------|-------|
-| **Authentication** | `None` |
-| **Send Headers** | ✅ ON |
-| **Header Name** | `Authorization` |
-| **Header Value** | `Bearer YOUR_WEBHOOK_SECRET` |
-
-That's it. One secret, all endpoints, never expires.
-
----
-
 ## 2. 👥 MEMBERS
 
-### Get All Members *(requires webhook secret)*
+### Get All Members
 ```bash
-curl "https://chebbi-trading.com/api/members?secret=YOUR_SECRET"
+curl https://chebbi-trading.com/api/members \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Get Only Pending Members *(waiting for deposit verification)*
 ```bash
-curl "https://chebbi-trading.com/api/members?secret=YOUR_SECRET&status=pending"
+curl "https://chebbi-trading.com/api/members?status=pending" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Get Only Active Members
 ```bash
-curl "https://chebbi-trading.com/api/members?secret=YOUR_SECRET&status=active"
+curl "https://chebbi-trading.com/api/members?status=active" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Get Only Rejected Members
 ```bash
-curl "https://chebbi-trading.com/api/members?secret=YOUR_SECRET&status=rejected"
+curl "https://chebbi-trading.com/api/members?status=rejected" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### Create a Member *(admin only)*
 ```bash
 curl -X POST https://chebbi-trading.com/api/members \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "name": "Ahmed Ben Ali",
     "email": "ahmed@example.com",
@@ -112,11 +90,11 @@ curl -X POST https://chebbi-trading.com/api/members \
   }'
 ```
 
-### Update Member Status *(admin only)*
+### Update Member Status
 ```bash
 curl -X PATCH https://chebbi-trading.com/api/members \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "id": "MEMBER_ID_HERE",
     "status": "active"
@@ -138,20 +116,20 @@ curl -X POST https://chebbi-trading.com/api/register \
     "xmId": "12345678"
   }'
 ```
-> After registration, this **automatically fires a webhook** to n8n (if `webhookRegister` is set in Settings).
+> After registration, this **automatically fires a webhook** to n8n (if `webhookRegister` is configured in Settings).
 
 ---
 
 ## 4. 🔔 WEBHOOK — Member Status Update *(called by n8n)*
 
-### Approve or Reject a Member After Deposit Verification
+### Approve a Member After Deposit Verification
 ```bash
 curl -X POST https://chebbi-trading.com/api/webhook/member-status \
   -H "Content-Type: application/json" \
   -d '{
     "memberId": "MEMBER_ID_HERE",
     "status": "active",
-    "secret": "YOUR_SECRET"
+    "secret": "YOUR_WEBHOOK_SECRET"
   }'
 ```
 
@@ -162,11 +140,11 @@ curl -X POST https://chebbi-trading.com/api/webhook/member-status \
   -d '{
     "memberId": "MEMBER_ID_HERE",
     "status": "rejected",
-    "secret": "YOUR_SECRET"
+    "secret": "YOUR_WEBHOOK_SECRET"
   }'
 ```
 > `status` can be: `active` | `rejected`  
-> Optional: `"proofFile": "/uploads/proof_123.jpg"` — path where n8n saved the screenshot
+> Optional field: `"proofFile": "/uploads/proof_123.jpg"`
 
 ---
 
@@ -177,11 +155,11 @@ curl -X POST https://chebbi-trading.com/api/webhook/member-status \
 curl https://chebbi-trading.com/api/signals
 ```
 
-### Create a Signal *(admin only)*
+### Create a Signal
 ```bash
 curl -X POST https://chebbi-trading.com/api/signals \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "instrument": "XAUUSD",
     "direction": "BUY",
@@ -204,7 +182,7 @@ curl -X POST https://chebbi-trading.com/api/signals \
 curl https://chebbi-trading.com/api/trades
 ```
 
-### Get Trades Filtered
+### Get Trades Filtered *(public)*
 ```bash
 # By year
 curl "https://chebbi-trading.com/api/trades?year=2026"
@@ -216,7 +194,7 @@ curl "https://chebbi-trading.com/api/trades?year=2026&month=3"
 curl "https://chebbi-trading.com/api/trades?result=W"
 ```
 
-### Create a Trade *(admin only or public — no auth)*
+### Create a Trade *(no auth required)*
 ```bash
 curl -X POST https://chebbi-trading.com/api/trades \
   -H "Content-Type: application/json" \
@@ -234,16 +212,16 @@ curl -X POST https://chebbi-trading.com/api/trades \
 ```
 > `result`: `W` (Win) | `L` (Loss) | `BE` (Break Even)
 
-### Delete a Trade *(admin only or public — no auth)*
+### Delete a Trade *(no auth required)*
 ```bash
 curl -X DELETE "https://chebbi-trading.com/api/trades?id=TRADE_ID_HERE"
 ```
 
 ---
 
-## 7. 📈 RESULTS *(computed from trades)*
+## 7. 📈 RESULTS *(computed from trades — public)*
 
-### Get All Monthly Results *(public)*
+### Get All Monthly Results
 ```bash
 curl https://chebbi-trading.com/api/results
 ```
@@ -263,7 +241,7 @@ curl "https://chebbi-trading.com/api/results?year=2026"
 curl https://chebbi-trading.com/api/crypto
 ```
 
-### Add/Update a Monthly Crypto Record *(admin only or public — no auth)*
+### Add/Update a Monthly Crypto Record *(no auth required)*
 ```bash
 curl -X POST https://chebbi-trading.com/api/crypto \
   -H "Content-Type: application/json" \
@@ -275,7 +253,7 @@ curl -X POST https://chebbi-trading.com/api/crypto \
 ```
 > `monthIndex`: 0=Jan, 1=Feb, ..., 11=Dec
 
-### Update a Record by ID
+### Update a Record by ID *(no auth required)*
 ```bash
 curl -X PUT https://chebbi-trading.com/api/crypto \
   -H "Content-Type: application/json" \
@@ -285,7 +263,7 @@ curl -X PUT https://chebbi-trading.com/api/crypto \
   }'
 ```
 
-### Delete a Crypto Record
+### Delete a Crypto Record *(no auth required)*
 ```bash
 curl -X DELETE "https://chebbi-trading.com/api/crypto?id=RECORD_ID_HERE"
 ```
@@ -302,17 +280,17 @@ curl -X POST https://chebbi-trading.com/api/crypto-subscribers \
 ```
 > Returns `already_subscribed` message if email exists.
 
-### Get All Subscribers *(admin only)*
+### Get All Subscribers
 ```bash
 curl https://chebbi-trading.com/api/crypto-subscribers \
-  -H "Authorization: Bearer $TOKEN"
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
-### Update Subscriber Status *(admin only)*
+### Update Subscriber Status
 ```bash
 curl -X PATCH https://chebbi-trading.com/api/crypto-subscribers \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "id": "SUBSCRIBER_ID_HERE",
     "status": "contacted"
@@ -320,10 +298,10 @@ curl -X PATCH https://chebbi-trading.com/api/crypto-subscribers \
 ```
 > `status`: `new` | `contacted` | `active` | `rejected`
 
-### Delete a Subscriber *(admin only)*
+### Delete a Subscriber
 ```bash
 curl -X DELETE "https://chebbi-trading.com/api/crypto-subscribers?id=SUBSCRIBER_ID_HERE" \
-  -H "Authorization: Bearer $TOKEN"
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ---
@@ -341,11 +319,11 @@ curl "https://chebbi-trading.com/api/blog?category=gold"
 ```
 > Categories: `gold` | `education` | `strategie` | `analyse`
 
-### Create an Article *(admin only)*
+### Create an Article
 ```bash
 curl -X POST https://chebbi-trading.com/api/blog \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "titleFr": "Mon Article",
     "titleEn": "My Article",
@@ -366,11 +344,11 @@ curl -X POST https://chebbi-trading.com/api/blog \
   }'
 ```
 
-### Update an Article *(admin only)*
+### Update an Article
 ```bash
 curl -X PUT https://chebbi-trading.com/api/blog \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "id": "ARTICLE_ID_HERE",
     "titleFr": "Titre mis à jour",
@@ -378,10 +356,10 @@ curl -X PUT https://chebbi-trading.com/api/blog \
   }'
 ```
 
-### Delete an Article *(admin only)*
+### Delete an Article
 ```bash
 curl -X DELETE "https://chebbi-trading.com/api/blog?id=ARTICLE_ID_HERE" \
-  -H "Authorization: Bearer $TOKEN"
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ---
@@ -393,11 +371,11 @@ curl -X DELETE "https://chebbi-trading.com/api/blog?id=ARTICLE_ID_HERE" \
 curl https://chebbi-trading.com/api/faq
 ```
 
-### Create a FAQ *(admin only)*
+### Create a FAQ
 ```bash
 curl -X POST https://chebbi-trading.com/api/faq \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "questionFr": "Comment ça fonctionne ?",
     "questionEn": "How does it work?",
@@ -411,21 +389,21 @@ curl -X POST https://chebbi-trading.com/api/faq \
   }'
 ```
 
-### Update a FAQ *(admin only)*
+### Update a FAQ
 ```bash
 curl -X PUT https://chebbi-trading.com/api/faq \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "id": "FAQ_ID_HERE",
     "order": 2
   }'
 ```
 
-### Delete a FAQ *(admin only)*
+### Delete a FAQ
 ```bash
 curl -X DELETE "https://chebbi-trading.com/api/faq?id=FAQ_ID_HERE" \
-  -H "Authorization: Bearer $TOKEN"
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ---
@@ -437,11 +415,11 @@ curl -X DELETE "https://chebbi-trading.com/api/faq?id=FAQ_ID_HERE" \
 curl https://chebbi-trading.com/api/settings
 ```
 
-### Update a Setting *(admin only)*
+### Update a Setting
 ```bash
 curl -X PUT https://chebbi-trading.com/api/settings \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer $TOKEN" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{"key": "TELEGRAM_URL", "value": "https://t.me/chebbi_trading"}'
 ```
 
@@ -454,7 +432,7 @@ curl -X PUT https://chebbi-trading.com/api/settings \
 | `XM_LINK_FR` | XM affiliate link for French visitors |
 | `XM_LINK_EN` | XM affiliate link for English visitors |
 | `XM_LINK_AR` | XM affiliate link for Arabic visitors |
-| `webhookSecret` | Shared secret for n8n webhooks |
+| `webhookSecret` | Permanent API key for all protected endpoints |
 | `webhookRegister` | n8n webhook URL triggered on registration |
 | `siteUrl` | Production site base URL |
 
@@ -464,38 +442,39 @@ curl -X PUT https://chebbi-trading.com/api/settings \
 
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
-| `POST` | `/api/auth` | ❌ | Login |
-| `GET` | `/api/auth` | Cookie | Check session |
-| `DELETE` | `/api/auth` | Cookie | Logout |
-| `GET` | `/api/members?secret=X` | Secret | List members |
-| `POST` | `/api/members` | Cookie | Create member |
-| `PATCH` | `/api/members` | Cookie | Update member status |
-| `POST` | `/api/register` | ❌ | Public registration |
-| `POST` | `/api/webhook/member-status` | Secret | Approve/reject via n8n |
-| `GET` | `/api/signals` | ❌ | List signals |
-| `POST` | `/api/signals` | Cookie | Create signal |
-| `GET` | `/api/trades` | ❌ | List trades |
-| `POST` | `/api/trades` | ❌ | Create trade |
-| `DELETE` | `/api/trades?id=X` | ❌ | Delete trade |
-| `GET` | `/api/results` | ❌ | Monthly results |
-| `GET` | `/api/crypto` | ❌ | Crypto monthly data |
-| `POST` | `/api/crypto` | ❌ | Add/update crypto month |
-| `PUT` | `/api/crypto` | ❌ | Update crypto by ID |
-| `DELETE` | `/api/crypto?id=X` | ❌ | Delete crypto record |
-| `POST` | `/api/crypto-subscribers` | ❌ | Subscribe email |
-| `GET` | `/api/crypto-subscribers` | Cookie | List subscribers |
-| `PATCH` | `/api/crypto-subscribers` | Cookie | Update subscriber status |
-| `DELETE` | `/api/crypto-subscribers?id=X` | Cookie | Delete subscriber |
-| `GET` | `/api/blog` | ❌ | List articles |
-| `POST` | `/api/blog` | Cookie | Create article |
-| `PUT` | `/api/blog` | Cookie | Update article |
-| `DELETE` | `/api/blog?id=X` | Cookie | Delete article |
-| `GET` | `/api/faq` | ❌ | List FAQs |
-| `POST` | `/api/faq` | Cookie | Create FAQ |
-| `PUT` | `/api/faq` | Cookie | Update FAQ |
-| `DELETE` | `/api/faq?id=X` | Cookie | Delete FAQ |
-| `GET` | `/api/settings` | ❌ | Get all settings |
-| `PUT` | `/api/settings` | Cookie | Update a setting |
+| `POST` | `/api/auth` | ❌ Public | Login |
+| `GET` | `/api/auth` | Bearer | Check session |
+| `DELETE` | `/api/auth` | Bearer | Logout |
+| `GET` | `/api/members` | Bearer | List members |
+| `GET` | `/api/members?status=pending` | Bearer | List pending members |
+| `POST` | `/api/members` | Bearer | Create member |
+| `PATCH` | `/api/members` | Bearer | Update member status |
+| `POST` | `/api/register` | ❌ Public | Public registration |
+| `POST` | `/api/webhook/member-status` | Body secret | Approve/reject via n8n |
+| `GET` | `/api/signals` | ❌ Public | List signals |
+| `POST` | `/api/signals` | Bearer | Create signal |
+| `GET` | `/api/trades` | ❌ Public | List trades |
+| `POST` | `/api/trades` | ❌ Public | Create trade |
+| `DELETE` | `/api/trades?id=X` | ❌ Public | Delete trade |
+| `GET` | `/api/results` | ❌ Public | Monthly results |
+| `GET` | `/api/crypto` | ❌ Public | Crypto monthly data |
+| `POST` | `/api/crypto` | ❌ Public | Add/update crypto month |
+| `PUT` | `/api/crypto` | ❌ Public | Update crypto by ID |
+| `DELETE` | `/api/crypto?id=X` | ❌ Public | Delete crypto record |
+| `POST` | `/api/crypto-subscribers` | ❌ Public | Subscribe email |
+| `GET` | `/api/crypto-subscribers` | Bearer | List subscribers |
+| `PATCH` | `/api/crypto-subscribers` | Bearer | Update subscriber status |
+| `DELETE` | `/api/crypto-subscribers?id=X` | Bearer | Delete subscriber |
+| `GET` | `/api/blog` | ❌ Public | List articles |
+| `POST` | `/api/blog` | Bearer | Create article |
+| `PUT` | `/api/blog` | Bearer | Update article |
+| `DELETE` | `/api/blog?id=X` | Bearer | Delete article |
+| `GET` | `/api/faq` | ❌ Public | List FAQs |
+| `POST` | `/api/faq` | Bearer | Create FAQ |
+| `PUT` | `/api/faq` | Bearer | Update FAQ |
+| `DELETE` | `/api/faq?id=X` | Bearer | Delete FAQ |
+| `GET` | `/api/settings` | ❌ Public | Get all settings |
+| `PUT` | `/api/settings` | Bearer | Update a setting |
 
 ---
 
