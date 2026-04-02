@@ -35,7 +35,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   // Auth guard
-  const session = requireAuth(request);
+  const session = await requireAuth(request);
   if (!session) return unauthorizedResponse();
 
   try {
