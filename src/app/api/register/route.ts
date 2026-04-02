@@ -5,7 +5,7 @@ export async function POST(request: NextRequest) {
   // Public endpoint — no auth required (users register themselves)
   try {
     const body = await request.json();
-    const { name, email, xmId, proofBase64, proofFilename } = body;
+    const { name, email, xmId, proofBase64, proofFile, proofFilename } = body;
 
     if (!name || !email || !xmId) {
       return NextResponse.json(
@@ -40,7 +40,7 @@ export async function POST(request: NextRequest) {
         email: email.trim().toLowerCase(),
         xmId: xmId.trim(),
         status: "pending",
-        proofFile: proofBase64 || null,
+        proofFile: proofFile || proofBase64 || null,
       },
     });
 
