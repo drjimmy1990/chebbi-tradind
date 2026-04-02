@@ -19,7 +19,17 @@ export { sessions, SESSION_TTL_MS };
  * Returns the username if authenticated, or null otherwise.
  */
 export function getSession(request: NextRequest): { username: string } | null {
-  const token = request.cookies.get('admin_token')?.value;
+  // 1. Try cookie (browser/dashboard sessions)
+  let token = request.cookies.get('admin_token')?.value;
+
+  // 2. Try Authorization: Bearer <token> header (API/n8n usage)
+  if (!token) {
+    const authHeader = request.headers.get('authorization') ?? '';
+    if (authHeader.startsWith('Bearer ')) {
+      token = authHeader.slice(7).trim();
+    }
+  }
+
   if (!token) return null;
 
   const session = sessions.get(token);

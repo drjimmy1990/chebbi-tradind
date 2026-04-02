@@ -7,33 +7,56 @@
 
 ## 🔐 Authentication
 
-Admin-only endpoints require a valid session cookie (`admin_token`).  
-Obtain a token by logging in first (see Auth section below).  
-For curl, use `-b "admin_token=TOKEN"` or `-c cookies.txt / -b cookies.txt`.
+Admin-only endpoints require a valid session token.  
+Login once to get a `token`, then pass it as `Authorization: Bearer TOKEN` header in every request.  
+**No cookies.txt file needed.**
 
 ---
 
 ## 1. 🔑 AUTH
 
-### Login
+### Step 1 — Login and save your token
 ```bash
+# Login and extract the token in one command
+TOKEN=$(curl -s -X POST https://chebbi-trading.com/api/auth \
+  -H "Content-Type: application/json" \
+  -d '{"username": "admin", "password": "YOUR_PASSWORD"}' \
+  | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
+
+echo "Your token: $TOKEN"
+```
+
+Then use it in all subsequent requests:
+```bash
+curl https://chebbi-trading.com/api/some-endpoint \
+  -H "Authorization: Bearer $TOKEN"
+```
+
+Or manually (copy the token from the login response and paste it):
+```bash
+# Login — copy the "token" value from the response
 curl -X POST https://chebbi-trading.com/api/auth \
   -H "Content-Type: application/json" \
-  -c cookies.txt \
   -d '{"username": "admin", "password": "YOUR_PASSWORD"}'
+
+# Then use it like this (replace TOKEN_HERE with what you copied)
+curl https://chebbi-trading.com/api/crypto-subscribers \
+  -H "Authorization: Bearer TOKEN_HERE"
 ```
 
 ### Check Session
 ```bash
 curl https://chebbi-trading.com/api/auth \
-  -b cookies.txt
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 ### Logout
 ```bash
 curl -X DELETE https://chebbi-trading.com/api/auth \
-  -b cookies.txt
+  -H "Authorization: Bearer $TOKEN"
 ```
+
+> **Note:** The dashboard login in the browser still uses cookies as normal. The Bearer token method is only for API/curl/n8n usage.
 
 ---
 
@@ -63,7 +86,7 @@ curl "https://chebbi-trading.com/api/members?secret=YOUR_SECRET&status=rejected"
 ```bash
 curl -X POST https://chebbi-trading.com/api/members \
   -H "Content-Type: application/json" \
-  -b cookies.txt \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{
     "name": "Ahmed Ben Ali",
     "email": "ahmed@example.com",
@@ -76,7 +99,7 @@ curl -X POST https://chebbi-trading.com/api/members \
 ```bash
 curl -X PATCH https://chebbi-trading.com/api/members \
   -H "Content-Type: application/json" \
-  -b cookies.txt \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{
     "id": "MEMBER_ID_HERE",
     "status": "active"
@@ -141,7 +164,7 @@ curl https://chebbi-trading.com/api/signals
 ```bash
 curl -X POST https://chebbi-trading.com/api/signals \
   -H "Content-Type: application/json" \
-  -b cookies.txt \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{
     "instrument": "XAUUSD",
     "direction": "BUY",
@@ -265,14 +288,14 @@ curl -X POST https://chebbi-trading.com/api/crypto-subscribers \
 ### Get All Subscribers *(admin only)*
 ```bash
 curl https://chebbi-trading.com/api/crypto-subscribers \
-  -b cookies.txt
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 ### Update Subscriber Status *(admin only)*
 ```bash
 curl -X PATCH https://chebbi-trading.com/api/crypto-subscribers \
   -H "Content-Type: application/json" \
-  -b cookies.txt \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{
     "id": "SUBSCRIBER_ID_HERE",
     "status": "contacted"
@@ -283,7 +306,7 @@ curl -X PATCH https://chebbi-trading.com/api/crypto-subscribers \
 ### Delete a Subscriber *(admin only)*
 ```bash
 curl -X DELETE "https://chebbi-trading.com/api/crypto-subscribers?id=SUBSCRIBER_ID_HERE" \
-  -b cookies.txt
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 ---
@@ -305,7 +328,7 @@ curl "https://chebbi-trading.com/api/blog?category=gold"
 ```bash
 curl -X POST https://chebbi-trading.com/api/blog \
   -H "Content-Type: application/json" \
-  -b cookies.txt \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{
     "titleFr": "Mon Article",
     "titleEn": "My Article",
@@ -330,7 +353,7 @@ curl -X POST https://chebbi-trading.com/api/blog \
 ```bash
 curl -X PUT https://chebbi-trading.com/api/blog \
   -H "Content-Type: application/json" \
-  -b cookies.txt \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{
     "id": "ARTICLE_ID_HERE",
     "titleFr": "Titre mis à jour",
@@ -341,7 +364,7 @@ curl -X PUT https://chebbi-trading.com/api/blog \
 ### Delete an Article *(admin only)*
 ```bash
 curl -X DELETE "https://chebbi-trading.com/api/blog?id=ARTICLE_ID_HERE" \
-  -b cookies.txt
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 ---
@@ -357,7 +380,7 @@ curl https://chebbi-trading.com/api/faq
 ```bash
 curl -X POST https://chebbi-trading.com/api/faq \
   -H "Content-Type: application/json" \
-  -b cookies.txt \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{
     "questionFr": "Comment ça fonctionne ?",
     "questionEn": "How does it work?",
@@ -375,7 +398,7 @@ curl -X POST https://chebbi-trading.com/api/faq \
 ```bash
 curl -X PUT https://chebbi-trading.com/api/faq \
   -H "Content-Type: application/json" \
-  -b cookies.txt \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{
     "id": "FAQ_ID_HERE",
     "order": 2
@@ -385,7 +408,7 @@ curl -X PUT https://chebbi-trading.com/api/faq \
 ### Delete a FAQ *(admin only)*
 ```bash
 curl -X DELETE "https://chebbi-trading.com/api/faq?id=FAQ_ID_HERE" \
-  -b cookies.txt
+  -H "Authorization: Bearer $TOKEN"
 ```
 
 ---
@@ -401,7 +424,7 @@ curl https://chebbi-trading.com/api/settings
 ```bash
 curl -X PUT https://chebbi-trading.com/api/settings \
   -H "Content-Type: application/json" \
-  -b cookies.txt \
+  -H "Authorization: Bearer $TOKEN" \
   -d '{"key": "TELEGRAM_URL", "value": "https://t.me/chebbi_trading"}'
 ```
 
