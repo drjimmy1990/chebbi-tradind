@@ -50,7 +50,7 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
           setLogoUrl(res.data.LOGO_URL);
         }
       })
-      .catch(() => {});
+      .catch(() => { });
   }, []);
 
   const handleLogin = useCallback(async (e: React.FormEvent) => {
@@ -129,7 +129,7 @@ export function AdminGate({ children }: { children: React.ReactNode }) {
               {/* Logo */}
               <div className="flex items-center justify-center mb-6">
                 <div className="w-16 h-16 rounded-xl overflow-hidden border-2 border-primary shadow-lg shadow-primary/20 bg-[#06090f] p-1">
-                  <img src={logoUrl} alt="Logo" className="w-full h-full object-contain scale-[1.5]" />
+                  <img src={logoUrl} alt="Logo" className="w-full h-full object-contain scale-[3]" />
                 </div>
               </div>
 
