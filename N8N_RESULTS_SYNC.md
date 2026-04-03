@@ -158,3 +158,50 @@ curl -X POST "https://chebbi-trading.com/api/trades?year=2024&month=8" \
         ]'
 ```
 *(Notice the `[` and `]` wrapping the items. This tells the API "here are many items, insert them all at once!").*
+
+---
+
+## Ready-to-Use CURL Commands for Crypto VIP
+
+You can also bulk-sync your Crypto VIP performance data using the upgraded `/api/crypto` endpoint. It works exactly like the regular trades endpoint and requires the same `webhookSecret` for security.
+
+### 1. CURL to Delete All Crypto Results for a Month
+Delete an entire month for a specific year (Used heavily in n8n loops):
+```bash
+curl -X DELETE "https://chebbi-trading.com/api/crypto?year=2026&month=1" \
+     -H "Accept: application/json" \
+     -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
+```
+
+Delete an entire year at once:
+```bash
+curl -X DELETE "https://chebbi-trading.com/api/crypto?year=2026" \
+     -H "Accept: application/json" \
+     -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
+```
+
+### 2. CURL to Bulk Insert Crypto Results
+Pass a massive JSON array of monthly items. Just like the general trades, the backend supports `year` and `monthIndex` parameters inside the JSON payload.
+
+```bash
+curl -X POST "https://chebbi-trading.com/api/crypto" \
+     -H "Content-Type: application/json" \
+     -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
+     -d '[
+          {
+            "year": 2026,
+            "monthIndex": 0,
+            "percentage": 5.2
+          },
+          {
+            "year": 2026,
+            "monthIndex": 1,
+            "percentage": -1.5
+          },
+          {
+            "year": 2026,
+            "monthIndex": 2,
+            "percentage": 8.0
+          }
+        ]'
+```

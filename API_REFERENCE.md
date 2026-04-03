@@ -279,31 +279,46 @@ curl "https://tawriqa-sys.giize.com/api/results?year=2026"
 curl https://tawriqa-sys.giize.com/api/crypto
 ```
 
-### Add/Update a Monthly Crypto Record *(no auth required)*
+### Add/Update a Monthly Crypto Record(s) *(Bulk n8n support)*
 ```bash
 curl -X POST https://tawriqa-sys.giize.com/api/crypto \
   -H "Content-Type: application/json" \
-  -d '{
-    "year": 2026,
-    "monthIndex": 3,
-    "percentage": 18.5
-  }'
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
+  -d '[
+      {
+        "year": 2026,
+        "monthIndex": 3,
+        "percentage": 18.5
+      }
+    ]'
 ```
-> `monthIndex`: 0=Jan, 1=Feb, ..., 11=Dec
+> `monthIndex`: 0=Jan, 1=Feb, ..., 11=Dec.  
+> You can also pass `?year=2026` in the URL to apply it to an entire array automatically.
 
-### Update a Record by ID *(no auth required)*
+### Update a Record by ID
 ```bash
 curl -X PUT https://tawriqa-sys.giize.com/api/crypto \
   -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "id": "RECORD_ID_HERE",
     "percentage": 21.0
   }'
 ```
 
-### Delete a Crypto Record *(no auth required)*
+### Delete Crypto Record(s)
 ```bash
-curl -X DELETE "https://tawriqa-sys.giize.com/api/crypto?id=RECORD_ID_HERE"
+# Delete by ID
+curl -X DELETE "https://tawriqa-sys.giize.com/api/crypto?id=RECORD_ID_HERE" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
+
+# Bulk Delete by Year and Month (Used for n8n syncing)
+curl -X DELETE "https://tawriqa-sys.giize.com/api/crypto?year=2026&month=3" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
+
+# Bulk Delete Entire Year
+curl -X DELETE "https://tawriqa-sys.giize.com/api/crypto?year=2026" \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ---
@@ -496,9 +511,9 @@ curl -X PUT https://tawriqa-sys.giize.com/api/settings \
 | `DELETE` | `/api/trades?id=X` | ❌ Public | Delete trade |
 | `GET` | `/api/results` | ❌ Public | Monthly results |
 | `GET` | `/api/crypto` | ❌ Public | Crypto monthly data |
-| `POST` | `/api/crypto` | ❌ Public | Add/update crypto month |
-| `PUT` | `/api/crypto` | ❌ Public | Update crypto by ID |
-| `DELETE` | `/api/crypto?id=X` | ❌ Public | Delete crypto record |
+| `POST` | `/api/crypto` | Bearer | Add/bulk-insert crypto month |
+| `PUT` | `/api/crypto` | Bearer | Update crypto by ID |
+| `DELETE` | `/api/crypto?id=X` | Bearer | Delete crypto record |
 | `POST` | `/api/crypto-subscribers` | ❌ Public | Subscribe email |
 | `GET` | `/api/crypto-subscribers` | Bearer | List subscribers |
 | `PATCH` | `/api/crypto-subscribers` | Bearer | Update subscriber status |
