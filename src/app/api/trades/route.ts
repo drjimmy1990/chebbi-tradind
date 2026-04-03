@@ -27,11 +27,28 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const { searchParams } = new URL(request.url);
+    const secretQuery = searchParams.get("secret");
+    const authHeader = request.headers.get("Authorization")?.replace("Bearer ", "");
+    
     const body = await request.json();
     
-    // Support array for bulk insert
-    if (Array.isArray(body)) {
-      const dataToInsert = body.map(trade => ({
+    // Auth Validation 
+    const secretSetting = await db.siteSetting.findUnique({
+      where: { key: "webhookSecret" },
+    });
+    const validSecret = secretSetting?.value;
+    const providedSecret = secretQuery || authHeader || body.secret;
+
+    if (!validSecret || providedSecret !== validSecret) {
+      return NextResponse.json({ error: "Unauthorized. Invalid secret." }, { status: 401 });
+    }
+
+    // Support array for bulk insert (either direct array or wrapped in a 'trades' object if body contained the secret)
+    const tradesArray = Array.isArray(body) ? body : (Array.isArray(body.trades) ? body.trades : null);
+    
+    if (tradesArray) {
+      const dataToInsert = tradesArray.map((trade: any) => ({
         year: Number(trade.year) || new Date().getFullYear(),
         month: Number(trade.month) ?? new Date().getMonth(),
         contract: String(trade.contract || ""),
@@ -86,6 +103,20 @@ export async function DELETE(request: NextRequest) {
     const id = searchParams.get("id");
     const year = searchParams.get("year");
     const month = searchParams.get("month");
+    
+    // Auth Validation 
+    const secretQuery = searchParams.get("secret");
+    const authHeader = request.headers.get("Authorization")?.replace("Bearer ", "");
+    
+    const secretSetting = await db.siteSetting.findUnique({
+      where: { key: "webhookSecret" },
+    });
+    const validSecret = secretSetting?.value;
+    const providedSecret = secretQuery || authHeader;
+
+    if (!validSecret || providedSecret !== validSecret) {
+      return NextResponse.json({ error: "Unauthorized. Invalid secret." }, { status: 401 });
+    }
 
     // Delete a specific trade by ID
     if (id) {
