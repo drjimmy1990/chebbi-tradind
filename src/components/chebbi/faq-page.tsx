@@ -25,6 +25,7 @@ import { useAppStore } from '@/lib/store';
 import { t, type Language } from '@/lib/i18n';
 import { pickLang } from '@/lib/trilingual';
 import { hardcodedFaqs } from '@/lib/faqs';
+import { FaqAccordionItem, type DbFaq } from '@/components/chebbi/faq-accordion-item';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -38,36 +39,6 @@ const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 // ──────────────────────── Types ────────────────────────
 
 type CategoryFilter = 'all' | 'gratuit' | 'xm' | 'signaux' | 'resultats' | 'capital';
-
-interface DbFaq {
-  id: string;
-  questionFr: string;
-  questionEn: string;
-  questionAr: string;
-  answerFr: string;
-  answerEn: string;
-  answerAr: string;
-  category: string;
-  icon: string;
-  order: number;
-}
-
-// ──────────────────────── Icon map ────────────────────────
-
-const iconMap: Record<string, React.ReactNode> = {
-  gift: <Gift size={16} />,
-  building: <Building2 size={16} />,
-  'user-check': <UserCheck size={16} />,
-  chart: <TrendingUp size={16} />,
-  dollar: <DollarSign size={16} />,
-  shield: <Shield size={16} />,
-  bell: <Bell size={16} />,
-  clock: <Clock size={16} />,
-  percent: <Percent size={16} />,
-  graduation: <GraduationCap size={16} />,
-  globe: <Globe size={16} />,
-  help: <HelpCircle size={16} />,
-};
 
 // ──────────────────────── Category config ────────────────────────
 
@@ -133,82 +104,6 @@ function SectionReveal({ children, className = '' }: { children: React.ReactNode
       className={className}
     >
       {children}
-    </motion.div>
-  );
-}
-
-// ──────────────────────── FAQ Item Component ────────────────────────
-
-function FaqAccordionItem({
-  faq,
-  language,
-  isOpen,
-  onToggle,
-}: {
-  faq: DbFaq;
-  language: Language;
-  isOpen: boolean;
-  onToggle: () => void;
-}) {
-  const questionText = pickLang(faq, 'question', language);
-  const answerHtml = pickLang(faq, 'answer', language);
-
-  return (
-    <motion.div
-      layout
-      className={`group rounded-xl border transition-all duration-300 overflow-hidden ${
-        isOpen
-          ? 'border-primary/30 shadow-lg shadow-primary/10 bg-card'
-          : 'border-border bg-card hover:border-border/80 hover:shadow-sm'
-      }`}
-    >
-      {/* Question */}
-      <button
-        onClick={onToggle}
-        className="w-full flex items-center justify-between gap-4 p-5 text-left transition-colors hover:bg-secondary/30"
-      >
-        <div className="flex items-center gap-3.5 flex-1 min-w-0">
-          <div
-            className={`w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-              isOpen
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-primary/10 text-primary border border-primary/20'
-            }`}
-          >
-            {iconMap[faq.icon] || <HelpCircle size={16} />}
-          </div>
-          <h3 className={`text-sm md:text-base font-semibold leading-snug transition-colors ${isOpen ? 'text-foreground' : 'text-foreground/90 group-hover:text-foreground'}`}>
-            {questionText}
-          </h3>
-        </div>
-        <div
-          className={`w-7 h-7 rounded-md flex items-center justify-center flex-shrink-0 transition-all duration-300 ${
-            isOpen
-              ? 'bg-primary/10 text-primary rotate-45'
-              : 'bg-secondary text-muted-foreground'
-          }`}
-        >
-          <Plus size={14} />
-        </div>
-      </button>
-
-      {/* Answer */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="overflow-hidden"
-          >
-            <div
-              className="px-5 pb-5 pl-[4.25rem] text-sm text-muted-foreground leading-relaxed"
-              dangerouslySetInnerHTML={{ __html: answerHtml }}
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
     </motion.div>
   );
 }

@@ -26,6 +26,7 @@ import { useAppStore } from '@/lib/store';
 import { t } from '@/lib/i18n';
 import { pickLang } from '@/lib/trilingual';
 import { hardcodedFaqs } from '@/lib/faqs';
+import { FaqAccordionItem } from '@/components/chebbi/faq-accordion-item';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -142,6 +143,7 @@ export function HomePage() {
   // ── Dynamic testimonials & FAQs from DB ──
   const [dbTestimonials, setDbTestimonials] = useState<DbTestimonial[]>([]);
   const [dbFaqs, setDbFaqs] = useState(hardcodedFaqs);
+  const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   // ── Fetch public data (settings + testimonials) ──
   useEffect(() => {
@@ -1176,24 +1178,17 @@ export function HomePage() {
           />
 
           <SectionReveal>
-            <Card className="bg-card border border-border rounded-2xl p-2 lg:p-4">
-              <Accordion type="single" collapsible className="w-full">
-                {dbFaqs.map((faq) => (
-                  <AccordionItem
-                    key={faq.id}
-                    value={faq.id}
-                    className="border-b border-border/50 last:border-b-0"
-                  >
-                    <AccordionTrigger className="text-left text-sm font-semibold text-foreground hover:text-primary hover:no-underline py-4 px-2">
-                      {pickLang(faq, 'question', language)}
-                    </AccordionTrigger>
-                    <AccordionContent className="text-sm text-muted-foreground leading-relaxed px-2">
-                      <span dangerouslySetInnerHTML={{ __html: pickLang(faq, 'answer', language) }} />
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </Card>
+            <div className="w-full space-y-3">
+              {dbFaqs.map((faq, index) => (
+                <FaqAccordionItem
+                  key={faq.id}
+                  faq={faq}
+                  language={language}
+                  isOpen={openFaqIndex === index}
+                  onToggle={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                />
+              ))}
+            </div>
           </SectionReveal>
 
           {/* CTA: Didn't find your answer? */}
