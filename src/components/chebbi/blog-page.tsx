@@ -36,6 +36,7 @@ const DEFAULT_LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
 const YOUTUBE_URL = 'https://www.youtube.com/@ChebbiTrading/streams';
 const TELEGRAM_URL = 'https://t.me/ChebbiTrading';
 const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
+const DEFAULT_CONTACT_EMAIL = 'contact@chebbitrading.com';
 
 // ──────────────────────── Types ────────────────────────
 
@@ -209,6 +210,7 @@ export function BlogPage() {
   const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
 
   const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
+  const [contactEmail, setContactEmail] = useState(DEFAULT_CONTACT_EMAIL);
 
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(json => {
@@ -221,6 +223,7 @@ export function BlogPage() {
         if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
         if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
         if (s.LOGO_URL) setLogoUrl(s.LOGO_URL);
+        if (s.CONTACT_EMAIL) setContactEmail(s.CONTACT_EMAIL);
       }
     }).catch(() => {});
   }, []);
@@ -1048,10 +1051,10 @@ export function BlogPage() {
               <h4 className="font-bold text-foreground text-sm mb-4">Contact</h4>
               <div className="space-y-2">
                 <a
-                  href="mailto:contact@chebbitrade.com"
+                  href={`mailto:${contactEmail}`}
                   className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors"
                 >
-                  📧 contact@chebbitrade.com
+                  📧 {contactEmail}
                 </a>
                 <a
                   href={TELEGRAM_URL}

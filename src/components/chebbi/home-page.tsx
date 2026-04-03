@@ -21,7 +21,16 @@ import {
   UserPlus,
   Loader2,
   Upload,
+  Facebook,
+  Instagram,
 } from 'lucide-react';
+
+const TiktokIcon = ({ size, className }: { size: number, className?: string }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
+    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+  </svg>
+);
+
 import { useAppStore } from '@/lib/store';
 import { t } from '@/lib/i18n';
 import { pickLang } from '@/lib/trilingual';
@@ -361,7 +370,7 @@ export function HomePage() {
                   <span className="hidden sm:inline">YouTube</span>
                 </a>
                 <a
-                  href="mailto:contact@chebbitrade.com"
+                  href={`mailto:${CONTACT_EMAIL}`}
                   className="flex items-center gap-2 text-muted-foreground hover:text-ct-blue transition-colors text-sm"
                 >
                   <Mail size={18} />
@@ -1285,7 +1294,7 @@ export function HomePage() {
               </a>
 
               {/* Email */}
-              <a href="mailto:contact@chebbitrade.com" className="group">
+              <a href={`mailto:${CONTACT_EMAIL}`} className="group">
                 <Card className="bg-card border border-ct-blue/20 rounded-2xl p-6 hover:-translate-y-1 hover:shadow-xl hover:shadow-ct-blue/10 transition-all duration-300 h-full">
                   <div className="w-14 h-14 rounded-2xl bg-ct-blue/10 border border-ct-blue/20 flex items-center justify-center mb-5 group-hover:bg-ct-blue/20 group-hover:border-ct-blue/40 transition-all duration-300">
                     <Mail size={26} className="text-ct-blue" />
@@ -1324,7 +1333,7 @@ export function HomePage() {
               <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mb-5">
                 {t('hero.subtitle', language)}
               </p>
-              <div className="flex items-center gap-2.5">
+              <div className="flex flex-wrap items-center gap-2.5">
                 <a
                   href={TELEGRAM_URL}
                   target="_blank"
@@ -1340,6 +1349,30 @@ export function HomePage() {
                   className="w-9 h-9 rounded-lg bg-ct-red/10 border border-ct-red/20 flex items-center justify-center text-ct-red hover:bg-ct-red/20 hover:border-ct-red/40 transition-all"
                 >
                   <Youtube size={16} />
+                </a>
+                <a
+                  href="https://www.facebook.com/share/1DpJA1VmxB/?mibextid=wwXIfr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-[#1877F2]/10 border border-[#1877F2]/20 flex items-center justify-center text-[#1877F2] hover:bg-[#1877F2]/20 hover:border-[#1877F2]/40 transition-all"
+                >
+                  <Facebook size={16} />
+                </a>
+                <a
+                  href="https://www.instagram.com/aminechebbi7?igsh=Nnd2aDI0YjZlYmYx&utm_source=qr"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-[#E1306C]/10 border border-[#E1306C]/20 flex items-center justify-center text-[#E1306C] hover:bg-[#E1306C]/20 hover:border-[#E1306C]/40 transition-all"
+                >
+                  <Instagram size={16} />
+                </a>
+                <a
+                  href="https://www.tiktok.com/@chebbitrading"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-9 h-9 rounded-lg bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-white/20 hover:border-white/40 transition-all"
+                >
+                  <TiktokIcon size={16} />
                 </a>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
