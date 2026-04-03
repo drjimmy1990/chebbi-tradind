@@ -74,7 +74,10 @@ Before inserting, we delete all existing trades for that specific `year` and `mo
 Add an **HTTP Request Node** in n8n:
 - **Method:** `DELETE`
 - **URL:** `https://chebbi-trading.com/api/trades`
-- **Authentication:** None needed.
+- **Authentication:** None *(We will use Header Auth manually)*
+- **Send Headers:** Yes
+  - Name: `Authorization`
+  - Value: `Bearer YOUR_WEBHOOK_SECRET` *(The same webhook secret set in your database site settings, e.g., the one n8n uses for registration)*
 - **Send Query Parameters:** Yes
   - Parameter 1: Name: `year`, Value: `2024`
   - Parameter 2: Name: `month`, Value: `8`
@@ -93,7 +96,10 @@ Next, you will take the full array of rows from your Google Sheet and send them 
 Add another **HTTP Request Node** right after the DELETE node:
 - **Method:** `POST`
 - **URL:** `https://chebbi-trading.com/api/trades`
-- **Authentication:** None needed.
+- **Authentication:** None *(We will use Header Auth manually)*
+- **Send Headers:** Yes
+  - Name: `Authorization`
+  - Value: `Bearer YOUR_WEBHOOK_SECRET`
 - **Send Body:** Yes
 - **Body Content Type:** JSON
 - **JSON / Body Type:** Expression or Raw
@@ -111,8 +117,8 @@ When this node runs, the server will loop over the array and insert everything i
 ## Summary of your pipeline in n8n:
 1. **Google Sheets Node** (Read all rows from "September 2024" sheet)
 2. **Edit Fields Node** (Map names like `Pip AVG` -> `pips` and set `year` to `2024`, `month` to `8`)
-3. **HTTP Request** (DELETE `api/trades?year=2024&month=8`)
-4. **HTTP Request** (POST `api/trades` with Body `= {{ $input.all().map(i => i.json) }}` )
+3. **HTTP Request** (DELETE `api/trades?year=2024&month=8` with Auth Header)
+4. **HTTP Request** (POST `api/trades` with Body `= {{ $input.all().map(i => i.json) }}` and Auth Header)
 
 Save and execute the workflow, and the live dashboard will immediately reflect the fresh data!
 
@@ -120,12 +126,14 @@ Save and execute the workflow, and the live dashboard will immediately reflect t
 
 ## Ready-to-Use CURL Commands
 
-If you want to test the API directly from your terminal or another script instead of n8n, here are the ready-to-use `curl` commands.
+If you want to test the API directly from your terminal or another script instead of n8n, here are the ready-to-use `curl` commands. *(Make sure to replace `YOUR_WEBHOOK_SECRET` with the actual secret from your database `SiteSetting` object).*
 
 ### 1. CURL to Delete All Trades for a Month
 This instantly clears out all trades for September 2024:
 ```bash
-curl -X DELETE "https://chebbi-trading.com/api/trades?year=2024&month=8" -H "Accept: application/json"
+curl -X DELETE "https://chebbi-trading.com/api/trades?year=2024&month=8" \
+     -H "Accept: application/json" \
+     -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
 ### 2. CURL to Bulk Insert Multiple Trades At Once
@@ -134,6 +142,7 @@ The `POST` API has been explicitly upgraded to **accept an array (`[ ]`)**. This
 ```bash
 curl -X POST "https://chebbi-trading.com/api/trades" \
      -H "Content-Type: application/json" \
+     -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
      -d '[
           {
             "year": 2024,
