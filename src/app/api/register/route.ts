@@ -39,6 +39,7 @@ export async function POST(request: NextRequest) {
         name: name ? name.trim() : `XM Trader ${xmId.trim()}`,
         email: email.trim().toLowerCase(),
         xmId: xmId.trim(),
+        language: language || "fr",
         status: "pending",
         proofFile: proofFile || proofBase64 || null,
       },

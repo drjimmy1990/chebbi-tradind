@@ -112,6 +112,7 @@ export async function PATCH(request: NextRequest) {
               id: member.id, // Internal database ID
               xmId: member.xmId, // Trading ID
               email: member.email,
+              language: member.language,
             }),
           }).catch(err => console.error("Webhook approve failed:", err));
         }

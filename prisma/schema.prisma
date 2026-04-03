@@ -43,6 +43,7 @@ model Member {
   email     String
   xmId      String
   proofFile String?  // path to uploaded proof of deposit screenshot
+  language  String   @default("fr")
   status    String   @default("pending") // pending, active, rejected
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
