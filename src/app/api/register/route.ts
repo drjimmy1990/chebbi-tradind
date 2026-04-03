@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
         xmId: xmId.trim(),
         language: language || "fr",
         status: "pending",
-        proofFile: proofFile || proofBase64 || null,
+        proofFile: null, // Will be updated with the public URL from n8n
       },
     });
 
@@ -57,6 +57,14 @@ export async function POST(request: NextRequest) {
         { error: webhookResponse.message || "not_affiliate" },
         { status: 400 }
       );
+    }
+
+    // If n8n returned a public file URL for the proof image, update the member record
+    if (webhookResponse && webhookResponse.proofUrl) {
+      await db.member.update({
+        where: { id: member.id },
+        data: { proofFile: webhookResponse.proofUrl },
+      });
     }
 
     return NextResponse.json({
