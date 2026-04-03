@@ -593,7 +593,7 @@ export function HomePage() {
                   rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-ct-red hover:bg-ct-red/90 text-white px-8 py-2.5 rounded-lg text-sm font-bold shadow-[0_0_15px_rgba(239,68,68,0.2)] hover:shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:-translate-y-0.5"
                 >
-                  <ExternalLink size={16} /> Ouvrir
+                  <ExternalLink size={16} /> {t('join.step1.btn', language)}
                 </a>
               </div>
 
@@ -622,45 +622,45 @@ export function HomePage() {
                         <MessageCircle size={14} className="text-primary" />
                       </div>
                       <h4 className="font-bold text-[15px] text-white tracking-wide">
-                        Informations d'inscription
+                        {t('home.reg.form.title', language)}
                       </h4>
                     </div>
                     <p className="text-[12px] text-slate-400 mb-6 leading-relaxed">
-                      Vos données sont sécurisées et utilisées uniquement pour vérifier votre compte XM.
+                      {t('home.reg.form.desc', language)}
                     </p>
 
                     <div className="space-y-4">
                       <div className="space-y-1.5">
                         <Label htmlFor="reg-xmid" className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
-                          NUMÉRO DE COMPTE XM *
+                          {t('home.reg.form.xmid', language)} *
                         </Label>
                         <Input
                           id="reg-xmid"
                           type="text"
                           value={regXmId}
                           onChange={(e) => setRegXmId(e.target.value)}
-                          placeholder="Ex: 123456789"
+                          placeholder={t('home.reg.xmId.placeholder', language)}
                           className="bg-[#0b1018] border-slate-800/60 focus:border-primary/50 rounded-xl px-4 py-5 text-sm placeholder:text-slate-500"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <Label htmlFor="reg-email" className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
-                          ADRESSE EMAIL *
+                          {t('home.reg.form.email', language)} *
                         </Label>
                         <Input
                           id="reg-email"
                           type="email"
                           value={regEmail}
                           onChange={(e) => setRegEmail(e.target.value)}
-                          placeholder="votre@email.com"
+                          placeholder={language === 'ar' ? 'بريدك@الإلكتروني.com' : 'your@email.com'}
                           className="bg-[#0b1018] border-slate-800/60 focus:border-primary/50 rounded-xl px-4 py-5 text-sm placeholder:text-slate-500"
                         />
                       </div>
 
                       <div className="space-y-1.5">
                         <Label className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">
-                          CAPTURE D'ÉCRAN DU COMPTE XM
+                          {t('home.reg.form.screenshot', language)}
                         </Label>
                         <input
                           ref={fileInputRef}
@@ -696,7 +696,7 @@ export function HomePage() {
                             <div className="flex flex-col items-center">
                               <Upload size={20} className="text-slate-400 mb-2" />
                               <span className="text-xs font-medium text-slate-400">
-                                Cliquez ou glissez une image ici
+                                {t('home.reg.form.upload', language)}
                               </span>
                             </div>
                           )}
@@ -728,7 +728,7 @@ export function HomePage() {
                             {t('home.reg.submitting', language)}
                           </>
                         ) : (
-                          "Vérifier mon compte XM"
+                          t('home.reg.form.verify', language)
                         )}
                       </Button>
                     </div>
@@ -753,7 +753,7 @@ export function HomePage() {
                 <div
                   className="inline-flex items-center gap-2 bg-primary/20 text-primary px-8 py-2.5 rounded-lg text-sm font-bold cursor-default"
                 >
-                  <CheckCircle2 size={16} /> Gratuit
+                  <CheckCircle2 size={16} /> {t('join.step3.badge', language)}
                 </div>
               </div>
             </div>
@@ -767,7 +767,7 @@ export function HomePage() {
       <section className="py-16 lg:py-20">
         <div className="max-w-7xl mx-auto px-5">
           <SectionHeading
-            badge="🏆 Top Features"
+            badge={language === 'ar' ? '🏆 المزايا' : language === 'en' ? '🏆 Top Features' : '🏆 Avantages'}
             title={t('adv.title', language)}
             subtitle={t('adv.subtitle', language)}
           />
@@ -811,7 +811,7 @@ export function HomePage() {
       <section className="py-16 lg:py-20 bg-secondary/50">
         <div className="max-w-7xl mx-auto px-5">
           <SectionHeading
-            badge="📊 Results"
+            badge={language === 'ar' ? '📊 النتائج' : language === 'en' ? '📊 Results' : '📊 Résultats'}
             title={t('res.preview.title', language)}
             titleGradient={t('res.preview.subtitle', language).split(',')[0]}
             subtitle={t('res.preview.subtitle', language)}
@@ -1172,7 +1172,7 @@ export function HomePage() {
       <section id="faq-section" className="py-16 lg:py-20 scroll-mt-24">
         <div className="max-w-3xl mx-auto px-5">
           <SectionHeading
-            badge="❓ FAQ"
+            badge={language === 'ar' ? '❓ أسئلة شائعة' : language === 'en' ? '❓ FAQ' : '❓ FAQ'}
             title={t('faq.title', language)}
             subtitle={t('faq.subtitle', language)}
           />
@@ -1233,7 +1233,7 @@ export function HomePage() {
       <section className="py-16 lg:py-20 bg-secondary/50">
         <div className="max-w-7xl mx-auto px-5">
           <SectionHeading
-            badge="💬 Contact"
+            badge={language === 'ar' ? '💬 اتصل بنا' : language === 'en' ? '💬 Contact' : '💬 Contact'}
             title={t('cont.title', language)}
             subtitle={t('cont.subtitle', language)}
           />
