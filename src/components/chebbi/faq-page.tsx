@@ -24,6 +24,7 @@ import {
 import { useAppStore } from '@/lib/store';
 import { t, type Language } from '@/lib/i18n';
 import { pickLang } from '@/lib/trilingual';
+import { hardcodedFaqs } from '@/lib/faqs';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -222,8 +223,7 @@ export function FaqPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
-  // DB-driven FAQs
-  const [dbFaqs, setDbFaqs] = useState<DbFaq[]>([]);
+  const [dbFaqs, setDbFaqs] = useState(hardcodedFaqs);
 
   // Dynamic XM links
   const [xmLinkFr, setXmLinkFr] = useState(DEFAULT_XM);
@@ -245,15 +245,6 @@ export function FaqPage() {
         if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
       }
     }).catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    fetch('/api/faq')
-      .then((r) => r.json())
-      .then((json) => {
-        if (json.data) setDbFaqs(json.data);
-      })
-      .catch(() => {});
   }, []);
 
   // Filtered FAQs

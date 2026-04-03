@@ -1,0 +1,74 @@
+[
+  {
+    "cat": "gratuit",
+    "icon": "fa-gift",
+    "q": "C'est vraiment 100% gratuit ?",
+    "a": "Oui, <strong>totalement gratuit</strong> — aucun abonnement, aucune carte bancaire, aucune surprise.<br><br>Le principe est simple : tu crées un compte XM via notre lien d'affiliation. XM nous verse une commission sur le spread de tes trades, et c'est ce qui finance l'ensemble de notre service. Tu ne débourses absolument rien de plus.<div class='fa-highlight'>✅ Tu paies exactement le même spread qu'avec n'importe quel autre lien XM.</div>"
+  },
+  {
+    "cat": "xm",
+    "icon": "fa-university",
+    "q": "Pourquoi m'inscrire via votre lien ?",
+    "a": "Nous sommes <strong>partenaire officiel IB de XM</strong>. Lorsque tu trades via notre lien, XM nous reverse une commission sur le spread — sans que cela te coûte quoi que ce soit de plus.<br><br>C'est ce partenariat qui nous permet de te donner accès à tous nos <strong>signaux, analyses et suivis de trades gratuitement</strong>. Sans ça, ce service ne serait pas possible."
+  },
+  {
+    "cat": "xm",
+    "icon": "fa-user-check",
+    "q": "J'ai déjà un compte XM. Que faire ?",
+    "a": "Aucun problème ! Même avec un compte XM existant, tu peux ouvrir un <strong>compte additionnel</strong> directement via notre lien d'affiliation.<br><br>Tu peux aussi ajouter le code partenaire lors de ton inscription :<div class='fa-highlight' style='font-family:monospace;font-size:1.1rem;letter-spacing:.15em;font-weight:800;color:var(--grn);text-align:center'>XPCBT</div>Entre ce code dans la colonne <strong>« Partenaire IB »</strong> lors de l'ouverture de ton compte XM.<br><br>Pour toute question : <a href='mailto:support@chebbitrade.com'>support@chebbitrade.com</a>"
+  },
+  {
+    "cat": "resultats",
+    "icon": "fa-chart-line",
+    "q": "Où puis-je vérifier vos résultats ?",
+    "a": "Tous nos trades sont réalisés <strong>en direct sur YouTube</strong> depuis plus de 4 ans. Rien n'est retouché ni sélectionné après coup — tout est vérifiable par n'importe qui.<br><br>Tu peux consulter :<br>• La chaîne YouTube <strong>Chebbi Trading</strong> pour les replays en direct<br>• Notre <a href='resultats.html'>page Résultats</a> pour un récapitulatif complet avec tous les chiffres<br><br>Pour accéder aux performances VIP détaillées, contacte-nous : <a href='mailto:Vipforex@chebbitrade.com'>Vipforex@chebbitrade.com</a>"
+  },
+  {
+    "cat": "capital",
+    "icon": "fa-dollar-sign",
+    "q": "Quel capital minimum pour commencer ?",
+    "a": "XM permet d'ouvrir un compte avec seulement <strong>5$</strong>. Mais pour trader dans de bonnes conditions et gérer correctement le risque, nous recommandons :<div class='fa-highlight'>💡 Entre <strong>100$ et 200$</strong> minimum pour débuter sereinement.</div>Plus ton capital est confortable, plus tu peux gérer tes positions avec calme et éviter le stress."
+  },
+  {
+    "cat": "xm",
+    "icon": "fa-shield-alt",
+    "q": "XM est-il un broker fiable ?",
+    "a": "Oui, XM est un broker <strong>sérieux et régulé</strong>. Il est encadré par trois autorités financières reconnues :<br><br>• <strong>CySEC</strong> — régulateur européen (Chypre)<br>• <strong>ASIC</strong> — régulateur australien<br>• <strong>FSC</strong> — régulateur de l'Île Maurice<br><br>Avec plus de <strong>10 millions de clients</strong> dans 190 pays, XM est l'un des brokers les plus solides du marché. Tes fonds sont séparés des fonds propres du broker et tu peux les retirer à tout moment."
+  },
+  {
+    "cat": "signaux",
+    "icon": "fa-bell",
+    "q": "Comment reçoit-on les signaux ?",
+    "a": "Les signaux sont envoyés dans notre <strong>groupe Telegram privé</strong>, accessible dès que tu t'inscris via notre lien XM.<br><br>Chaque signal comprend clairement :<br>• L'instrument concerné (ex : XAUUSD, EURUSD)<br>• La direction : <strong>BUY ou SELL</strong><br>• Le prix d'entrée, le Stop Loss et le Take Profit<br><br>Tout est également expliqué et commenté en direct sur YouTube pour que tu comprennes chaque décision."
+  },
+  {
+    "cat": "signaux",
+    "icon": "fa-clock",
+    "q": "Combien de signaux par semaine ?",
+    "a": "Le nombre de signaux varie selon les conditions du marché. En règle générale :<div class='fa-highlight'>📊 Entre <strong>5 et 15 signaux par semaine</strong>, principalement sur l'or (XAUUSD) et les grandes paires Forex.</div>Nous ne forçons jamais des positions. Si le marché n'offre pas d'opportunité claire, on attend. <strong>La qualité prime toujours sur la quantité.</strong>"
+  },
+  {
+    "cat": "capital",
+    "icon": "fa-percentage",
+    "q": "C'est quoi le 'low risk' et 'medium risk' ?",
+    "a": "Ce sont des niveaux de sizing (taille de position) pour adapter l'exposition au risque à ton capital :<br><br>• <strong>Low risk</strong> : 1$/pip pour 10 000$ de capital → risque faible, gains plus mesurés<br>• <strong>Medium risk</strong> : 2$/pip pour 10 000$ de capital → rapport risque/rendement équilibré<br><br>Plus le risque est réduit, plus ton compte est protégé. Le bon niveau dépend de ton profil et de ta tolérance personnelle au risque."
+  },
+  {
+    "cat": "signaux",
+    "icon": "fa-graduation-cap",
+    "q": "Faut-il avoir de l'expérience en trading ?",
+    "a": "<strong>Non, aucune expérience préalable n'est nécessaire.</strong> Chaque signal est expliqué en live sur YouTube avec les raisons de l'entrée, la gestion du trade et les objectifs visés.<br><br>Cela dit, nous recommandons de :<br>• Connaître les bases : savoir ouvrir et fermer un ordre, placer un Stop Loss et un Take Profit sur ta plateforme<br>• Comprendre ce qu'est un lot, un pip, et comment fonctionne le levier<br>• Commencer avec un capital modeste le temps de te familiariser<div class='fa-highlight'>⚠️ Le risque zéro n'existe pas en trading. Ne risque jamais de l'argent que tu ne peux pas te permettre de perdre.</div>"
+  },
+  {
+    "cat": "xm",
+    "icon": "fa-globe",
+    "q": "Depuis quel pays peut-on s'inscrire sur XM ?",
+    "a": "XM est disponible dans plus de <strong>190 pays</strong>, notamment :<br><br>• <strong>Afrique du Nord</strong> : Tunisie, Maroc, Algérie, Égypte<br>• <strong>Europe</strong> : France, Belgique, Suisse et la plupart des pays de l'UE<br>• <strong>Monde arabe</strong> : la quasi-totalité des pays de la région<br><br>Avant de t'inscrire, vérifie simplement sur le site XM si ton pays est éligible."
+  },
+  {
+    "cat": "gratuit",
+    "icon": "fa-question",
+    "q": "Est-ce que vous gérez mon argent ?",
+    "a": "<strong>Non, absolument pas.</strong> Nous ne gérons aucun compte client, sans exception.<br><br>Tu trades toi-même, sur ton propre compte XM, avec ton propre argent. Nous partageons uniquement des <strong>signaux d'analyse</strong> — la décision finale t'appartient toujours à toi.<div class='fa-highlight'>🚨 Méfie-toi de toute personne qui te propose de gérer ton capital à ta place. C'est souvent le signe d'une arnaque.</div>"
+  }
+]

@@ -25,6 +25,7 @@ import {
 import { useAppStore } from '@/lib/store';
 import { t } from '@/lib/i18n';
 import { pickLang } from '@/lib/trilingual';
+import { hardcodedFaqs } from '@/lib/faqs';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -140,7 +141,7 @@ export function HomePage() {
 
   // ── Dynamic testimonials & FAQs from DB ──
   const [dbTestimonials, setDbTestimonials] = useState<DbTestimonial[]>([]);
-  const [dbFaqs, setDbFaqs] = useState<DbFaq[]>([]);
+  const [dbFaqs, setDbFaqs] = useState(hardcodedFaqs);
 
   // ── Fetch public data (settings + testimonials) ──
   useEffect(() => {
@@ -167,16 +168,6 @@ export function HomePage() {
           if (s.STAT_MEMBERS) setStatMembers(s.STAT_MEMBERS);
         }
         if (json.testimonials) setDbTestimonials(json.testimonials);
-      })
-      .catch(() => { });
-  }, []);
-
-  // ── Fetch FAQs from DB ──
-  useEffect(() => {
-    fetch('/api/faq')
-      .then((r) => r.json())
-      .then((json) => {
-        if (json.data) setDbFaqs(json.data);
       })
       .catch(() => { });
   }, []);
