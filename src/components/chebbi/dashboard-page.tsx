@@ -3156,6 +3156,7 @@ function SettingsView({ language, showToast }: { language: string; showToast: (m
     language === 'ar' ? ar : language === 'en' ? en : fr;
 
   const [logoUrl, setLogoUrl] = useState('');
+  const [aminePhotoUrl, setAminePhotoUrl] = useState('');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -3165,6 +3166,8 @@ function SettingsView({ language, showToast }: { language: string; showToast: (m
       .then(res => {
         if (res.data?.LOGO_URL) setLogoUrl(res.data.LOGO_URL);
         else setLogoUrl('https://i.imgur.com/USEEiyC.png');
+        if (res.data?.AMINE_PHOTO_URL) setAminePhotoUrl(res.data.AMINE_PHOTO_URL);
+        else setAminePhotoUrl('https://i.imgur.com/MrRODMe.png');
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -3173,12 +3176,19 @@ function SettingsView({ language, showToast }: { language: string; showToast: (m
   const handleSave = async () => {
     try {
       setSaving(true);
-      const res = await fetch('/api/settings', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ key: 'LOGO_URL', value: logoUrl })
-      });
-      if (!res.ok) throw new Error();
+      const updates = [
+        { key: 'LOGO_URL', value: logoUrl },
+        { key: 'AMINE_PHOTO_URL', value: aminePhotoUrl }
+      ];
+      await Promise.all(
+        updates.map(u => 
+          fetch('/api/settings', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(u)
+          })
+        )
+      );
       showToast(L('تم حفظ التغييرات', 'Settings saved', 'Paramètres enregistrés'), 'success');
     } catch (_e) {
       showToast(L('حدث خطأ', 'Error saving', 'Erreur de sauvegarde'), 'error');
@@ -3208,24 +3218,49 @@ function SettingsView({ language, showToast }: { language: string; showToast: (m
               {L('رابط صورة الشعار الذي يظهر في أعلى الموقع.', 'URL of the logo image appearing on the site.', 'URL du logo qui apparaît sur le site.')}
             </p>
           </CardHeader>
-          <CardContent className="space-y-5">
-            <div className="space-y-2">
-              <Label className="text-sm font-semibold">{L('رابط الشعار', 'Logo URL', 'URL du Logo')}</Label>
-              <Input
-                value={logoUrl}
-                onChange={e => setLogoUrl(e.target.value)}
-                placeholder="https://example.com/logo.png"
-                className="font-mono text-sm"
-              />
-            </div>
-            {logoUrl && (
-              <div className="mt-4 flex flex-col gap-2">
-                <Label className="text-sm font-semibold">{L('معاينة الشعار', 'Logo Preview', 'Aperçu du Logo')}</Label>
-                <div className="p-4 rounded-xl border border-white/10 bg-[#06090f] w-fit shadow-lg shadow-black/20">
-                  <img src={logoUrl} alt="Logo Preview" className="h-16 w-16 object-contain scale-[1.5]" />
-                </div>
+          <CardContent className="space-y-8">
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold">{L('رابط الشعار', 'Logo URL', 'URL du Logo')}</Label>
+                <Input
+                  value={logoUrl}
+                  onChange={e => setLogoUrl(e.target.value)}
+                  placeholder="https://example.com/logo.png"
+                  className="font-mono text-sm"
+                />
               </div>
-            )}
+              {logoUrl && (
+                <div className="mt-2 flex flex-col gap-2">
+                  <Label className="text-xs text-muted-foreground font-semibold uppercase">{L('معاينة الشعار', 'Logo Preview', 'Aperçu du Logo')}</Label>
+                  <div className="p-4 rounded-xl border border-white/10 bg-[#06090f] w-fit shadow-lg shadow-black/20">
+                    <img src={logoUrl} alt="Logo Preview" className="h-16 w-16 object-contain scale-[1.5]" />
+                  </div>
+                </div>
+              )}
+            </div>
+            
+            <Separator className="bg-border" />
+
+            <div className="space-y-5">
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold">{L('رابط صورة أمين الشابي', 'Amine Chebbi Photo URL', 'URL de la photo de Amine Chebbi')}</Label>
+                <Input
+                  value={aminePhotoUrl}
+                  onChange={e => setAminePhotoUrl(e.target.value)}
+                  placeholder="https://i.imgur.com/MrRODMe.png"
+                  className="font-mono text-sm"
+                />
+              </div>
+              {aminePhotoUrl && (
+                <div className="mt-2 flex flex-col gap-2">
+                  <Label className="text-xs text-muted-foreground font-semibold uppercase">{L('معاينة الصورة', 'Photo Preview', 'Aperçu de la photo')}</Label>
+                  <div className="p-4 rounded-xl border border-border bg-card w-fit shadow-lg shadow-black/10">
+                    <img src={aminePhotoUrl} alt="Amine Preview" className="h-32 w-32 object-cover rounded-lg" />
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="pt-4 border-t border-border">
               <Button onClick={handleSave} disabled={saving} className="bg-green-600 hover:bg-green-700 text-white w-full sm:w-auto">
                 {saving ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : '💾 '}

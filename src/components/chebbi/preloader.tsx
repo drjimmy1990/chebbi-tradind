@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 
 export function Preloader() {
   const [hidden, setHidden] = useState(false);
+  const [photoUrl, setPhotoUrl] = useState('https://i.imgur.com/MrRODMe.png');
 
   useEffect(() => {
     const timer = setTimeout(() => setHidden(true), 1500);
@@ -12,6 +13,15 @@ export function Preloader() {
       clearTimeout(timer);
       clearTimeout(safety);
     };
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(r => r.json())
+      .then(res => {
+        if (res.data?.AMINE_PHOTO_URL) setPhotoUrl(res.data.AMINE_PHOTO_URL);
+      })
+      .catch(() => {});
   }, []);
 
   if (hidden) return null;
@@ -25,14 +35,14 @@ export function Preloader() {
     >
       {/* Pulsing logo */}
       <div
-        className="w-24 h-24 rounded-full overflow-hidden mb-5 border-[3px] border-primary flex-shrink-0"
+        className="w-24 h-24 rounded-full overflow-hidden mb-5 border-[3px] border-primary flex-shrink-0 bg-[#06090f]"
         style={{
           boxShadow: '0 0 30px rgba(16,185,129,0.25)',
           animation: 'preloaderPulse 2s ease-in-out infinite',
         }}
       >
         <img
-          src="https://i.imgur.com/MrRODMe.png"
+          src={photoUrl}
           alt="Chebbi Trading"
           className="w-full h-full object-cover"
         />

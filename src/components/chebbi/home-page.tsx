@@ -126,6 +126,7 @@ export function HomePage() {
 
   // ── Dynamic settings from DB ──
   const [LOGO_URL, setLogoUrl] = useState(DEFAULT_LOGO);
+  const [AMINE_PHOTO_URL, setAminePhotoUrl] = useState('https://i.imgur.com/MrRODMe.png');
   const [YOUTUBE_URL, setYoutubeUrl] = useState(DEFAULT_YOUTUBE);
   const [TELEGRAM_URL, setTelegramUrl] = useState(DEFAULT_TELEGRAM);
   const [CONTACT_EMAIL, setContactEmail] = useState('contact@chebbitrading.com');
@@ -149,6 +150,7 @@ export function HomePage() {
         if (json.settings) {
           const s = json.settings;
           if (s.LOGO_URL) setLogoUrl(s.LOGO_URL);
+          if (s.AMINE_PHOTO_URL) setAminePhotoUrl(s.AMINE_PHOTO_URL);
           if (s.YOUTUBE_URL) setYoutubeUrl(s.YOUTUBE_URL);
           if (s.TELEGRAM_URL) setTelegramUrl(s.TELEGRAM_URL);
           if (s.EMAIL) setContactEmail(s.EMAIL);
@@ -159,6 +161,7 @@ export function HomePage() {
           if (!s.XM_LINK_FR && s.XM_LINK) setXmLinkFr(s.XM_LINK);
           if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
           if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
+
           if (s.STAT_YEARS) setStatYears(s.STAT_YEARS);
           if (s.STAT_PERFORMANCE) setStatPerf(s.STAT_PERFORMANCE);
           if (s.STAT_MEMBERS) setStatMembers(s.STAT_MEMBERS);
@@ -511,7 +514,7 @@ export function HomePage() {
                     style={{ boxShadow: '0 0 60px rgba(16,185,129,0.15), 0 0 120px rgba(16,185,129,0.05)' }}
                   >
                     <img
-                      src="https://i.imgur.com/MrRODMe.png"
+                      src={AMINE_PHOTO_URL}
                       alt="Amine Chebbi"
                       className="w-full h-full object-cover"
                     />
