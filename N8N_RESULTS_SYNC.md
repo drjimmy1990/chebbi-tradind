@@ -115,3 +115,48 @@ When this node runs, the server will loop over the array and insert everything i
 4. **HTTP Request** (POST `api/trades` with Body `= {{ $input.all().map(i => i.json) }}` )
 
 Save and execute the workflow, and the live dashboard will immediately reflect the fresh data!
+
+---
+
+## Ready-to-Use CURL Commands
+
+If you want to test the API directly from your terminal or another script instead of n8n, here are the ready-to-use `curl` commands.
+
+### 1. CURL to Delete All Trades for a Month
+This instantly clears out all trades for September 2024:
+```bash
+curl -X DELETE "https://chebbi-trading.com/api/trades?year=2024&month=8" -H "Accept: application/json"
+```
+
+### 2. CURL to Bulk Insert Multiple Trades At Once
+The `POST` API has been explicitly upgraded to **accept an array (`[ ]`)**. This is how you import many items at once! You just send one massive JSON array containing all 100+ trades in a single request, and the server inserts them all in one operation. 
+
+```bash
+curl -X POST "https://chebbi-trading.com/api/trades" \
+     -H "Content-Type: application/json" \
+     -d '[
+          {
+            "year": 2024,
+            "month": 8,
+            "contract": "GBPJPY",
+            "period": "First week September",
+            "direction": "BUY",
+            "entry": 0,
+            "exit": 0,
+            "pips": -60,
+            "result": "L"
+          },
+          {
+            "year": 2024,
+            "month": 8,
+            "contract": "GOLD",
+            "period": "First week September",
+            "direction": "BUY",
+            "entry": 0,
+            "exit": 0,
+            "pips": 50,
+            "result": "W"
+          }
+        ]'
+```
+*(Notice the `[` and `]` wrapping the items. This tells the API "here are many items, insert them all at once!").*
