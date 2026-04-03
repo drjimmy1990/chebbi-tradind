@@ -28,6 +28,28 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
+    
+    // Support array for bulk insert
+    if (Array.isArray(body)) {
+      const dataToInsert = body.map(trade => ({
+        year: Number(trade.year) || new Date().getFullYear(),
+        month: Number(trade.month) ?? new Date().getMonth(),
+        contract: String(trade.contract || ""),
+        period: String(trade.period || ""),
+        direction: String(trade.direction || ""),
+        entry: Number(trade.entry) || 0,
+        exit: Number(trade.exit) || 0,
+        pips: Number(trade.pips) || 0,
+        result: String(trade.result || "W"),
+      }));
+
+      const created = await db.trade.createMany({
+        data: dataToInsert,
+      });
+
+      return NextResponse.json({ count: created.count }, { status: 201 });
+    }
+
     const { year, month, contract, period, direction, entry, exit, pips, result, notes } = body;
 
     if (!contract || !direction || pips == null) {
@@ -53,8 +75,8 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ data: trade }, { status: 201 });
   } catch (error) {
-    console.error("Error creating trade:", error);
-    return NextResponse.json({ error: "Failed to create trade" }, { status: 500 });
+    console.error("Error creating trade(s):", error);
+    return NextResponse.json({ error: "Failed to create trade(s)" }, { status: 500 });
   }
 }
 
@@ -62,15 +84,29 @@ export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
+    const year = searchParams.get("year");
+    const month = searchParams.get("month");
 
-    if (!id) {
-      return NextResponse.json({ error: "id is required" }, { status: 400 });
+    // Delete a specific trade by ID
+    if (id) {
+      await db.trade.delete({ where: { id } });
+      return NextResponse.json({ success: true, message: "Trade deleted" });
+    }
+    
+    // Bulk delete for a specific month/year (Used by n8n sync)
+    if (year && month) {
+      const deleted = await db.trade.deleteMany({
+        where: {
+          year: parseInt(year),
+          month: parseInt(month)
+        }
+      });
+      return NextResponse.json({ success: true, count: deleted.count, message: `Deleted trades for ${year}/${month}` });
     }
 
-    await db.trade.delete({ where: { id } });
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ error: "id, or year and month are required" }, { status: 400 });
   } catch (error) {
-    console.error("Error deleting trade:", error);
-    return NextResponse.json({ error: "Failed to delete trade" }, { status: 500 });
+    console.error("Error deleting trade(s):", error);
+    return NextResponse.json({ error: "Failed to delete trade(s)" }, { status: 500 });
   }
 }
