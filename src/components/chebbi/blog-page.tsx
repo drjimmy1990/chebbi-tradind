@@ -715,7 +715,7 @@ export function BlogPage() {
                                   <img
                                     src={logoUrl}
                                     alt="Chebbi Trading"
-                                    className="w-full h-full object-contain scale-[1.5]"
+                                    className="w-full h-full object-contain scale-[3]"
                                   />
                                 </div>
                                 <span className="text-xs font-medium text-muted-foreground">
@@ -992,7 +992,7 @@ export function BlogPage() {
                   <img
                     src={logoUrl}
                     alt="Chebbi Trading"
-                    className="w-full h-full object-contain scale-[1.5]"
+                    className="w-full h-full object-contain scale-[3]"
                   />
                 </div>
                 <div>

@@ -3233,7 +3233,7 @@ function SettingsView({ language, showToast }: { language: string; showToast: (m
                 <div className="mt-2 flex flex-col gap-2">
                   <Label className="text-xs text-muted-foreground font-semibold uppercase">{L('معاينة الشعار', 'Logo Preview', 'Aperçu du Logo')}</Label>
                   <div className="p-4 rounded-xl border border-white/10 bg-[#06090f] w-fit shadow-lg shadow-black/20">
-                    <img src={logoUrl} alt="Logo Preview" className="h-16 w-16 object-contain scale-[1.5]" />
+                    <img src={logoUrl} alt="Logo Preview" className="h-16 w-16 object-contain scale-[2]" />
                   </div>
                 </div>
               )}

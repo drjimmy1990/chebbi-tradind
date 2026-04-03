@@ -1324,7 +1324,7 @@ export function HomePage() {
             <div>
               <div className="flex items-center gap-3 mb-4">
                 <div className="w-11 h-11 rounded-xl overflow-hidden border border-border bg-[#06090f] p-1">
-                  <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-contain scale-[2]" />
+                  <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-contain scale-[3]" />
                 </div>
                 <span className="text-xl font-extrabold text-foreground">
                   Chebbi <em className="not-italic text-primary">Trading</em>
