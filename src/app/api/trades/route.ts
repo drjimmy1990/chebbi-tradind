@@ -31,6 +31,10 @@ export async function POST(request: NextRequest) {
     const secretQuery = searchParams.get("secret");
     const authHeader = request.headers.get("Authorization")?.replace("Bearer ", "");
     
+    // Globals for bulk inserts if passed in query
+    const globalYear = searchParams.get("year");
+    const globalMonth = searchParams.get("month");
+    
     const body = await request.json();
     
     // Auth Validation 
@@ -48,17 +52,23 @@ export async function POST(request: NextRequest) {
     const tradesArray = Array.isArray(body) ? body : (Array.isArray(body.trades) ? body.trades : null);
     
     if (tradesArray) {
-      const dataToInsert = tradesArray.map((trade: any) => ({
-        year: Number(trade.year) || new Date().getFullYear(),
-        month: Number(trade.month) ?? new Date().getMonth(),
-        contract: String(trade.contract || ""),
-        period: String(trade.period || ""),
-        direction: String(trade.direction || ""),
-        entry: Number(trade.entry) || 0,
-        exit: Number(trade.exit) || 0,
-        pips: Number(trade.pips) || 0,
-        result: String(trade.result || "W"),
-      }));
+      const dataToInsert = tradesArray.map((trade: any) => {
+        // Fallback safely to query parameters or current date
+        const y = trade.year !== undefined ? Number(trade.year) : (globalYear ? Number(globalYear) : new Date().getFullYear());
+        const m = trade.month !== undefined && trade.month !== "" ? Number(trade.month) : (globalMonth ? Number(globalMonth) : new Date().getMonth());
+
+        return {
+          year: isNaN(y) ? new Date().getFullYear() : y,
+          month: isNaN(m) ? new Date().getMonth() : m,
+          contract: String(trade.contract || ""),
+          period: String(trade.period || ""),
+          direction: String(trade.direction || ""),
+          entry: Number(trade.entry) || 0,
+          exit: Number(trade.exit) || 0,
+          pips: Number(trade.pips) || 0,
+          result: String(trade.result || "W"),
+        };
+      });
 
       const created = await db.trade.createMany({
         data: dataToInsert,
