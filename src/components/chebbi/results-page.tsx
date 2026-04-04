@@ -202,14 +202,20 @@ function YearSummarySkeleton() {
 }
 
 function YearSummaryCards({ lang, data }: { lang: Language; data: MonthlyPerformance[] }) {
-  // Auto-calculate per-year totals from trade data
+  // Auto-calculate per-year totals using compounding formula:
+  // Final = Initial × (1 + r1)(1 + r2)...(1 + r12) → yearly % = product - 1
   const yearTotals = useMemo(() => {
     const years = new Set(data.map(m => String(m.year)));
     const result: { year: string; pct: number }[] = [];
     for (const year of Array.from(years).sort()) {
       const months = data.filter(m => String(m.year) === year);
-      const totalLowRisk = months.reduce((sum, m) => sum + (m.lowRisk ?? 0), 0);
-      result.push({ year, pct: Math.round(totalLowRisk * 100) / 100 });
+      // Compounding: multiply (1 + r_i/100) for each month
+      const compounded = months.reduce((product, m) => {
+        const r = (m.lowRisk ?? 0) / 100; // convert percentage to decimal
+        return product * (1 + r);
+      }, 1);
+      const yearlyPct = (compounded - 1) * 100; // back to percentage
+      result.push({ year, pct: Math.round(yearlyPct * 100) / 100 });
     }
     return result;
   }, [data]);
