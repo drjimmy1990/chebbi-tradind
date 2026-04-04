@@ -525,7 +525,12 @@ function MonthlyBreakdownSection({
 
   const yearTotals = useMemo(() => {
     const filtered = data.filter((m) => String(m.year) === selectedYear);
-    const lowTotal = filtered.reduce((s, m) => s + (m.lowRisk ?? 0), 0);
+    // Compounding: (1+r1)(1+r2)...(1+rn) - 1
+    const compounded = filtered.reduce((product, m) => {
+      const r = (m.lowRisk ?? 0) / 100;
+      return product * (1 + r);
+    }, 1);
+    const lowTotal = Math.round((compounded - 1) * 10000) / 100;
     const active = filtered.filter((m) => m.lowRisk != null).length;
     return { lowTotal, active };
   }, [data, selectedYear]);
@@ -662,7 +667,7 @@ function MonthlyBreakdownSection({
               <p className="text-xs text-muted-foreground mb-1">{t('res.med', lang)}</p>
               <p className="font-mono font-bold text-lg text-ct-gold">
                 {pctFormat(
-                  yearMonths.reduce((s, m) => s + (m.mediumRisk ?? 0), 0),
+                  Math.round((yearMonths.reduce((p, m) => p * (1 + (m.mediumRisk ?? 0) / 100), 1) - 1) * 10000) / 100,
                 )}
               </p>
             </div>
