@@ -1,14 +1,15 @@
 'use client';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
-import { motion, useInView } from 'framer-motion';
+import { motion, useInView, AnimatePresence } from 'framer-motion';
 import { useRef } from 'react';
 import {
   BarChart, Bar, Cell, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine, Area, AreaChart,
 } from 'recharts';
 import {
   BarChart3, TrendingUp, AlertTriangle, Youtube, ExternalLink,
-  ArrowUpRight, ArrowDownRight, Minus, ChevronDown, Loader2,
+  ArrowUpRight, ArrowDownRight, Minus, ChevronDown, ChevronUp, Loader2,
+  X as XIcon,
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { t, type Language } from '@/lib/i18n';
@@ -499,7 +500,17 @@ function MonthlyBreakdownSection({
   loading: boolean;
 }) {
   const [selectedYear, setSelectedYear] = useState('2023');
+  const [selectedMonth, setSelectedMonth] = useState<number | null>(null);
+  const [monthTrades, setMonthTrades] = useState<Trade[]>([]);
+  const [monthTradesLoading, setMonthTradesLoading] = useState(false);
+  const tradesRef = useRef<HTMLDivElement>(null);
   const monthsShort = getMonthShort(lang);
+
+  const monthNamesFull = lang === 'ar'
+    ? ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+    : lang === 'en'
+      ? ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+      : ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'];
 
   const yearMonths = useMemo(() => {
     const filtered = data.filter((m) => String(m.year) === selectedYear);
@@ -519,6 +530,57 @@ function MonthlyBreakdownSection({
     for (const m of yearMonths) map.set(m.monthIndex, m);
     return Array.from({ length: 12 }, (_, i) => map.get(i) ?? null);
   }, [yearMonths]);
+
+  // Fetch trades for selected month
+  useEffect(() => {
+    if (selectedMonth === null) {
+      setMonthTrades([]);
+      return;
+    }
+    let cancelled = false;
+    setMonthTradesLoading(true);
+    (async () => {
+      try {
+        const r = await fetch(`/api/trades?year=${selectedYear}&month=${selectedMonth}`);
+        const res = await r.json();
+        if (!cancelled) setMonthTrades(res.data ?? []);
+      } catch {
+        if (!cancelled) setMonthTrades([]);
+      } finally {
+        if (!cancelled) setMonthTradesLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [selectedYear, selectedMonth]);
+
+  // Scroll to trades panel when month is selected
+  useEffect(() => {
+    if (selectedMonth !== null && tradesRef.current) {
+      setTimeout(() => {
+        tradesRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }, 200);
+    }
+  }, [selectedMonth]);
+
+  // Reset selected month when year changes
+  useEffect(() => {
+    setSelectedMonth(null);
+  }, [selectedYear]);
+
+  const handleMonthClick = (idx: number, hasData: boolean) => {
+    if (!hasData) return;
+    setSelectedMonth(selectedMonth === idx ? null : idx);
+  };
+
+  // Month trades stats
+  const monthStats = useMemo(() => {
+    const wins = monthTrades.filter(t => t.result === 'W').length;
+    const losses = monthTrades.filter(t => t.result === 'L').length;
+    const be = monthTrades.filter(t => t.result === 'BE').length;
+    const totalPips = monthTrades.reduce((s, t) => s + t.pips, 0);
+    const winRate = monthTrades.length > 0 ? Math.round((wins / monthTrades.length) * 100) : 0;
+    return { wins, losses, be, totalPips, winRate, total: monthTrades.length };
+  }, [monthTrades]);
 
   if (loading) {
     return (
@@ -542,12 +604,19 @@ function MonthlyBreakdownSection({
           <h2 className="text-2xl sm:text-3xl font-extrabold mb-2 text-center">
             📅 {t('results.monthly', lang)}
           </h2>
-          <p className="text-muted-foreground text-center mb-6 text-sm">
+          <p className="text-muted-foreground text-center mb-1 text-sm">
             {lang === 'fr'
               ? `Détail mois par mois — ${selectedYear}`
               : lang === 'ar'
                 ? `تفاصيل شهر بشهر — ${selectedYear}`
                 : `Month by month detail — ${selectedYear}`}
+          </p>
+          <p className="text-muted-foreground/60 text-center mb-6 text-xs">
+            {lang === 'fr'
+              ? 'Cliquez sur un mois pour voir les trades'
+              : lang === 'ar'
+                ? 'انقر على شهر لرؤية الصفقات'
+                : 'Click a month to see the trades'}
           </p>
         </FadeIn>
 
@@ -601,24 +670,31 @@ function MonthlyBreakdownSection({
               const hasData = month !== null && month.lowRisk != null;
               const isPositive = month?.lowRisk != null && month.lowRisk > 0;
               const isNegative = month?.lowRisk != null && month.lowRisk < 0;
+              const isSelected = selectedMonth === idx;
 
               return (
                 <motion.div
                   key={idx}
                   whileHover={hasData ? { y: -2 } : {}}
+                  whileTap={hasData ? { scale: 0.97 } : {}}
+                  onClick={() => handleMonthClick(idx, hasData)}
                   className={`rounded-xl border p-4 text-center transition-all ${
-                    hasData
-                      ? `bg-card border-border hover:shadow-lg ${
-                          isPositive
-                            ? 'border-l-[3px] border-l-ct-green'
-                            : isNegative
-                              ? 'border-l-[3px] border-l-ct-red'
-                              : 'border-l-[3px] border-l-ct-gold'
-                        }`
-                      : 'bg-card/40 border-border/50 opacity-40'
+                    hasData ? 'cursor-pointer' : 'cursor-default'
+                  } ${
+                    isSelected
+                      ? 'ring-2 ring-ct-green ring-offset-2 ring-offset-background bg-ct-green/5 border-ct-green/40 shadow-lg shadow-ct-green/10'
+                      : hasData
+                        ? `bg-card border-border hover:shadow-lg ${
+                            isPositive
+                              ? 'border-l-[3px] border-l-ct-green'
+                              : isNegative
+                                ? 'border-l-[3px] border-l-ct-red'
+                                : 'border-l-[3px] border-l-ct-gold'
+                          }`
+                        : 'bg-card/40 border-border/50 opacity-40'
                   }`}
                 >
-                  <p className="text-xs text-muted-foreground font-semibold mb-2">
+                  <p className={`text-xs font-semibold mb-2 ${isSelected ? 'text-ct-green' : 'text-muted-foreground'}`}>
                     {monthsShort[idx]}
                   </p>
                   {hasData ? (
@@ -652,6 +728,209 @@ function MonthlyBreakdownSection({
             })}
           </div>
         </FadeIn>
+
+        {/* ── Inline Trades Panel ── */}
+        <AnimatePresence mode="wait">
+          {selectedMonth !== null && (
+            <motion.div
+              ref={tradesRef}
+              key={`${selectedYear}-${selectedMonth}`}
+              initial={{ opacity: 0, height: 0, marginTop: 0 }}
+              animate={{ opacity: 1, height: 'auto', marginTop: 24 }}
+              exit={{ opacity: 0, height: 0, marginTop: 0 }}
+              transition={{ duration: 0.35, ease: 'easeInOut' }}
+              className="overflow-hidden scroll-mt-24"
+            >
+              <Card className="rounded-2xl border-ct-green/20 bg-gradient-to-b from-ct-green/[0.03] to-transparent overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between px-5 sm:px-6 pt-5 pb-4 border-b border-border/60">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-ct-green/15 flex items-center justify-center">
+                      <BarChart3 size={20} className="text-ct-green" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-foreground text-base sm:text-lg">
+                        {lang === 'fr'
+                          ? `Trades — ${monthNamesFull[selectedMonth]} ${selectedYear}`
+                          : lang === 'ar'
+                            ? `صفقات — ${monthNamesFull[selectedMonth]} ${selectedYear}`
+                            : `Trades — ${monthNamesFull[selectedMonth]} ${selectedYear}`}
+                      </h3>
+                      {!monthTradesLoading && (
+                        <p className="text-xs text-muted-foreground mt-0.5">
+                          {monthStats.total} {lang === 'fr' ? 'trades' : lang === 'ar' ? 'صفقة' : 'trades'}
+                          {' · '}
+                          <span className="text-ct-green">{monthStats.wins}W</span>
+                          {' / '}
+                          <span className="text-ct-red">{monthStats.losses}L</span>
+                          {monthStats.be > 0 && <> / <span className="text-ct-gold">{monthStats.be}BE</span></>}
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setSelectedMonth(null)}
+                    className="w-8 h-8 rounded-lg bg-secondary/60 flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all"
+                  >
+                    <XIcon size={16} />
+                  </button>
+                </div>
+
+                {/* Stats Bar */}
+                {!monthTradesLoading && monthStats.total > 0 && (
+                  <div className="grid grid-cols-3 sm:grid-cols-5 gap-px bg-border/30">
+                    {[
+                      { label: lang === 'fr' ? 'Win Rate' : lang === 'ar' ? 'نسبة الفوز' : 'Win Rate', value: `${monthStats.winRate}%`, color: monthStats.winRate > 50 ? 'text-ct-green' : 'text-ct-gold' },
+                      { label: 'Pips', value: `${monthStats.totalPips >= 0 ? '+' : ''}${monthStats.totalPips}`, color: monthStats.totalPips >= 0 ? 'text-ct-green' : 'text-ct-red' },
+                      { label: lang === 'fr' ? 'Trades' : lang === 'ar' ? 'الصفقات' : 'Trades', value: String(monthStats.total), color: 'text-foreground' },
+                      { label: lang === 'fr' ? 'Gagnants' : lang === 'ar' ? 'رابحة' : 'Wins', value: String(monthStats.wins), color: 'text-ct-green' },
+                      { label: lang === 'fr' ? 'Perdants' : lang === 'ar' ? 'خاسرة' : 'Losses', value: String(monthStats.losses), color: 'text-ct-red' },
+                    ].map((stat) => (
+                      <div key={stat.label} className="bg-card/80 px-3 py-3 text-center">
+                        <p className="text-[10px] uppercase tracking-wider text-muted-foreground/70 mb-1">{stat.label}</p>
+                        <p className={`font-mono font-bold text-sm ${stat.color}`}>{stat.value}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Trade Table */}
+                <CardContent className="p-0">
+                  {monthTradesLoading ? (
+                    <div className="p-6 space-y-3">
+                      {Array.from({ length: 4 }).map((_, i) => (
+                        <Skeleton key={i} className="h-14 rounded-lg" />
+                      ))}
+                    </div>
+                  ) : monthTrades.length === 0 ? (
+                    <div className="text-center py-12 text-muted-foreground">
+                      <p className="text-lg mb-1">📭</p>
+                      <p className="text-sm">
+                        {lang === 'fr'
+                          ? 'Aucun trade pour ce mois'
+                          : lang === 'ar'
+                            ? 'لا توجد صفقات لهذا الشهر'
+                            : 'No trades for this month'}
+                      </p>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Desktop Table */}
+                      <div className="hidden sm:block overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="border-b border-border/50 text-xs text-muted-foreground/70 uppercase tracking-wider">
+                              <th className="text-left px-5 py-3 font-semibold">#</th>
+                              <th className="text-left px-3 py-3 font-semibold">{lang === 'fr' ? 'Paire' : lang === 'ar' ? 'الزوج' : 'Pair'}</th>
+                              <th className="text-center px-3 py-3 font-semibold">{lang === 'fr' ? 'Direction' : lang === 'ar' ? 'الاتجاه' : 'Direction'}</th>
+                              <th className="text-center px-3 py-3 font-semibold">{lang === 'fr' ? 'Entrée' : lang === 'ar' ? 'الدخول' : 'Entry'}</th>
+                              <th className="text-center px-3 py-3 font-semibold">{lang === 'fr' ? 'Sortie' : lang === 'ar' ? 'الخروج' : 'Exit'}</th>
+                              <th className="text-center px-3 py-3 font-semibold">Pips</th>
+                              <th className="text-center px-3 py-3 font-semibold">{lang === 'fr' ? 'Résultat' : lang === 'ar' ? 'النتيجة' : 'Result'}</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {monthTrades.map((trade, i) => {
+                              const isWin = trade.result === 'W';
+                              const isLoss = trade.result === 'L';
+                              return (
+                                <tr
+                                  key={trade.id}
+                                  className={`border-b border-border/30 transition-colors hover:bg-secondary/30 ${
+                                    i % 2 === 0 ? 'bg-transparent' : 'bg-secondary/10'
+                                  }`}
+                                >
+                                  <td className="px-5 py-3 font-mono text-xs text-muted-foreground">{i + 1}</td>
+                                  <td className="px-3 py-3 font-bold text-foreground">{trade.contract}</td>
+                                  <td className="px-3 py-3 text-center">
+                                    <Badge className={`text-[10px] px-2 py-0 border-0 font-bold ${
+                                      trade.direction === 'BUY' ? 'bg-ct-green/15 text-ct-green' : 'bg-ct-red/15 text-ct-red'
+                                    }`}>
+                                      {trade.direction}
+                                    </Badge>
+                                  </td>
+                                  <td className="px-3 py-3 text-center font-mono text-xs text-muted-foreground">{trade.entry}</td>
+                                  <td className="px-3 py-3 text-center font-mono text-xs text-muted-foreground">{trade.exit}</td>
+                                  <td className="px-3 py-3 text-center">
+                                    <span className={`font-mono font-bold text-sm flex items-center justify-center gap-1 ${
+                                      trade.pips > 0 ? 'text-ct-green' : trade.pips < 0 ? 'text-ct-red' : 'text-ct-gold'
+                                    }`}>
+                                      {trade.pips > 0 && <ArrowUpRight size={12} />}
+                                      {trade.pips < 0 && <ArrowDownRight size={12} />}
+                                      {trade.pips > 0 ? '+' : ''}{trade.pips}
+                                    </span>
+                                  </td>
+                                  <td className="px-3 py-3 text-center">
+                                    <Badge className={`text-[10px] px-2.5 py-0.5 border-0 font-bold uppercase ${
+                                      isWin ? 'bg-ct-green/15 text-ct-green' : isLoss ? 'bg-ct-red/15 text-ct-red' : 'bg-ct-gold/15 text-ct-gold'
+                                    }`}>
+                                      {isWin ? 'Win' : isLoss ? 'Loss' : 'BE'}
+                                    </Badge>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+
+                      {/* Mobile Cards */}
+                      <div className="sm:hidden space-y-2 p-4">
+                        {monthTrades.map((trade, i) => {
+                          const isWin = trade.result === 'W';
+                          const isLoss = trade.result === 'L';
+                          const borderColor = isWin ? 'border-l-ct-green' : isLoss ? 'border-l-ct-red' : 'border-l-ct-gold';
+                          return (
+                            <div
+                              key={trade.id}
+                              className={`bg-secondary/20 border border-border/50 rounded-lg border-l-[3px] ${borderColor} p-3`}
+                            >
+                              <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-mono text-[10px] text-muted-foreground">#{i + 1}</span>
+                                  <span className="font-bold text-foreground text-sm">{trade.contract}</span>
+                                  <Badge className={`text-[9px] px-1.5 py-0 border-0 font-bold ${
+                                    trade.direction === 'BUY' ? 'bg-ct-green/15 text-ct-green' : 'bg-ct-red/15 text-ct-red'
+                                  }`}>
+                                    {trade.direction}
+                                  </Badge>
+                                </div>
+                                <Badge className={`text-[10px] px-2 py-0.5 border-0 font-bold ${
+                                  isWin ? 'bg-ct-green/15 text-ct-green' : isLoss ? 'bg-ct-red/15 text-ct-red' : 'bg-ct-gold/15 text-ct-gold'
+                                }`}>
+                                  {isWin ? 'Win' : isLoss ? 'Loss' : 'BE'}
+                                </Badge>
+                              </div>
+                              <div className="flex items-center justify-between text-xs">
+                                <span className="font-mono text-muted-foreground">{trade.entry} → {trade.exit}</span>
+                                <span className={`font-mono font-bold ${
+                                  trade.pips > 0 ? 'text-ct-green' : trade.pips < 0 ? 'text-ct-red' : 'text-ct-gold'
+                                }`}>
+                                  {trade.pips > 0 ? '+' : ''}{trade.pips} pips
+                                </span>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+
+                      {/* Close / collapse button */}
+                      <div className="text-center py-4 border-t border-border/30">
+                        <button
+                          onClick={() => setSelectedMonth(null)}
+                          className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                        >
+                          <ChevronUp size={14} />
+                          {lang === 'fr' ? 'Fermer' : lang === 'ar' ? 'إغلاق' : 'Close'}
+                        </button>
+                      </div>
+                    </>
+                  )}
+                </CardContent>
+              </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
