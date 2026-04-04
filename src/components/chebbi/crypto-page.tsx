@@ -347,11 +347,11 @@ export function CryptoPage() {
               )}
               highlightType="red"
             >
-              <p>{L(language,
+              <p dangerouslySetInnerHTML={{ __html: L(language,
                 'Vous devez avoir des <strong class="text-amber-400">connaissances de base en trading</strong> et les types de trades avant de rejoindre.',
                 'You should have <strong class="text-amber-400">basic trading knowledge</strong> and understand trade types before joining.',
                 'يجب أن تكون لديك <strong class="text-amber-400">معرفة بأساسيات التداول</strong> وأنواع الصفقات قبل الانضمام.',
-              )}</p>
+              ) as string }} />
             </InfoCard>
 
             <InfoCard
@@ -379,11 +379,11 @@ export function CryptoPage() {
                 '🛡️ نعمل بمخاطرة <strong>1% - 2%</strong> في كل صفقة. الخروج عن هذه القاعدة يعني مكاسب أكبر لكن خسائر أكبر أيضاً.',
               )}
             >
-              <p>{L(language,
+              <p dangerouslySetInnerHTML={{ __html: L(language,
                 'Les petits comptes ne conviennent pas car <strong class="text-amber-400">10% - 20% par mois</strong> représente un petit gain pour eux, ce qui peut les pousser à sortir de la gestion des risques.',
                 'Small accounts don\'t suit the group because <strong class="text-amber-400">10% - 20% per month</strong> is a small gain for them, which may push them to break risk management rules.',
                 'أصحاب الحسابات الصغيرة لا تناسبهم المجموعة، لأن <strong class="text-amber-400">10% - 20% شهرياً</strong> بالنسبة لهم ربح صغير مما قد يدفعهم للخروج عن إدارة المخاطر.',
-              )}</p>
+              ) as string }} />
             </InfoCard>
 
             <InfoCard
