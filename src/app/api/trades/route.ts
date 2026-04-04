@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { requireAuth, unauthorizedResponse } from "@/lib/auth-guard";
 
 export async function GET(request: NextRequest) {
   try {
@@ -27,33 +28,23 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    // Auth: accept admin session (cookie) OR webhookSecret (header/query)
+    const session = await requireAuth(request);
+    if (!session) return unauthorizedResponse();
+
     const { searchParams } = new URL(request.url);
-    const secretQuery = searchParams.get("secret");
-    const authHeader = request.headers.get("Authorization")?.replace("Bearer ", "");
-    
+
     // Globals for bulk inserts if passed in query
     const globalYear = searchParams.get("year");
     const globalMonth = searchParams.get("month");
-    
+
     const body = await request.json();
-    
-    // Auth Validation 
-    const secretSetting = await db.siteSetting.findUnique({
-      where: { key: "webhookSecret" },
-    });
-    const validSecret = secretSetting?.value;
-    const providedSecret = secretQuery || authHeader || body.secret;
 
-    if (!validSecret || providedSecret !== validSecret) {
-      return NextResponse.json({ error: "Unauthorized. Invalid secret." }, { status: 401 });
-    }
-
-    // Support array for bulk insert (either direct array or wrapped in a 'trades' object if body contained the secret)
+    // Support array for bulk insert (either direct array or wrapped in a 'trades' object)
     const tradesArray = Array.isArray(body) ? body : (Array.isArray(body.trades) ? body.trades : null);
-    
+
     if (tradesArray) {
       const dataToInsert = tradesArray.map((trade: any) => {
-        // Fallback safely to query parameters or current date
         const y = trade.year !== undefined ? Number(trade.year) : (globalYear ? Number(globalYear) : new Date().getFullYear());
         const m = trade.month !== undefined && trade.month !== "" ? Number(trade.month) : (globalMonth ? Number(globalMonth) : new Date().getMonth());
 
@@ -77,7 +68,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ count: created.count }, { status: 201 });
     }
 
-    const { year, month, contract, period, direction, entry, exit, pips, result, notes } = body;
+    const { year, month, contract, period, direction, entry, exit, pips, result } = body;
 
     if (!contract || !direction || pips == null) {
       return NextResponse.json(
@@ -109,31 +100,21 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
+    // Auth: accept admin session (cookie) OR webhookSecret (header/query)
+    const session = await requireAuth(request);
+    if (!session) return unauthorizedResponse();
+
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
     const year = searchParams.get("year");
     const month = searchParams.get("month");
-    
-    // Auth Validation 
-    const secretQuery = searchParams.get("secret");
-    const authHeader = request.headers.get("Authorization")?.replace("Bearer ", "");
-    
-    const secretSetting = await db.siteSetting.findUnique({
-      where: { key: "webhookSecret" },
-    });
-    const validSecret = secretSetting?.value;
-    const providedSecret = secretQuery || authHeader;
-
-    if (!validSecret || providedSecret !== validSecret) {
-      return NextResponse.json({ error: "Unauthorized. Invalid secret." }, { status: 401 });
-    }
 
     // Delete a specific trade by ID
     if (id) {
       await db.trade.delete({ where: { id } });
       return NextResponse.json({ success: true, message: "Trade deleted" });
     }
-    
+
     // Bulk delete for a specific month/year (Used by n8n sync)
     if (year && month) {
       const deleted = await db.trade.deleteMany({

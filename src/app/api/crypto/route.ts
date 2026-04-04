@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
+import { requireAuth, unauthorizedResponse } from "@/lib/auth-guard";
 
 // GET — returns all crypto monthly records grouped by year
 export async function GET() {
@@ -22,30 +23,14 @@ export async function GET() {
   }
 }
 
-// Security Helper
-async function validateSecret(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
-  const secretQuery = searchParams.get("secret");
-  const authHeader = request.headers.get("Authorization")?.replace("Bearer ", "");
-  
-  const secretSetting = await db.siteSetting.findUnique({
-    where: { key: "webhookSecret" },
-  });
-  const validSecret = secretSetting?.value;
-  return validSecret && (secretQuery === validSecret || authHeader === validSecret);
-}
-
 // POST — create new crypto monthly record(s)
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    
-    // Auth Validation 
-    const isValid = await validateSecret(request);
-    if (!isValid && body.secret !== (await db.siteSetting.findUnique({ where: { key: "webhookSecret" } }))?.value) {
-      return NextResponse.json({ error: "Unauthorized. Invalid secret." }, { status: 401 });
-    }
+    // Auth: accept admin session (cookie) OR webhookSecret (header/query)
+    const session = await requireAuth(request);
+    if (!session) return unauthorizedResponse();
 
+    const body = await request.json();
     const { searchParams } = new URL(request.url);
     const globalYear = searchParams.get("year");
 
@@ -91,8 +76,9 @@ export async function POST(request: NextRequest) {
 // PUT — update a crypto monthly record
 export async function PUT(request: NextRequest) {
   try {
-    const isValid = await validateSecret(request);
-    if (!isValid) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    // Auth: accept admin session (cookie) OR webhookSecret (header/query)
+    const session = await requireAuth(request);
+    if (!session) return unauthorizedResponse();
 
     const body = await request.json();
     const { id, year, monthIndex, percentage } = body;
@@ -118,8 +104,9 @@ export async function PUT(request: NextRequest) {
 // DELETE — remove crypto monthly record(s)
 export async function DELETE(request: NextRequest) {
   try {
-    const isValid = await validateSecret(request);
-    if (!isValid) return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+    // Auth: accept admin session (cookie) OR webhookSecret (header/query)
+    const session = await requireAuth(request);
+    if (!session) return unauthorizedResponse();
 
     const { searchParams } = new URL(request.url);
     const id = searchParams.get("id");
