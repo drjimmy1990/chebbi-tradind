@@ -243,15 +243,19 @@ export function HomePage() {
       if (res.status === 409) {
         setRegError(t('home.reg.duplicate', language));
       } else if (!res.ok) {
+        const waitNote =
+          language === 'ar' ? '\n\nملاحظة: إذا قمت بالتسجيل مؤخرًا، يُرجى الانتظار لمدة 3 دقائق ثم إعادة المحاولة.' :
+          language === 'en' ? '\n\nNote: If you have just registered, please wait 3 minutes and try again.' :
+          '\n\nRemarque : Si vous venez de vous inscrire, veuillez patienter 3 minutes puis réessayer.';
+
         if (json.error === "not_affiliate") {
           setRegError(
-            language === 'ar' ? 'حساب XM الخاص بك غير مسجل عبر رابط الإحالة الخاص بنا.' :
+            (language === 'ar' ? 'حساب XM الخاص بك غير مسجل عبر رابط الإحالة الخاص بنا.' :
               language === 'en' ? 'Your XM account is not registered under our affiliate link.' :
-                language === 'fr' ? "Votre identifiant n'est pas enregistré via notre lien" :
-                  "Votre identifiant n'est pas enregistré via notre lien"
+                "Votre identifiant n'est pas enregistré via notre lien") + waitNote
           );
         } else {
-          setRegError(json.error || t('home.reg.error', language));
+          setRegError((json.error || t('home.reg.error', language)) + waitNote);
         }
       } else {
         setRegSuccess(t('home.reg.success', language));
@@ -720,9 +724,9 @@ export function HomePage() {
                       )}
 
                       {regError && (
-                        <div className="flex items-center gap-2 p-3 rounded-xl bg-ct-red/10 border border-ct-red/20">
-                          <CircleDot size={16} className="text-ct-red shrink-0" />
-                          <p className="text-sm text-ct-red font-medium">{regError}</p>
+                        <div className="flex items-start gap-2 p-3 rounded-xl bg-ct-red/10 border border-ct-red/20">
+                          <CircleDot size={16} className="text-ct-red shrink-0 mt-0.5" />
+                          <p className="text-sm text-ct-red font-medium whitespace-pre-line">{regError}</p>
                         </div>
                       )}
 
