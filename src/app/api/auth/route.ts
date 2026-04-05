@@ -96,5 +96,62 @@ export async function DELETE(request: NextRequest) {
   return response
 }
 
+// ---------------------------------------------------------------------------
+// PATCH /api/auth — Change password
+// ---------------------------------------------------------------------------
+export async function PATCH(request: NextRequest) {
+  try {
+    const session = await getSession(request)
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    }
+
+    const body = await request.json()
+    const { currentPassword, newPassword } = body
+
+    if (!currentPassword || !newPassword) {
+      return NextResponse.json(
+        { error: 'Current and new passwords are required' },
+        { status: 400 },
+      )
+    }
+
+    if (newPassword.length < 6) {
+      return NextResponse.json(
+        { error: 'New password must be at least 6 characters' },
+        { status: 400 },
+      )
+    }
+
+    // Find user
+    const rows = await db.$queryRaw<{ id: string; username: string; password: string }[]>`
+      SELECT id, username, password FROM AdminUser WHERE username = ${session.username} LIMIT 1
+    `
+    const user = rows[0]
+
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 404 })
+    }
+
+    // Verify current password
+    const bcrypt = await getBcrypt()
+    if (!bcrypt.compareSync(currentPassword, user.password)) {
+      return NextResponse.json({ error: 'Current password is incorrect' }, { status: 401 })
+    }
+
+    // Hash new password and update
+    const hashedNew = bcrypt.hashSync(newPassword, 10)
+    await db.$executeRaw`UPDATE AdminUser SET password = ${hashedNew} WHERE id = ${user.id}`
+
+    return NextResponse.json({ success: true, message: 'Password updated successfully' })
+  } catch (err) {
+    console.error('Auth change-password error:', err)
+    return NextResponse.json(
+      { error: 'Internal server error' },
+      { status: 500 },
+    )
+  }
+}
+
 // Re-export for backward compatibility
 export { getSession, sessions, SESSION_TTL_MS }
