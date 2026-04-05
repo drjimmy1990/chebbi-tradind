@@ -66,6 +66,7 @@ model Signal {
 
 model BlogArticle {
   id         String   @id @default(cuid())
+  slug       String   @unique @default("")
   titleFr    String
   titleEn    String
   titleAr    String

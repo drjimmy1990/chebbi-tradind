@@ -13,6 +13,8 @@ import {
   ChevronDown,
   BookOpen,
   TrendingUp,
+  Share2,
+  Check,
 } from 'lucide-react';
 import { useAppStore } from '@/lib/store';
 import { t, type Language } from '@/lib/i18n';
@@ -42,6 +44,7 @@ const DEFAULT_CONTACT_EMAIL = 'contact@chebbitrading.com';
 
 interface BlogArticle {
   id: string;
+  slug: string;
   titleFr: string;
   titleEn: string;
   titleAr: string;
@@ -818,6 +821,11 @@ export function BlogPage() {
                       </span>
                     </div>
 
+                    {/* Share button */}
+                    {selectedArticle.slug && (
+                      <ShareButton slug={selectedArticle.slug} language={language} />
+                    )}
+
                     {/* Separator */}
                     <div className="h-px bg-border" />
                   </div>
@@ -1121,6 +1129,48 @@ function EbookEmailForm({ language }: { language: Language }) {
         </p>
       )}
     </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  ShareButton — copies blog post URL to clipboard                   */
+/* ------------------------------------------------------------------ */
+
+function ShareButton({ slug, language }: { slug: string; language: Language }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = async () => {
+    const url = `${window.location.origin}/blog/${slug}`;
+    try {
+      await navigator.clipboard.writeText(url);
+    } catch {
+      const input = document.createElement('input');
+      input.value = url;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand('copy');
+      document.body.removeChild(input);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2500);
+  };
+
+  const label = copied
+    ? (language === 'ar' ? 'تم النسخ ✓' : language === 'en' ? 'Copied ✓' : 'Copié ✓')
+    : (language === 'ar' ? '🔗 نسخ الرابط' : language === 'en' ? '🔗 Copy link' : '🔗 Copier le lien');
+
+  return (
+    <button
+      onClick={handleCopy}
+      className={`inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-lg transition-all mb-2 ${
+        copied
+          ? 'bg-green-500/15 text-green-400 border border-green-500/30'
+          : 'bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80 border border-border'
+      }`}
+    >
+      {copied ? <Check size={13} /> : <Share2 size={13} />}
+      {label}
+    </button>
   );
 }
 

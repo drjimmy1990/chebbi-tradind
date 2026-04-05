@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { requireAuth, unauthorizedResponse } from "@/lib/auth-guard";
+import { slugify } from "@/lib/slugify";
 
 export async function GET(request: NextRequest) {
   try {
@@ -47,8 +48,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Auto-generate slug from French title
+    let slug = slugify(titleFr);
+    // Ensure uniqueness
+    const existing = await db.blogArticle.findUnique({ where: { slug } });
+    if (existing) {
+      slug = `${slug}-${Date.now().toString(36)}`;
+    }
+
     const article = await db.blogArticle.create({
       data: {
+        slug,
         titleFr, titleEn: titleEn || titleFr, titleAr: titleAr || titleFr,
         excerptFr: excerptFr || '', excerptEn: excerptEn || excerptFr || '', excerptAr: excerptAr || excerptFr || '',
         contentFr, contentEn: contentEn || contentFr, contentAr: contentAr || contentFr,
@@ -86,7 +96,7 @@ export async function PUT(request: NextRequest) {
       'excerptFr', 'excerptEn', 'excerptAr',
       'contentFr', 'contentEn', 'contentAr',
       'category', 'catLabelFr', 'catLabelEn', 'catLabelAr',
-      'date', 'readTime', 'emoji', 'catColor', 'catText', 'views',
+      'date', 'readTime', 'emoji', 'catColor', 'catText', 'views', 'slug',
     ];
     for (const key of allowedFields) {
       if (fields[key] !== undefined) updateData[key] = fields[key];
