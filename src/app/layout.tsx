@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import Script from "next/script";
+import { db } from "@/lib/db";
 import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 
@@ -18,32 +19,51 @@ const jetbrainsMono = JetBrains_Mono({
   weight: ["400", "500", "600", "700"],
 });
 
-export const metadata: Metadata = {
-  title: "Chebbi Trading — Signaux Forex Gratuits | Partenaire XM",
-  description:
-    "Chebbi Trading - Signaux Forex GRATUITS. 4 ans de résultats live sur YouTube. Inscrivez-vous sur XM et rejoignez notre groupe.",
-  keywords: [
-    "Chebbi Trading",
-    "Forex",
-    "Signaux Forex",
-    "Trading Gratuit",
-    "XM",
-    "XAUUSD",
-    "Or",
-    "Live YouTube",
-  ],
-  icons: {
-    icon: "https://i.imgur.com/USEEiyC.png",
-  },
-  openGraph: {
-    title: "Chebbi Trading - Signaux Forex Gratuits",
+const DEFAULT_LOGO = "https://i.imgur.com/USEEiyC.png";
+
+export async function generateMetadata(): Promise<Metadata> {
+  let logoUrl = DEFAULT_LOGO;
+  try {
+    const setting = await db.siteSetting.findUnique({ where: { key: "LOGO_URL" } });
+    if (setting?.value) logoUrl = setting.value;
+  } catch {
+    // DB unavailable — use default
+  }
+
+  return {
+    title: "Chebbi Trading — Signaux Forex Gratuits | Partenaire XM",
     description:
-      "4 ans de résultats live. Rejoignez notre groupe gratuit en ouvrant un compte XM.",
-    images: ["https://i.imgur.com/MrRODMe.png"],
-    siteName: "Chebbi Trading",
-    type: "website",
-  },
-};
+      "Chebbi Trading - Signaux Forex GRATUITS. 4 ans de résultats live sur YouTube. Inscrivez-vous sur XM et rejoignez notre groupe.",
+    keywords: [
+      "Chebbi Trading",
+      "Forex",
+      "Signaux Forex",
+      "Trading Gratuit",
+      "XM",
+      "XAUUSD",
+      "Or",
+      "Live YouTube",
+    ],
+    icons: {
+      icon: logoUrl,
+    },
+    openGraph: {
+      title: "Chebbi Trading - Signaux Forex Gratuits",
+      description:
+        "4 ans de résultats live. Rejoignez notre groupe gratuit en ouvrant un compte XM.",
+      images: [logoUrl],
+      siteName: "Chebbi Trading",
+      type: "website",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: "Chebbi Trading - Signaux Forex Gratuits",
+      description:
+        "4 ans de résultats live. Rejoignez notre groupe gratuit en ouvrant un compte XM.",
+      images: [logoUrl],
+    },
+  };
+}
 
 export default function RootLayout({
   children,
