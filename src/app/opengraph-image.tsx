@@ -12,7 +12,7 @@ export default async function OGImage() {
   try {
     const setting = await db.siteSetting.findUnique({ where: { key: 'LOGO_URL' } });
     if (setting?.value) logoUrl = setting.value;
-  } catch {}
+  } catch { }
 
   return new ImageResponse(
     (
@@ -29,8 +29,8 @@ export default async function OGImage() {
         <img
           src={logoUrl}
           alt="Chebbi Trading"
-          width={400}
-          height={400}
+          width={800}
+          height={800}
           style={{ objectFit: 'contain' }}
         />
       </div>
