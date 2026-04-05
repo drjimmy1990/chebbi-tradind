@@ -49,8 +49,8 @@ export default async function OGImage() {
         <img
           src={logoUrl}
           alt="Chebbi Trading"
-          width={200}
-          height={200}
+          width={800}
+          height={800}
           style={{
             objectFit: 'contain',
             marginBottom: '30px',

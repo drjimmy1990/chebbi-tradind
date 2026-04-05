@@ -45,8 +45,8 @@ export default async function TwitterImage() {
         <img
           src={logoUrl}
           alt="Chebbi Trading"
-          width={200}
-          height={200}
+          width={400}
+          height={400}
           style={{ objectFit: 'contain', marginBottom: '30px' }}
         />
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
