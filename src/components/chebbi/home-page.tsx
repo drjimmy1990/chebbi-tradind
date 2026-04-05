@@ -1023,8 +1023,8 @@ export function HomePage() {
                   {/* Right: Profile card */}
                   <div className="flex justify-center lg:justify-end">
                     <Card className="bg-card border border-border rounded-2xl p-8 text-center max-w-sm w-full shadow-2xl shadow-primary/5">
-                      <div className="w-24 h-24 rounded-full border-[3px] border-primary overflow-hidden mx-auto mb-4 relative bg-[#06090f] flex items-center justify-center p-2">
-                        <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-contain" />
+                      <div className="w-24 h-24 rounded-full border-[3px] border-primary overflow-hidden mx-auto mb-4 relative bg-[#06090f] flex items-center justify-center p-1">
+                        <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-contain scale-[2.5]" />
                         <span className="absolute bottom-1 right-1 w-4 h-4 bg-primary rounded-full border-2 border-[#06090f] z-10">
                           <span className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75" />
                         </span>
@@ -1034,15 +1034,15 @@ export function HomePage() {
                       <Separator className="my-4" />
                       <div className="grid grid-cols-3 gap-2 text-center">
                         <div>
-                          <p className="text-lg font-extrabold text-gradient-green">4+</p>
+                          <p className="text-lg font-extrabold text-gradient-green">{statYears || '4+'}</p>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-wide">{t('home.years', language)}</p>
                         </div>
                         <div>
-                          <p className="text-lg font-extrabold text-gradient-green">~70%</p>
+                          <p className="text-lg font-extrabold text-gradient-green">{tradeStats.winRate > 0 ? `${tradeStats.winRate.toFixed(1)}%` : '~70%'}</p>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Win Rate</p>
                         </div>
                         <div>
-                          <p className="text-lg font-extrabold text-gradient-green">1.9K+</p>
+                          <p className="text-lg font-extrabold text-gradient-green">{statMembers || '1.9K+'}</p>
                           <p className="text-[10px] text-muted-foreground uppercase tracking-wide">Membres</p>
                         </div>
                       </div>
@@ -1184,8 +1184,8 @@ export function HomePage() {
               <div className="flex justify-center">
                 <Card className="bg-card border border-border rounded-2xl p-8 max-w-sm w-full shadow-xl shadow-primary/5">
                   <div className="text-center mb-6">
-                    <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-primary/30 bg-[#06090f] p-2 flex items-center justify-center" style={{ boxShadow: '0 0 30px rgba(16,185,129,0.15)' }}>
-                      <img src={LOGO_URL} alt="Chebbi Trading" className="w-[150%] h-[150%] object-contain max-w-none" />
+                    <div className="w-20 h-20 rounded-full overflow-hidden mx-auto mb-4 border-2 border-primary/30 bg-[#06090f] p-1 flex items-center justify-center" style={{ boxShadow: '0 0 30px rgba(16,185,129,0.15)' }}>
+                      <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-contain scale-[2.5]" />
                     </div>
                     <h3 className="text-lg font-bold text-foreground">{t('pres.name', language)}</h3>
                     <p className="text-sm text-muted-foreground">{t('xmcta.trader', language)}</p>
