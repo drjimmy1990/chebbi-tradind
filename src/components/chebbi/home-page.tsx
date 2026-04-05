@@ -251,8 +251,8 @@ export function HomePage() {
       } else if (!res.ok) {
         const waitNote =
           language === 'ar' ? '\n\nملاحظة: إذا قمت بالتسجيل مؤخرًا، يُرجى الانتظار لمدة 3 دقائق ثم إعادة المحاولة.' :
-          language === 'en' ? '\n\nNote: If you have just registered, please wait 3 minutes and try again.' :
-          '\n\nRemarque : Si vous venez de vous inscrire, veuillez patienter 3 minutes puis réessayer.';
+            language === 'en' ? '\n\nNote: If you have just registered, please wait 3 minutes and try again.' :
+              '\n\nRemarque : Si vous venez de vous inscrire, veuillez patienter 3 minutes puis réessayer.';
 
         if (json.error === "not_affiliate") {
           setRegError(
@@ -1024,7 +1024,7 @@ export function HomePage() {
                   <div className="flex justify-center lg:justify-end">
                     <Card className="bg-card border border-border rounded-2xl p-8 text-center max-w-sm w-full shadow-2xl shadow-primary/5">
                       <div className="w-24 h-24 rounded-full border-[3px] border-primary overflow-hidden mx-auto mb-4 relative bg-[#06090f] flex items-center justify-center p-1">
-                        <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-contain scale-[2.5]" />
+                        <img src={LOGO_URL} alt="Chebbi Trading" className="w-full h-full object-contain scale-[3]" />
                         <span className="absolute bottom-1 right-1 w-4 h-4 bg-primary rounded-full border-2 border-[#06090f] z-10">
                           <span className="absolute inset-0 bg-primary rounded-full animate-ping opacity-75" />
                         </span>
