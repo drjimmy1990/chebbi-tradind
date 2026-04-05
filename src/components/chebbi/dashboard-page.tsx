@@ -215,6 +215,7 @@ function SidebarContent({
         { id: 'trades', label: 'Trades', icon: '📋' },
         { id: 'crypto', label: 'Crypto VIP', icon: '₿' },
         { id: 'crypto-subs', label: 'E-mails VIP', icon: '📧' },
+        { id: 'ebook-subs', label: 'E-mails Ebook', icon: '📚' },
       ],
     },
     {
@@ -336,6 +337,7 @@ export function DashboardPage() {
   const [contactEmail, setContactEmail] = useState('');
   const [telegramHandle, setTelegramHandle] = useState('');
   const [youtubeChannel, setYoutubeChannel] = useState('');
+  const [latestLiveUrl, setLatestLiveUrl] = useState('');
   const [xmLinkFr, setXmLinkFr] = useState('');
   const [xmLinkEn, setXmLinkEn] = useState('');
   const [xmLinkAr, setXmLinkAr] = useState('');
@@ -440,6 +442,7 @@ export function DashboardPage() {
         setContactEmail(map.EMAIL || map.contactEmail || '');
         setTelegramHandle(map.TELEGRAM_URL || map.telegramHandle || '');
         setYoutubeChannel(map.YOUTUBE_URL || map.youtubeChannel || '');
+        setLatestLiveUrl(map.LATEST_LIVE_URL || '');
         setXmLinkFr(map.XM_LINK_FR || '');
         setXmLinkEn(map.XM_LINK_EN || '');
         setXmLinkAr(map.XM_LINK_AR || '');
@@ -847,6 +850,7 @@ export function DashboardPage() {
         { key: 'EMAIL', value: contactEmail },
         { key: 'TELEGRAM_URL', value: tgValue },
         { key: 'YOUTUBE_URL', value: youtubeChannel },
+        { key: 'LATEST_LIVE_URL', value: latestLiveUrl },
         { key: 'webhookRegister', value: webhookRegUrl },
         { key: 'webhookSecret', value: webhookSecret },
       ];
@@ -1840,6 +1844,15 @@ export function DashboardPage() {
                         placeholder="https://youtube.com/@chebbitrading"
                       />
                     </div>
+                    <div className="space-y-2">
+                      <Label className="text-xs text-muted-foreground">{L('أحدث فيديو لايف', 'Latest Live URL', 'Dernier Live URL')}</Label>
+                      <Input
+                        value={latestLiveUrl}
+                        onChange={(e) => setLatestLiveUrl(e.target.value)}
+                        placeholder="https://www.youtube.com/live/_pG09KftYto"
+                        className="font-mono text-xs"
+                      />
+                    </div>
                     <Button
                       onClick={handleSaveSettings}
                       className="w-full bg-green-600 hover:bg-green-700 text-white"
@@ -1988,6 +2001,11 @@ export function DashboardPage() {
           {/* ======================= CRYPTO SUBS ======================= */}
           {dashboardView === 'crypto-subs' && (
             <CryptoSubscribersView language={language} showToast={(msg, type) => setToast({ message: msg, type })} />
+          )}
+
+          {/* ======================= EBOOK SUBS ======================= */}
+          {dashboardView === 'ebook-subs' && (
+            <EbookSubscribersView language={language} showToast={(msg, type) => setToast({ message: msg, type })} />
           )}
 
           {/* ======================= SETTINGS ======================= */}
@@ -3125,6 +3143,138 @@ function CryptoSubscribersView({ language, showToast }: { language: string; show
                       className={`text-xs font-bold px-2.5 py-1 rounded-full border cursor-pointer outline-none ${STATUS_COLORS[sub.status] || STATUS_COLORS.new}`}
                     >
                       {Object.entries(STATUS_LABELS).map(([key, label]) => (
+                        <option key={key} value={key}>{label}</option>
+                      ))}
+                    </select>
+                  </TableCell>
+                  <TableCell className="text-xs text-muted-foreground lowercase">
+                    {new Date(sub.createdAt).toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' })}
+                  </TableCell>
+                  <TableCell className="text-right">
+                    <button onClick={() => handleDeleteSub(sub.id)} className="text-red-400 hover:text-red-300 text-xs px-2 py-1 rounded-md hover:bg-red-500/10 transition-colors" title="Delete">
+                      🗑️
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </Card>
+      )}
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  EBOOK SUBSCRIBERS VIEW                                             */
+/* ------------------------------------------------------------------ */
+
+const EBOOK_STATUS_COLORS: Record<string, string> = {
+  new: 'bg-blue-500/15 text-blue-400 border border-blue-500/30',
+  sent: 'bg-green-500/15 text-green-400 border border-green-500/30',
+  rejected: 'bg-red-500/15 text-red-400 border border-red-500/30',
+};
+
+const EBOOK_STATUS_LABELS: Record<string, string> = {
+  new: '🆕 New',
+  sent: '✅ Sent',
+  rejected: '❌ Rejected',
+};
+
+interface EbookSub {
+  id: string;
+  email: string;
+  status: string;
+  createdAt: string;
+}
+
+function EbookSubscribersView({ language, showToast }: { language: string; showToast: (msg: string, type: 'success' | 'error') => void }) {
+  const L = (ar: string, en: string, fr: string) =>
+    language === 'ar' ? ar : language === 'en' ? en : fr;
+
+  const [subscribers, setSubscribers] = useState<EbookSub[]>([]);
+  const [subsLoading, setSubsLoading] = useState(true);
+
+  const fetchSubscribers = useCallback(async () => {
+    try {
+      const res = await fetch('/api/ebook-subscribers').then(r => r.json());
+      setSubscribers(res.data || []);
+    } catch (_e) { /* ignore */ }
+    setSubsLoading(false);
+  }, []);
+
+  useEffect(() => { fetchSubscribers(); }, [fetchSubscribers]);
+
+  const handleDeleteSub = async (id: string) => {
+    try {
+      await fetch(`/api/ebook-subscribers?id=${id}`, { method: 'DELETE' });
+      showToast(L('تم الحذف', 'Subscriber removed', 'Abonné supprimé'), 'success');
+      fetchSubscribers();
+    } catch (_e) {
+      showToast(L('خطأ في الحذف', 'Error removing', 'Erreur de suppression'), 'error');
+    }
+  };
+
+  const handleStatusChange = async (id: string, status: string) => {
+    try {
+      await fetch('/api/ebook-subscribers', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status }),
+      });
+      showToast(`Status → ${status}`, 'success');
+      fetchSubscribers();
+    } catch (_e) {
+      showToast(L('خطأ في التحديث', 'Error updating', 'Erreur de mise à jour'), 'error');
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between flex-wrap gap-3">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">
+            📚 {L('طالبي الكتب المجانية', 'Free Ebook Requests', 'Demandes de livres gratuits')}
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {L('الأشخاص الذين طلبوا الكتب المجانية من صفحة المدونة', 'People who requested free trading books from the blog', 'Personnes ayant demandé les livres gratuits depuis le blog')}
+          </p>
+        </div>
+        <Badge variant="secondary" className="text-xs font-bold text-background bg-foreground hover:bg-foreground/90 py-1.5 px-3">
+          {subscribers.length} {L('طلب', 'requests', 'demandes')}
+        </Badge>
+      </div>
+
+      {subsLoading ? (
+        <div className="space-y-2">{Array.from({ length: 3 }).map((_, i) => <Skeleton key={i} className="h-10 w-full rounded-lg" />)}</div>
+      ) : subscribers.length === 0 ? (
+        <Card className="rounded-xl">
+          <CardContent className="py-8 text-center text-muted-foreground">
+            {L('لا توجد طلبات بعد', 'No requests yet', 'Aucune demande pour le moment')}
+          </CardContent>
+        </Card>
+      ) : (
+        <Card className="rounded-xl overflow-hidden">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>{L('البريد', 'Email', 'Email')}</TableHead>
+                <TableHead>{L('الحالة', 'Status', 'Statut')}</TableHead>
+                <TableHead>{L('التاريخ', 'Date', 'Date')}</TableHead>
+                <TableHead></TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {subscribers.map(sub => (
+                <TableRow key={sub.id}>
+                  <TableCell className="font-mono text-sm font-medium">{sub.email}</TableCell>
+                  <TableCell>
+                    <select
+                      value={sub.status}
+                      onChange={(e) => handleStatusChange(sub.id, e.target.value)}
+                      className={`text-xs font-bold px-2.5 py-1 rounded-full border cursor-pointer outline-none ${EBOOK_STATUS_COLORS[sub.status] || EBOOK_STATUS_COLORS.new}`}
+                    >
+                      {Object.entries(EBOOK_STATUS_LABELS).map(([key, label]) => (
                         <option key={key} value={key}>{label}</option>
                       ))}
                     </select>

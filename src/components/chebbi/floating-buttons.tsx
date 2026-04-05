@@ -9,7 +9,16 @@ export function FloatingButtons() {
   const [showScrollTop, setShowScrollTop] = useState(false);
   const { language } = useAppStore();
 
-  const TELEGRAM_URL = 'https://t.me/ChebbiTrading';
+  const [telegramUrl, setTelegramUrl] = useState('https://t.me/ChebbiTrading');
+
+  useEffect(() => {
+    fetch('/api/public/data')
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.settings?.TELEGRAM_URL) setTelegramUrl(json.settings.TELEGRAM_URL);
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setShowScrollTop(window.scrollY > 500);
@@ -21,7 +30,7 @@ export function FloatingButtons() {
     <>
       {/* Telegram Float — Bottom Left */}
       <a
-        href={TELEGRAM_URL}
+        href={telegramUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-7 left-7 z-[999] flex items-center gap-2.5 bg-card border border-border rounded-full pl-2 pr-4 py-2 hover:border-[#0088cc] hover:shadow-lg hover:shadow-[#0088cc]/10 transition-all duration-300 group"

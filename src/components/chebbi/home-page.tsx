@@ -139,6 +139,7 @@ export function HomePage() {
   const [LOGO_URL, setLogoUrl] = useState(DEFAULT_LOGO);
   const [AMINE_PHOTO_URL, setAminePhotoUrl] = useState('https://i.imgur.com/MrRODMe.png');
   const [YOUTUBE_URL, setYoutubeUrl] = useState(DEFAULT_YOUTUBE);
+  const [LATEST_LIVE_URL, setLatestLiveUrl] = useState('');
   const [TELEGRAM_URL, setTelegramUrl] = useState(DEFAULT_TELEGRAM);
   const [CONTACT_EMAIL, setContactEmail] = useState('contact@chebbitrading.com');
   const [xmLinkFr, setXmLinkFr] = useState(DEFAULT_XM);
@@ -165,6 +166,7 @@ export function HomePage() {
           if (s.AMINE_PHOTO_URL) setAminePhotoUrl(s.AMINE_PHOTO_URL);
           if (s.YOUTUBE_URL) setYoutubeUrl(s.YOUTUBE_URL);
           if (s.TELEGRAM_URL) setTelegramUrl(s.TELEGRAM_URL);
+          if (s.LATEST_LIVE_URL) setLatestLiveUrl(s.LATEST_LIVE_URL);
           if (s.EMAIL) setContactEmail(s.EMAIL);
           if (s.XM_LINK_FR) setXmLinkFr(s.XM_LINK_FR);
           if (s.XM_LINK_EN) setXmLinkEn(s.XM_LINK_EN);
@@ -884,22 +886,56 @@ export function HomePage() {
 
               {/* Right: YouTube Embed Placeholder */}
               <div className="space-y-4">
-                <div className="relative rounded-2xl overflow-hidden border border-border shadow-xl group cursor-pointer">
-                  {/* YouTube thumbnail placeholder */}
+                <a
+                  href={LATEST_LIVE_URL || YOUTUBE_URL}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative rounded-2xl overflow-hidden border border-border shadow-xl group cursor-pointer block"
+                >
+                  {/* YouTube thumbnail — real image from video ID */}
                   <div className="aspect-video bg-secondary flex items-center justify-center relative">
-                    <div className="absolute inset-0 bg-gradient-to-br from-ct-red/20 to-primary/20" />
-                    <div className="w-20 h-20 rounded-full bg-ct-red/90 flex items-center justify-center shadow-2xl shadow-ct-red/40 group-hover:scale-110 transition-transform duration-300">
+                    {(() => {
+                      // Extract video ID from various YouTube URL formats
+                      const url = LATEST_LIVE_URL || YOUTUBE_URL;
+                      let vid = '';
+                      try {
+                        const u = new URL(url);
+                        if (u.hostname === 'youtu.be') {
+                          vid = u.pathname.slice(1);
+                        } else if (u.pathname.startsWith('/live/')) {
+                          vid = u.pathname.split('/live/')[1]?.split(/[?&#]/)[0] || '';
+                        } else if (u.pathname.startsWith('/embed/')) {
+                          vid = u.pathname.split('/embed/')[1]?.split(/[?&#]/)[0] || '';
+                        } else if (u.searchParams.get('v')) {
+                          vid = u.searchParams.get('v') || '';
+                        }
+                      } catch { /* not a valid URL, no thumbnail */ }
+
+                      return vid ? (
+                        <img
+                          src={`https://img.youtube.com/vi/${vid}/maxresdefault.jpg`}
+                          alt="Chebbi Trading Live"
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                          onError={(e) => {
+                            // Fallback to hqdefault if maxres doesn't exist
+                            (e.target as HTMLImageElement).src = `https://img.youtube.com/vi/${vid}/hqdefault.jpg`;
+                          }}
+                        />
+                      ) : null;
+                    })()}
+                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/20 transition-colors" />
+                    <div className="w-20 h-20 rounded-full bg-ct-red/90 flex items-center justify-center shadow-2xl shadow-ct-red/40 group-hover:scale-110 transition-transform duration-300 relative z-10">
                       <Play size={32} className="text-white fill-white ml-1" />
                     </div>
-                    <div className="absolute bottom-3 left-3 bg-background/90 glass px-3 py-1.5 rounded-lg">
+                    <div className="absolute bottom-3 left-3 bg-background/90 glass px-3 py-1.5 rounded-lg z-10">
                       <p className="text-xs font-bold text-foreground">Chebbi Trading Live</p>
                     </div>
-                    <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-ct-red text-white px-2.5 py-1 rounded-md">
+                    <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-ct-red text-white px-2.5 py-1 rounded-md z-10">
                       <span className="w-2 h-2 bg-white rounded-full animate-pulse" />
                       <span className="text-xs font-bold">LIVE</span>
                     </div>
                   </div>
-                </div>
+                </a>
 
                 <a
                   href={YOUTUBE_URL}
@@ -1305,7 +1341,7 @@ export function HomePage() {
                   </div>
                   <h3 className="text-lg font-bold text-foreground mb-2">{t('cont.email', language)}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                    {t('cont.email.desc', language)}
+                    {CONTACT_EMAIL}
                   </p>
                   <div className="flex items-center gap-2 text-ct-blue text-sm font-semibold">
                     Envoyer un email

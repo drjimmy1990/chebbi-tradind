@@ -942,32 +942,7 @@ export function BlogPage() {
                 </div>
 
                 {/* Email form */}
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const form = e.target as HTMLFormElement;
-                    const emailInput = form.querySelector('input[type="email"]') as HTMLInputElement;
-                    if (emailInput?.value) {
-                      // Could POST to an API here
-                      emailInput.value = '';
-                      alert(t('ebook.success', language));
-                    }
-                  }}
-                  className="flex flex-col sm:flex-row items-center gap-3 max-w-md mx-auto mb-5"
-                >
-                  <Input
-                    type="email"
-                    placeholder={t('ebook.placeholder', language)}
-                    required
-                    className="flex-1 h-12 bg-secondary border-border rounded-xl text-sm px-4 focus-visible:ring-primary"
-                  />
-                  <Button
-                    type="submit"
-                    className="w-full sm:w-auto h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl px-6 text-sm whitespace-nowrap"
-                  >
-                    {t('ebook.cta', language)}
-                  </Button>
-                </form>
+                <EbookEmailForm language={language} />
 
                 {/* Trust note */}
                 <p className="text-xs text-muted-foreground">
@@ -1075,6 +1050,76 @@ export function BlogPage() {
           </div>
         </div>
       </footer>
+    </div>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  EbookEmailForm — inline sub-component for ebook subscription      */
+/* ------------------------------------------------------------------ */
+
+function EbookEmailForm({ language }: { language: Language }) {
+  const [email, setEmail] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [status, setStatus] = useState<'idle' | 'success' | 'duplicate' | 'error'>('idle');
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubmitting(true);
+    setStatus('idle');
+    try {
+      const res = await fetch('/api/ebook-subscribers', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email.trim() }),
+      });
+      const json = await res.json();
+      if (json.message === 'already_subscribed') {
+        setStatus('duplicate');
+      } else if (res.ok) {
+        setStatus('success');
+        setEmail('');
+      } else {
+        setStatus('error');
+      }
+    } catch {
+      setStatus('error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const msg = {
+    success: language === 'ar' ? 'شكراً! ستصلك الكتب على بريدك الإلكتروني.' : language === 'en' ? 'Thank you! Your books are on the way to your inbox.' : 'Merci ! Vos livres arrivent dans votre boîte mail.',
+    duplicate: language === 'ar' ? 'هذا البريد مسجل بالفعل.' : language === 'en' ? 'This email is already registered.' : 'Cet email est déjà enregistré.',
+    error: language === 'ar' ? 'حدث خطأ، حاول مجدداً.' : language === 'en' ? 'An error occurred, please try again.' : 'Une erreur est survenue, réessayez.',
+  };
+
+  return (
+    <div className="max-w-md mx-auto mb-5 space-y-3">
+      <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row items-center gap-3">
+        <Input
+          type="email"
+          placeholder={t('ebook.placeholder', language)}
+          required
+          value={email}
+          onChange={(e) => { setEmail(e.target.value); setStatus('idle'); }}
+          className="flex-1 h-12 bg-secondary border-border rounded-xl text-sm px-4 focus-visible:ring-primary"
+        />
+        <Button
+          type="submit"
+          disabled={submitting}
+          className="w-full sm:w-auto h-12 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl px-6 text-sm whitespace-nowrap disabled:opacity-60"
+        >
+          {submitting ? '...' : t('ebook.cta', language)}
+        </Button>
+      </form>
+      {status !== 'idle' && (
+        <p className={`text-xs text-center font-medium ${status === 'success' ? 'text-green-400' : status === 'duplicate' ? 'text-amber-400' : 'text-red-400'}`}>
+          {msg[status]}
+        </p>
+      )}
     </div>
   );
 }
