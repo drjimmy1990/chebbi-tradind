@@ -31,6 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://chebbitrade.com"),
     title: "Chebbi Trading — Signaux Forex Gratuits | Partenaire XM",
     description:
       "Chebbi Trading - Signaux Forex GRATUITS. 4 ans de résultats live sur YouTube. Inscrivez-vous sur XM et rejoignez notre groupe.",
