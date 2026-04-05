@@ -51,7 +51,7 @@ import {
 
 // ─── Defaults (fallback until DB loads) ───────────────────────
 const DEFAULT_LOGO = 'https://i.imgur.com/USEEiyC.png';
-const DEFAULT_YOUTUBE = 'https://www.youtube.com/@ChebbiTrading/streams';
+const DEFAULT_YOUTUBE = 'https://www.youtube.com/@chebbitrading';
 const DEFAULT_TELEGRAM = 'https://t.me/ChebbiTrading';
 const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 
@@ -150,6 +150,9 @@ export function HomePage() {
   const [statPerf, setStatPerf] = useState('+128%');
   const [statMembers, setStatMembers] = useState('1,920+');
 
+  // ── Dynamic trade stats from DB ──
+  const [tradeStats, setTradeStats] = useState({ totalTrades: 0, wins: 0, winRate: 0, totalPips: 0, activeMonths: 0 });
+
   // ── Dynamic testimonials & FAQs from DB ──
   const [dbTestimonials, setDbTestimonials] = useState<DbTestimonial[]>([]);
   const [dbFaqs, setDbFaqs] = useState(hardcodedFaqs);
@@ -181,6 +184,7 @@ export function HomePage() {
           if (s.STAT_MEMBERS) setStatMembers(s.STAT_MEMBERS);
         }
         if (json.testimonials) setDbTestimonials(json.testimonials);
+        if (json.tradeStats) setTradeStats(json.tradeStats);
       })
       .catch(() => { });
   }, []);
@@ -871,10 +875,10 @@ export function HomePage() {
 
                 <div className="grid grid-cols-2 gap-4">
                   {[
-                    { label: t('res.winrate', language), value: '~70%' },
-                    { label: t('res.trades', language), value: '450+' },
-                    { label: t('res.pips', language), value: '12,400+' },
-                    { label: t('res.months', language), value: '48' },
+                    { label: t('res.winrate', language), value: tradeStats.totalTrades > 0 ? `~${tradeStats.winRate}%` : '~70%' },
+                    { label: t('res.trades', language), value: tradeStats.totalTrades > 0 ? `${tradeStats.totalTrades.toLocaleString()}+` : '0' },
+                    { label: t('res.pips', language), value: tradeStats.totalPips > 0 ? `${tradeStats.totalPips.toLocaleString()}+` : '0' },
+                    { label: t('res.months', language), value: tradeStats.activeMonths > 0 ? `${tradeStats.activeMonths}` : '0' },
                   ].map((item) => (
                     <div key={item.label} className="text-center p-3 bg-secondary/50 rounded-xl">
                       <p className="text-lg font-extrabold text-gradient-green">{item.value}</p>

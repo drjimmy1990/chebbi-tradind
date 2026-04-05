@@ -35,7 +35,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 // ──────────────────────── Constants ────────────────────────
 
 const DEFAULT_LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
-const YOUTUBE_URL = 'https://www.youtube.com/@ChebbiTrading/streams';
+const YOUTUBE_URL = 'https://www.youtube.com/@chebbitrading';
 const TELEGRAM_URL = 'https://t.me/ChebbiTrading';
 const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 const DEFAULT_CONTACT_EMAIL = 'contact@chebbitrading.com';

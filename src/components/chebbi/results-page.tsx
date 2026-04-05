@@ -21,7 +21,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 // ──────────────────────── Constants ────────────────────────
 
 const DEFAULT_LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
-const YOUTUBE_URL = 'https://www.youtube.com/@ChebbiTrading/streams';
+const YOUTUBE_URL = 'https://www.youtube.com/@chebbitrading';
 const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 
 const YEARS_STATIC = ['2023', '2024', '2025', '2026'] as const;
