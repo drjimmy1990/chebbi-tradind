@@ -33,7 +33,6 @@ import { Input } from '@/components/ui/input';
 
 // ──────────────────────── Constants ────────────────────────
 
-const TELEGRAM_URL = 'https://t.me/ChebbiTrading';
 const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 
 // ──────────────────────── Types ────────────────────────
@@ -125,6 +124,7 @@ export function FaqPage() {
   const [xmLinkEn, setXmLinkEn] = useState(DEFAULT_XM);
   const [xmLinkAr, setXmLinkAr] = useState(DEFAULT_XM);
   const [CONTACT_EMAIL, setContactEmail] = useState('contact@chebbitrading.com');
+  const [telegramUrl, setTelegramUrl] = useState('https://t.me/ChebbiTrading');
   const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
 
   useEffect(() => {
@@ -132,6 +132,7 @@ export function FaqPage() {
       const s = json?.data;
       if (s) {
         if (s.EMAIL) setContactEmail(s.EMAIL);
+        if (s.TELEGRAM_URL) setTelegramUrl(s.TELEGRAM_URL);
         if (s.XM_LINK_FR) setXmLinkFr(s.XM_LINK_FR);
         if (s.XM_LINK_EN) setXmLinkEn(s.XM_LINK_EN);
         if (s.XM_LINK_AR) setXmLinkAr(s.XM_LINK_AR);
@@ -159,8 +160,13 @@ export function FaqPage() {
       });
     }
 
-    return list;
-  }, [dbFaqs, currentCategory, searchQuery, language]);
+    return list.map(f => ({
+      ...f,
+      answerFr: f.answerFr?.replace(/\[TELEGRAM_URL\]/g, telegramUrl),
+      answerEn: f.answerEn?.replace(/\[TELEGRAM_URL\]/g, telegramUrl),
+      answerAr: f.answerAr?.replace(/\[TELEGRAM_URL\]/g, telegramUrl),
+    }));
+  }, [dbFaqs, currentCategory, searchQuery, language, telegramUrl]);
 
   // Category change handler
   const handleCategoryChange = useCallback((cat: CategoryFilter) => {
@@ -289,7 +295,7 @@ export function FaqPage() {
                   {t('faq.noresults.desc', language)}
                 </p>
                 <a
-                  href={TELEGRAM_URL}
+                  href={telegramUrl}
                   target="_blank"
                   className="inline-flex items-center gap-2 text-primary font-semibold text-sm hover:underline"
                 >

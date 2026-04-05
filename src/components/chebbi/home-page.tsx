@@ -659,7 +659,7 @@ export function HomePage() {
                           value={regXmId}
                           onChange={(e) => setRegXmId(e.target.value)}
                           placeholder={t('home.reg.xmId.placeholder', language)}
-                          className="bg-[#0b1018] border-slate-800/60 focus:border-primary/50 rounded-xl px-4 py-5 text-sm placeholder:text-slate-500"
+                          className="bg-[#0b1018] border-slate-800/60 focus:border-primary/50 rounded-xl px-4 py-5 text-sm placeholder:text-slate-500 text-white"
                         />
                       </div>
 
@@ -673,7 +673,7 @@ export function HomePage() {
                           value={regEmail}
                           onChange={(e) => setRegEmail(e.target.value)}
                           placeholder={language === 'ar' ? 'بريدك@الإلكتروني.com' : 'your@email.com'}
-                          className="bg-[#0b1018] border-slate-800/60 focus:border-primary/50 rounded-xl px-4 py-5 text-sm placeholder:text-slate-500"
+                          className="bg-[#0b1018] border-slate-800/60 focus:border-primary/50 rounded-xl px-4 py-5 text-sm placeholder:text-slate-500 text-white"
                         />
                       </div>
 
@@ -1232,7 +1232,12 @@ export function HomePage() {
 
           <SectionReveal>
             <div className="w-full space-y-3">
-              {dbFaqs.map((faq, index) => (
+              {dbFaqs.map(f => ({
+                ...f,
+                answerFr: f.answerFr?.replace(/\[TELEGRAM_URL\]/g, TELEGRAM_URL),
+                answerEn: f.answerEn?.replace(/\[TELEGRAM_URL\]/g, TELEGRAM_URL),
+                answerAr: f.answerAr?.replace(/\[TELEGRAM_URL\]/g, TELEGRAM_URL),
+              })).map((faq, index) => (
                 <FaqAccordionItem
                   key={faq.id}
                   faq={faq}

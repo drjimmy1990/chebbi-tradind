@@ -36,7 +36,6 @@ import { Skeleton } from '@/components/ui/skeleton';
 
 const DEFAULT_LOGO_URL = 'https://i.imgur.com/USEEiyC.png';
 const YOUTUBE_URL = 'https://www.youtube.com/@chebbitrading';
-const TELEGRAM_URL = 'https://t.me/ChebbiTrading';
 const DEFAULT_XM = 'https://clicks.pipaffiliates.com/c?c=CHEBBI&l=fr&p=1';
 const DEFAULT_CONTACT_EMAIL = 'contact@chebbitrading.com';
 
@@ -214,6 +213,7 @@ export function BlogPage() {
 
   const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
   const [contactEmail, setContactEmail] = useState(DEFAULT_CONTACT_EMAIL);
+  const [telegramUrl, setTelegramUrl] = useState('https://t.me/ChebbiTrading');
 
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(json => {
@@ -227,6 +227,7 @@ export function BlogPage() {
         if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
         if (s.LOGO_URL) setLogoUrl(s.LOGO_URL);
         if (s.CONTACT_EMAIL) setContactEmail(s.CONTACT_EMAIL);
+        if (s.TELEGRAM_URL) setTelegramUrl(s.TELEGRAM_URL);
       }
     }).catch(() => {});
   }, []);
@@ -1011,7 +1012,7 @@ export function BlogPage() {
                   ▶ YouTube
                 </a>
                 <a
-                  href={TELEGRAM_URL}
+                  href={telegramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-xs text-muted-foreground hover:text-ct-blue transition-colors"
@@ -1040,7 +1041,7 @@ export function BlogPage() {
                   📧 {contactEmail}
                 </a>
                 <a
-                  href={TELEGRAM_URL}
+                  href={telegramUrl}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-2 text-xs text-muted-foreground hover:text-primary transition-colors"

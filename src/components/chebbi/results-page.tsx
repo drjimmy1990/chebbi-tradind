@@ -1044,7 +1044,7 @@ function RiskDisclaimer({ lang }: { lang: Language }) {
 
 // ──────────────────────── SECTION 9: Footer ────────────────────────
 
-function Footer({ lang, logoUrl }: { lang: Language, logoUrl: string }) {
+function Footer({ lang, logoUrl, telegramUrl }: { lang: Language, logoUrl: string, telegramUrl: string }) {
   const { setCurrentView } = useAppStore();
 
   const navItems: { key: string; labelKey: string }[] = [
@@ -1091,7 +1091,7 @@ function Footer({ lang, logoUrl }: { lang: Language, logoUrl: string }) {
               </button>
             ))}
             <a
-              href="https://t.me/chebbitrading"
+              href={telegramUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="px-3 py-1.5 rounded-lg text-xs font-medium text-ct-gold hover:bg-ct-gold/10 transition-all"
@@ -1126,6 +1126,7 @@ export function ResultsPage() {
   const XM_LINK = language === 'en' ? xmLinkEn : language === 'ar' ? xmLinkAr : xmLinkFr;
 
   const [logoUrl, setLogoUrl] = useState(DEFAULT_LOGO_URL);
+  const [telegramUrl, setTelegramUrl] = useState('https://t.me/ChebbiTrading');
 
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(json => {
@@ -1138,6 +1139,7 @@ export function ResultsPage() {
         if (!s.XM_LINK_EN && s.XM_LINK) setXmLinkEn(s.XM_LINK);
         if (!s.XM_LINK_AR && s.XM_LINK) setXmLinkAr(s.XM_LINK);
         if (s.LOGO_URL) setLogoUrl(s.LOGO_URL);
+        if (s.TELEGRAM_URL) setTelegramUrl(s.TELEGRAM_URL);
       }
     }).catch(() => {});
   }, []);
@@ -1187,7 +1189,7 @@ export function ResultsPage() {
       <RiskDisclaimer lang={language} />
 
       {/* Footer */}
-      <Footer lang={language} logoUrl={logoUrl} />
+      <Footer lang={language} logoUrl={logoUrl} telegramUrl={telegramUrl} />
     </div>
   );
 }
