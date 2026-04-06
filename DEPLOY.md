@@ -451,3 +451,17 @@ chmod -R 777 /www/wwwroot/chebbi-trading/prisma/db
 pm2 delete chebbi-trading
 pm2 start /www/wwwroot/chebbi-trading/ecosystem.config.js
 pm2 save
+
+---
+
+## Latest Update Sequence (with Markdown Migration)
+
+```bash
+cd /www/wwwroot/chebbi-trading
+git pull
+npm install
+npm run build
+pm2 restart chebbi-trading
+node scripts/migrate-html-to-md.js
+rm -rf /www/server/nginx/proxy_cache_dir/*
+```

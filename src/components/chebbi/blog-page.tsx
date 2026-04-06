@@ -31,6 +31,7 @@ import {
   DialogDescription,
 } from '@/components/ui/dialog';
 import { Skeleton } from '@/components/ui/skeleton';
+import { MarkdownRenderer } from '@/components/chebbi/markdown-renderer';
 
 // ──────────────────────── Constants ────────────────────────
 
@@ -832,19 +833,9 @@ export function BlogPage() {
                   </div>
 
                   {/* Article content */}
-                  <div
-                    className="prose prose-lg dark:prose-invert max-w-none mb-12
-                      [&_h2]:text-2xl [&_h2]:font-bold [&_h2]:text-foreground [&_h2]:mt-8 [&_h2]:mb-4
-                      [&_h3]:text-xl [&_h3]:font-semibold [&_h3]:text-foreground [&_h3]:mt-6 [&_h3]:mb-3
-                      [&_p]:text-muted-foreground [&_p]:leading-relaxed [&_p]:mb-4
-                      [&_ul]:space-y-2 [&_ul]:mb-4 [&_ul]:pl-6
-                      [&_li]:text-muted-foreground [&_li]:leading-relaxed
-                      [&_strong]:text-foreground [&_strong]:font-semibold
-                      [&_a]:text-primary [&_a]:underline
-                      [&_blockquote]:border-l-4 [&_blockquote]:border-primary/30 [&_blockquote]:pl-4 [&_blockquote]:italic [&_blockquote]:text-muted-foreground
-                    "
-                    dangerouslySetInnerHTML={{ __html: pickLang(selectedArticle, 'content', language) }}
-                  />
+                  <div className="mb-12">
+                    <MarkdownRenderer content={pickLang(selectedArticle, 'content', language)} />
+                  </div>
 
                   {/* XM CTA Card */}
                   <Card className="rounded-2xl overflow-hidden border-ct-xm/20 bg-gradient-to-br from-ct-xm/5 to-transparent mb-12">

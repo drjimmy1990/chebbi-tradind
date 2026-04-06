@@ -41,6 +41,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { RichTextEditor } from '@/components/ui/rich-text-editor';
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -2253,11 +2254,11 @@ export function DashboardPage() {
             </div>
             <div className="space-y-2">
               <Label className="text-xs text-muted-foreground">{L('المحتوى', 'Content', 'Contenu')}</Label>
-              <Textarea
-                value={articleContent}
-                onChange={(e) => setArticleContent(e.target.value)}
-                placeholder={L('المحتوى الكامل للمقال (يدعم HTML)...', 'Full article content (supports HTML)...', 'Contenu complet de l\'article (supporte le HTML)...')}
-                rows={6}
+              <RichTextEditor
+                markdown={articleContent}
+                onChange={setArticleContent}
+                placeholder={L('المحتوى الكامل للمقال...', 'Full article content...', 'Contenu complet de l\'article...')}
+                dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
               />
             </div>
             <div className="flex gap-3 pt-2">

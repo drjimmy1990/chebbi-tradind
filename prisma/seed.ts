@@ -345,7 +345,30 @@ async function seedBlogArticles() {
   ];
 
   for (const a of articles) {
-    await db.blogArticle.create({ data: a });
+    await db.blogArticle.create({
+      data: {
+        slug: a.title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, ''),
+        titleFr: a.title,
+        titleEn: a.title,
+        titleAr: a.title,
+        category: a.category,
+        catLabelFr: a.catLabel,
+        catLabelEn: a.catLabel,
+        catLabelAr: a.catLabel,
+        date: a.date,
+        readTime: a.readTime,
+        views: a.views,
+        excerptFr: a.excerpt,
+        excerptEn: a.excerpt,
+        excerptAr: a.excerpt,
+        contentFr: a.content,
+        contentEn: a.content,
+        contentAr: a.content,
+        emoji: a.emoji,
+        catColor: a.catColor,
+        catText: a.catText,
+      }
+    });
   }
 
   console.log(`✅ Seeded ${articles.length} blog articles`);
@@ -400,7 +423,18 @@ async function seedFaqs() {
   ];
 
   for (const f of faqs) {
-    await db.faq.create({ data: f });
+    await db.faq.create({
+      data: {
+        questionFr: f.question,
+        questionEn: f.question,
+        questionAr: f.question,
+        answerFr: f.answer,
+        answerEn: f.answer,
+        answerAr: f.answer,
+        category: f.category,
+        order: f.order,
+      }
+    });
   }
 
   console.log(`✅ Seeded ${faqs.length} FAQs`);

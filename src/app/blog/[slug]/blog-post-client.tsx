@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowLeft, Calendar, Clock, Eye, Share2, Check } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { MarkdownRenderer } from '@/components/chebbi/markdown-renderer';
 
 interface ArticleData {
   id: string;
@@ -158,20 +159,7 @@ export default function BlogPostClient({ article }: { article: ArticleData }) {
         <div className="w-full h-px bg-border mb-10" />
 
         {/* Content */}
-        <div
-          className="prose prose-invert prose-lg max-w-none
-            prose-headings:text-foreground prose-headings:font-bold
-            prose-p:text-muted-foreground prose-p:leading-relaxed
-            prose-a:text-primary prose-a:no-underline hover:prose-a:underline
-            prose-strong:text-foreground
-            prose-ul:text-muted-foreground prose-ol:text-muted-foreground
-            prose-li:marker:text-primary
-            prose-blockquote:border-primary prose-blockquote:text-muted-foreground
-            prose-code:text-primary prose-code:bg-secondary prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded
-            prose-img:rounded-xl prose-img:border prose-img:border-border
-          "
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
+        <MarkdownRenderer content={content} />
 
         {/* Bottom CTA */}
         <div className="mt-16 p-8 rounded-2xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/20 text-center">
