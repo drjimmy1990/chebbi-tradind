@@ -41,7 +41,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { RichTextEditor } from '@/components/ui/rich-text-editor';
+import dynamic from 'next/dynamic';
+const RichTextEditor = dynamic(
+  () => import('@/components/ui/rich-text-editor').then((mod) => mod.RichTextEditor),
+  { ssr: false, loading: () => <div className="h-[300px] w-full rounded-xl border bg-card animate-pulse" /> }
+);
 
 /* ------------------------------------------------------------------ */
 /*  Types                                                              */
@@ -2367,11 +2371,11 @@ export function DashboardPage() {
             </div>
             <div className="space-y-2">
               <Label className="text-xs text-muted-foreground">{L('المحتوى', 'Content', 'Contenu')}</Label>
-              <Textarea
-                value={articleContent}
-                onChange={(e) => setArticleContent(e.target.value)}
+              <RichTextEditor
+                markdown={articleContent}
+                onChange={setArticleContent}
                 placeholder={L('المحتوى الكامل للمقال...', 'Full article content...', 'Contenu complet de l\'article...')}
-                rows={6}
+                dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
               />
             </div>
             <div className="flex gap-3 pt-2">
