@@ -2296,6 +2296,7 @@ export function DashboardPage() {
                         onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (!file) return;
+                          showToast('Uploading image...', 'success');
                           try {
                             const formData = new FormData();
                             formData.append('file', file);
@@ -2303,9 +2304,15 @@ export function DashboardPage() {
                             if (res.ok) {
                               const data = await res.json();
                               setArticleCoverImage(data.url);
+                              showToast('Image uploaded successfully!', 'success');
+                            } else {
+                              showToast('Image upload failed', 'error');
                             }
                           } catch (err) {
                             console.error(err);
+                            showToast('Image upload failed', 'error');
+                          } finally {
+                            e.target.value = '';
                           }
                         }} 
                       />
@@ -2438,6 +2445,7 @@ export function DashboardPage() {
                           onChange={async (e) => {
                             const file = e.target.files?.[0];
                             if (!file) return;
+                            showToast('Uploading image...', 'success');
                             try {
                               const formData = new FormData();
                               formData.append('file', file);
@@ -2445,9 +2453,15 @@ export function DashboardPage() {
                               if (res.ok) {
                                 const data = await res.json();
                                 setArticleCoverImage(data.url);
+                                showToast('Image uploaded successfully!', 'success');
+                              } else {
+                                showToast('Image upload failed', 'error');
                               }
                             } catch (err) {
                               console.error(err);
+                              showToast('Image upload failed', 'error');
+                            } finally {
+                              e.target.value = '';
                             }
                           }} 
                         />
