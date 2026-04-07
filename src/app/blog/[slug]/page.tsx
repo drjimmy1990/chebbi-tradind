@@ -26,6 +26,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const description = article.excerptFr || article.titleFr;
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chebbitrade.com';
 
+  const defaultImage = 'https://i.imgur.com/MrRODMe.png';
+  const ogImage = article.coverImage || defaultImage;
+
   return {
     title: `${title} — Chebbi Trading`,
     description,
@@ -35,14 +38,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'article',
       url: `${siteUrl}/blog/${slug}`,
       siteName: 'Chebbi Trading',
-      images: ['https://i.imgur.com/MrRODMe.png'],
+      images: [ogImage],
       publishedTime: article.date,
     },
     twitter: {
       card: 'summary_large_image',
       title,
       description,
-      images: ['https://i.imgur.com/MrRODMe.png'],
+      images: [ogImage],
     },
   };
 }
