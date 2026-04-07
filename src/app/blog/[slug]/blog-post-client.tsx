@@ -86,7 +86,7 @@ export default function BlogPostClient({ article }: { article: ArticleData }) {
   return (
     <div className="min-h-screen bg-background text-foreground" dir={lang === 'ar' ? 'rtl' : 'ltr'}>
       {/* Top bar */}
-      <header className="sticky top-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border">
+      <header className="sticky top-0 z-50 bg-background/95 backdrop-blur-xl border-b border-border shadow-sm">
         <div className="max-w-4xl mx-auto px-5 py-3 flex items-center justify-between">
           <Link
             href="/"
@@ -126,7 +126,7 @@ export default function BlogPostClient({ article }: { article: ArticleData }) {
       </header>
 
       {/* Article */}
-      <article className="max-w-4xl mx-auto px-5 py-10 lg:py-16">
+      <article className="max-w-4xl mx-auto px-5 pt-16 pb-16 lg:pt-20 lg:pb-20">
         {/* Meta header */}
         <div className="mb-8 space-y-4">
           <div className="flex flex-wrap items-center gap-3">
