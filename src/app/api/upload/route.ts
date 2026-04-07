@@ -31,8 +31,8 @@ export async function POST(request: NextRequest) {
     }
     await writeFile(join(uploadDir, uniqueFilename), buffer);
 
-    // Return URL via the /api/files/ route (works in both dev and standalone production)
-    const publicUrl = `/api/files/blog/${uniqueFilename}`;
+    // Return direct URL — nginx serves /uploads/ → public/uploads/ statically
+    const publicUrl = `/uploads/blog/${uniqueFilename}`;
     return NextResponse.json({ success: true, url: publicUrl });
   } catch (error) {
     console.error('Error uploading file:', error);
