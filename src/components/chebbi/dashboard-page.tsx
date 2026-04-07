@@ -427,7 +427,7 @@ export function DashboardPage() {
 
   const fetchArticles = useCallback(async () => {
     try {
-      const res = await fetch(`/api/blog?language=${language}`);
+      const res = await fetch(`/api/blog?language=${language}`, { cache: 'no-store' });
       if (res.ok) {
         const json = await res.json();
         setArticles(Array.isArray(json) ? json : (json.data || []));
@@ -650,6 +650,7 @@ export function DashboardPage() {
     setArticleCategory('education');
     setArticleLanguage('fr');
     setArticleEmoji('📝');
+    setArticleCoverImage('');
     setArticleExcerptFr('');
     setArticleExcerptEn('');
     setArticleExcerptAr('');

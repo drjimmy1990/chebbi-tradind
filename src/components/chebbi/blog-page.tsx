@@ -240,7 +240,7 @@ export function BlogPage() {
     const controller = new AbortController();
     (async () => {
       try {
-        const r = await fetch('/api/blog', { signal: controller.signal });
+        const r = await fetch('/api/blog', { signal: controller.signal, cache: 'no-store' });
         const res = await r.json();
         if (!cancelled) {
           if (res.data && Array.isArray(res.data) && res.data.length > 0) {
