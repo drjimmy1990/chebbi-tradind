@@ -359,12 +359,23 @@ export function DashboardPage() {
   const [addArticleOpen, setAddArticleOpen] = useState(false);
   const [editArticleOpen, setEditArticleOpen] = useState(false);
   const [editingArticle, setEditingArticle] = useState<Article | null>(null);
-  const [articleTitle, setArticleTitle] = useState('');
+  
+  const [articleTitleFr, setArticleTitleFr] = useState('');
+  const [articleTitleEn, setArticleTitleEn] = useState('');
+  const [articleTitleAr, setArticleTitleAr] = useState('');
+  
   const [articleCategory, setArticleCategory] = useState('education');
-  const [articleLanguage, setArticleLanguage] = useState('fr');
+  const [articleLanguage, setArticleLanguage] = useState<'fr' | 'en' | 'ar'>('fr');
   const [articleEmoji, setArticleEmoji] = useState('📝');
-  const [articleExcerpt, setArticleExcerpt] = useState('');
-  const [articleContent, setArticleContent] = useState('');
+  
+  const [articleExcerptFr, setArticleExcerptFr] = useState('');
+  const [articleExcerptEn, setArticleExcerptEn] = useState('');
+  const [articleExcerptAr, setArticleExcerptAr] = useState('');
+  
+  const [articleContentFr, setArticleContentFr] = useState('');
+  const [articleContentEn, setArticleContentEn] = useState('');
+  const [articleContentAr, setArticleContentAr] = useState('');
+  
   const [articleDate, setArticleDate] = useState('');
   const [articleReadTime, setArticleReadTime] = useState('5 min');
 
@@ -631,18 +642,24 @@ export function DashboardPage() {
 
   /* ---- CRUD: Blog Articles ---- */
   const resetArticleForm = useCallback(() => {
-    setArticleTitle('');
+    setArticleTitleFr('');
+    setArticleTitleEn('');
+    setArticleTitleAr('');
     setArticleCategory('education');
     setArticleLanguage('fr');
     setArticleEmoji('📝');
-    setArticleExcerpt('');
-    setArticleContent('');
+    setArticleExcerptFr('');
+    setArticleExcerptEn('');
+    setArticleExcerptAr('');
+    setArticleContentFr('');
+    setArticleContentEn('');
+    setArticleContentAr('');
     setArticleDate(new Date().toISOString().split('T')[0]);
     setArticleReadTime('5 min');
   }, []);
 
   const handleAddArticle = async () => {
-    if (!articleTitle.trim()) {
+    if (!articleTitleFr.trim() && !articleTitleEn.trim() && !articleTitleAr.trim()) {
       showToast(
         L('العنوان مطلوب', 'Title is required', 'Le titre est obligatoire'),
         'error'
@@ -655,21 +672,21 @@ export function DashboardPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          titleFr: articleTitle,
-          titleEn: articleTitle,
-          titleAr: articleTitle,
+          titleFr: articleTitleFr,
+          titleEn: articleTitleEn,
+          titleAr: articleTitleAr,
           category: articleCategory,
           catLabelFr: catDefaults.catLabel,
           catLabelEn: catDefaults.catLabel,
           catLabelAr: catDefaults.catLabel,
           date: articleDate || new Date().toISOString().split('T')[0],
           readTime: articleReadTime || '5 min',
-          excerptFr: articleExcerpt,
-          excerptEn: articleExcerpt,
-          excerptAr: articleExcerpt,
-          contentFr: articleContent,
-          contentEn: articleContent,
-          contentAr: articleContent,
+          excerptFr: articleExcerptFr,
+          excerptEn: articleExcerptEn,
+          excerptAr: articleExcerptAr,
+          contentFr: articleContentFr,
+          contentEn: articleContentEn,
+          contentAr: articleContentAr,
           emoji: articleEmoji,
           catColor: catDefaults.catColor,
           catText: catDefaults.catText,
@@ -693,18 +710,25 @@ export function DashboardPage() {
 
   const handleEditArticle = (article: Article) => {
     setEditingArticle(article);
-    setArticleTitle(language === 'ar' ? article.titleAr : language === 'en' ? article.titleEn : article.titleFr);
+    setArticleTitleFr(article.titleFr || '');
+    setArticleTitleEn(article.titleEn || '');
+    setArticleTitleAr(article.titleAr || '');
     setArticleCategory(article.category || 'education');
     setArticleEmoji(article.emoji || '📝');
-    setArticleExcerpt(language === 'ar' ? (article.excerptAr || '') : language === 'en' ? (article.excerptEn || '') : (article.excerptFr || ''));
-    setArticleContent(language === 'ar' ? (article.contentAr || '') : language === 'en' ? (article.contentEn || '') : (article.contentFr || ''));
+    setArticleExcerptFr(article.excerptFr || '');
+    setArticleExcerptEn(article.excerptEn || '');
+    setArticleExcerptAr(article.excerptAr || '');
+    setArticleContentFr(article.contentFr || '');
+    setArticleContentEn(article.contentEn || '');
+    setArticleContentAr(article.contentAr || '');
     setArticleDate(article.date ? article.date.split('T')[0] : new Date().toISOString().split('T')[0]);
     setArticleReadTime(article.readTime || '5 min');
+    setArticleLanguage('fr');
     setEditArticleOpen(true);
   };
 
   const handleUpdateArticle = async () => {
-    if (!editingArticle || !articleTitle.trim()) {
+    if (!editingArticle || (!articleTitleFr.trim() && !articleTitleEn.trim() && !articleTitleAr.trim())) {
       showToast(
         L('العنوان مطلوب', 'Title is required', 'Le titre est obligatoire'),
         'error'
@@ -718,13 +742,21 @@ export function DashboardPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           id: editingArticle.id,
-          [`title${language === 'ar' ? 'Ar' : language === 'en' ? 'En' : 'Fr'}`]: articleTitle,
+          titleFr: articleTitleFr,
+          titleEn: articleTitleEn,
+          titleAr: articleTitleAr,
           category: articleCategory,
-          [`catLabel${language === 'ar' ? 'Ar' : language === 'en' ? 'En' : 'Fr'}`]: catDefaults.catLabel,
+          catLabelFr: catDefaults.catLabel,
+          catLabelEn: catDefaults.catLabel,
+          catLabelAr: catDefaults.catLabel,
           date: articleDate,
           readTime: articleReadTime,
-          [`excerpt${language === 'ar' ? 'Ar' : language === 'en' ? 'En' : 'Fr'}`]: articleExcerpt,
-          [`content${language === 'ar' ? 'Ar' : language === 'en' ? 'En' : 'Fr'}`]: articleContent,
+          excerptFr: articleExcerptFr,
+          excerptEn: articleExcerptEn,
+          excerptAr: articleExcerptAr,
+          contentFr: articleContentFr,
+          contentEn: articleContentEn,
+          contentAr: articleContentAr,
           emoji: articleEmoji,
           catColor: catDefaults.catColor,
           catText: catDefaults.catText,
@@ -2181,11 +2213,38 @@ export function DashboardPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 pt-2">
+            {/* Custom Language Tabs */}
+            <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg w-full mb-4">
+              <button 
+                onClick={() => setArticleLanguage('fr')} 
+                className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'fr' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}
+              >
+                🇫🇷 Français
+              </button>
+              <button 
+                onClick={() => setArticleLanguage('en')} 
+                className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'en' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}
+              >
+                🇬🇧 English
+              </button>
+              <button 
+                onClick={() => setArticleLanguage('ar')} 
+                className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'ar' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}
+              >
+                🇸🇦 العربية
+              </button>
+            </div>
+
             <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('العنوان *', 'Title *', 'Titre *')}</Label>
+              <Label className="text-xs text-muted-foreground">{L('العنوان *', 'Title *', 'Titre *')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
               <Input
-                value={articleTitle}
-                onChange={(e) => setArticleTitle(e.target.value)}
+                value={articleLanguage === 'fr' ? articleTitleFr : articleLanguage === 'en' ? articleTitleEn : articleTitleAr}
+                onChange={(e) => {
+                  if (articleLanguage === 'fr') setArticleTitleFr(e.target.value);
+                  else if (articleLanguage === 'en') setArticleTitleEn(e.target.value);
+                  else setArticleTitleAr(e.target.value);
+                }}
+                dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
                 placeholder={L('مثال: تحليل EUR/USD - سبتمبر 2025', 'E.g.: EUR/USD Analysis - September 2025', 'Ex: Analyse EUR/USD - Septembre 2025')}
               />
             </div>
@@ -2205,21 +2264,6 @@ export function DashboardPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">{L('اللغة', 'Language', 'Langue')}</Label>
-                <Select value={articleLanguage} onValueChange={setArticleLanguage}>
-                  <SelectTrigger className="w-full border-border">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fr">🇫🇷 Français</SelectItem>
-                    <SelectItem value="en">🇬🇧 English</SelectItem>
-                    <SelectItem value="ar">🇸🇦 العربية</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
                 <Label className="text-xs text-muted-foreground">Emoji</Label>
                 <Input
                   value={articleEmoji}
@@ -2228,6 +2272,8 @@ export function DashboardPage() {
                   className="w-full"
                 />
               </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label className="text-xs text-muted-foreground">{L('وقت القراءة', 'Read time', 'Temps de lecture')}</Label>
                 <Input
@@ -2237,30 +2283,39 @@ export function DashboardPage() {
                   className="w-full"
                 />
               </div>
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">{L('التاريخ', 'Date', 'Date')}</Label>
+                <Input
+                  type="date"
+                  value={articleDate}
+                  onChange={(e) => setArticleDate(e.target.value)}
+                  className="w-full"
+                />
+              </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('التاريخ', 'Date', 'Date')}</Label>
-              <Input
-                type="date"
-                value={articleDate}
-                onChange={(e) => setArticleDate(e.target.value)}
-                className="w-full"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('المقتطف', 'Excerpt', 'Extrait')}</Label>
+              <Label className="text-xs text-muted-foreground">{L('المقتطف', 'Excerpt', 'Extrait')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
               <Textarea
-                value={articleExcerpt}
-                onChange={(e) => setArticleExcerpt(e.target.value)}
+                value={articleLanguage === 'fr' ? articleExcerptFr : articleLanguage === 'en' ? articleExcerptEn : articleExcerptAr}
+                onChange={(e) => {
+                  if (articleLanguage === 'fr') setArticleExcerptFr(e.target.value);
+                  else if (articleLanguage === 'en') setArticleExcerptEn(e.target.value);
+                  else setArticleExcerptAr(e.target.value);
+                }}
+                dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
                 placeholder={L('ملخص قصير للمقال...', 'Short article summary...', 'Résumé court de l\'article...')}
                 rows={2}
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('المحتوى', 'Content', 'Contenu')}</Label>
+              <Label className="text-xs text-muted-foreground">{L('المحتوى', 'Content', 'Contenu')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
               <RichTextEditor
-                markdown={articleContent}
-                onChange={setArticleContent}
+                markdown={articleLanguage === 'fr' ? articleContentFr : articleLanguage === 'en' ? articleContentEn : articleContentAr}
+                onChange={(val) => {
+                  if (articleLanguage === 'fr') setArticleContentFr(val);
+                  else if (articleLanguage === 'en') setArticleContentEn(val);
+                  else setArticleContentAr(val);
+                }}
                 placeholder={L('المحتوى الكامل للمقال...', 'Full article content...', 'Contenu complet de l\'article...')}
                 dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
               />
@@ -2294,11 +2349,38 @@ export function DashboardPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 pt-2">
+            {/* Custom Language Tabs */}
+            <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg w-full mb-4">
+              <button 
+                onClick={() => setArticleLanguage('fr')} 
+                className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'fr' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}
+              >
+                🇫🇷 Français
+              </button>
+              <button 
+                onClick={() => setArticleLanguage('en')} 
+                className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'en' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}
+              >
+                🇬🇧 English
+              </button>
+              <button 
+                onClick={() => setArticleLanguage('ar')} 
+                className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'ar' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}
+              >
+                🇸🇦 العربية
+              </button>
+            </div>
+
             <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('العنوان *', 'Title *', 'Titre *')}</Label>
+              <Label className="text-xs text-muted-foreground">{L('العنوان *', 'Title *', 'Titre *')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
               <Input
-                value={articleTitle}
-                onChange={(e) => setArticleTitle(e.target.value)}
+                value={articleLanguage === 'fr' ? articleTitleFr : articleLanguage === 'en' ? articleTitleEn : articleTitleAr}
+                onChange={(e) => {
+                  if (articleLanguage === 'fr') setArticleTitleFr(e.target.value);
+                  else if (articleLanguage === 'en') setArticleTitleEn(e.target.value);
+                  else setArticleTitleAr(e.target.value);
+                }}
+                dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
                 placeholder={L('عنوان المقال', 'Article title', "Titre de l'article")}
               />
             </div>
@@ -2318,21 +2400,6 @@ export function DashboardPage() {
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">{L('اللغة', 'Language', 'Langue')}</Label>
-                <Select value={articleLanguage} onValueChange={setArticleLanguage}>
-                  <SelectTrigger className="w-full border-border">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="fr">🇫🇷 Français</SelectItem>
-                    <SelectItem value="en">🇬🇧 English</SelectItem>
-                    <SelectItem value="ar">🇸🇦 العربية</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
                 <Label className="text-xs text-muted-foreground">Emoji</Label>
                 <Input
                   value={articleEmoji}
@@ -2341,6 +2408,8 @@ export function DashboardPage() {
                   className="w-full"
                 />
               </div>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
               <div className="space-y-2">
                 <Label className="text-xs text-muted-foreground">{L('وقت القراءة', 'Read time', 'Temps de lecture')}</Label>
                 <Input
@@ -2350,30 +2419,39 @@ export function DashboardPage() {
                   className="w-full"
                 />
               </div>
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">{L('التاريخ', 'Date', 'Date')}</Label>
+                <Input
+                  type="date"
+                  value={articleDate}
+                  onChange={(e) => setArticleDate(e.target.value)}
+                  className="w-full"
+                />
+              </div>
             </div>
             <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('التاريخ', 'Date', 'Date')}</Label>
-              <Input
-                type="date"
-                value={articleDate}
-                onChange={(e) => setArticleDate(e.target.value)}
-                className="w-full"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('المقتطف', 'Excerpt', 'Extrait')}</Label>
+              <Label className="text-xs text-muted-foreground">{L('المقتطف', 'Excerpt', 'Extrait')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
               <Textarea
-                value={articleExcerpt}
-                onChange={(e) => setArticleExcerpt(e.target.value)}
+                value={articleLanguage === 'fr' ? articleExcerptFr : articleLanguage === 'en' ? articleExcerptEn : articleExcerptAr}
+                onChange={(e) => {
+                  if (articleLanguage === 'fr') setArticleExcerptFr(e.target.value);
+                  else if (articleLanguage === 'en') setArticleExcerptEn(e.target.value);
+                  else setArticleExcerptAr(e.target.value);
+                }}
+                dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
                 placeholder={L('ملخص قصير للمقال...', 'Short article summary...', 'Résumé court de l\'article...')}
                 rows={2}
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('المحتوى', 'Content', 'Contenu')}</Label>
+              <Label className="text-xs text-muted-foreground">{L('المحتوى', 'Content', 'Contenu')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
               <RichTextEditor
-                markdown={articleContent}
-                onChange={setArticleContent}
+                markdown={articleLanguage === 'fr' ? articleContentFr : articleLanguage === 'en' ? articleContentEn : articleContentAr}
+                onChange={(val) => {
+                  if (articleLanguage === 'fr') setArticleContentFr(val);
+                  else if (articleLanguage === 'en') setArticleContentEn(val);
+                  else setArticleContentAr(val);
+                }}
                 placeholder={L('المحتوى الكامل للمقال...', 'Full article content...', 'Contenu complet de l\'article...')}
                 dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
               />
