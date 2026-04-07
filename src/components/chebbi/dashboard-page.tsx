@@ -2203,17 +2203,22 @@ export function DashboardPage() {
         </DialogContent>
       </Dialog>
 
-      {/* ===================== ADD ARTICLE MODAL ===================== */}
-      <Dialog open={addArticleOpen} onOpenChange={setAddArticleOpen}>
-        <DialogContent className="sm:max-w-lg bg-card border-border max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>✍️ {L('مقال جديد', 'New article', 'Nouvel article')}</DialogTitle>
-            <DialogDescription>
-              {L('أنشئ مقال مدونة جديد', 'Create a new blog article', 'Créez un nouvel article de blog')}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 pt-2">
-            {/* Custom Language Tabs */}
+      {/* ===================== ADD ARTICLE PANEL ===================== */}
+      {addArticleOpen && (
+        <div className="fixed inset-0 z-50 flex" style={{pointerEvents:'auto'}}>
+          {/* backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setAddArticleOpen(false)} />
+          {/* panel */}
+          <div className="relative ml-auto w-full max-w-2xl h-full bg-card border-l border-border flex flex-col shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+              <div>
+                <h2 className="text-lg font-semibold">✍️ {L('مقال جديد', 'New article', 'Nouvel article')}</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">{L('أنشئ مقال مدونة جديد', 'Create a new blog article', 'Créez un nouvel article de blog')}</p>
+              </div>
+              <button onClick={() => setAddArticleOpen(false)} className="text-muted-foreground hover:text-foreground text-xl leading-none">✕</button>
+            </div>
+            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+              {/* Custom Language Tabs */}
             <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg w-full mb-4">
               <button 
                 onClick={() => setArticleLanguage('fr')} 
@@ -2320,160 +2325,97 @@ export function DashboardPage() {
                 dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
               />
             </div>
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                className="flex-1 border-border"
-                onClick={() => setAddArticleOpen(false)}
-              >
+            {/* sticky footer */}
+            <div className="shrink-0 flex gap-3 px-6 py-4 border-t border-border">
+              <Button variant="outline" className="flex-1 border-border" onClick={() => setAddArticleOpen(false)}>
                 {L('إلغاء', 'Cancel', 'Annuler')}
               </Button>
-              <Button
-                onClick={handleAddArticle}
-                className="flex-1 bg-green-600 hover:bg-green-700 text-white"
-              >
+              <Button onClick={handleAddArticle} className="flex-1 bg-green-600 hover:bg-green-700 text-white">
                 ✍️ {L('إنشاء', 'Create', 'Créer')}
               </Button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
-      {/* ===================== EDIT ARTICLE MODAL ===================== */}
-      <Dialog open={editArticleOpen} onOpenChange={setEditArticleOpen}>
-        <DialogContent className="sm:max-w-lg bg-card border-border max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>✏️ {L('تعديل المقال', 'Edit article', "Modifier l'article")}</DialogTitle>
-            <DialogDescription>
-              {L('عدل معلومات المقال', 'Edit article information', "Modifiez les informations de l'article")}
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 pt-2">
-            {/* Custom Language Tabs */}
-            <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg w-full mb-4">
-              <button 
-                onClick={() => setArticleLanguage('fr')} 
-                className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'fr' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}
-              >
-                🇫🇷 Français
-              </button>
-              <button 
-                onClick={() => setArticleLanguage('en')} 
-                className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'en' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}
-              >
-                🇬🇧 English
-              </button>
-              <button 
-                onClick={() => setArticleLanguage('ar')} 
-                className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'ar' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}
-              >
-                🇸🇦 العربية
-              </button>
+      {/* ===================== EDIT ARTICLE PANEL ===================== */}
+      {editArticleOpen && (
+        <div className="fixed inset-0 z-50 flex" style={{pointerEvents:'auto'}}>
+          {/* backdrop */}
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => { setEditArticleOpen(false); setEditingArticle(null); }} />
+          {/* panel */}
+          <div className="relative ml-auto w-full max-w-2xl h-full bg-card border-l border-border flex flex-col shadow-2xl overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border shrink-0">
+              <div>
+                <h2 className="text-lg font-semibold">✏️ {L('تعديل المقال', 'Edit article', "Modifier l'article")}</h2>
+                <p className="text-xs text-muted-foreground mt-0.5">{L('عدل معلومات المقال', 'Edit article information', "Modifiez les informations de l'article")}</p>
+              </div>
+              <button onClick={() => { setEditArticleOpen(false); setEditingArticle(null); }} className="text-muted-foreground hover:text-foreground text-xl leading-none">✕</button>
             </div>
-
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('العنوان *', 'Title *', 'Titre *')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
-              <Input
-                value={articleLanguage === 'fr' ? articleTitleFr : articleLanguage === 'en' ? articleTitleEn : articleTitleAr}
-                onChange={(e) => {
-                  if (articleLanguage === 'fr') setArticleTitleFr(e.target.value);
-                  else if (articleLanguage === 'en') setArticleTitleEn(e.target.value);
-                  else setArticleTitleAr(e.target.value);
-                }}
-                dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
-                placeholder={L('عنوان المقال', 'Article title', "Titre de l'article")}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">{L('التصنيف', 'Category', 'Catégorie')}</Label>
-                <Select value={articleCategory} onValueChange={setArticleCategory}>
-                  <SelectTrigger className="w-full border-border">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="gold">🏆 Gold</SelectItem>
-                    <SelectItem value="education">📚 {L('تعليم', 'Education', 'Éducation')}</SelectItem>
-                    <SelectItem value="strategie">🎯 {L('استراتيجية', 'Strategy', 'Stratégie')}</SelectItem>
-                    <SelectItem value="analyse">📊 {L('تحليل', 'Analysis', 'Analyse')}</SelectItem>
-                  </SelectContent>
-                </Select>
+            <div className="flex-1 overflow-y-auto px-6 py-4 space-y-4">
+              {/* Language Tabs */}
+              <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-lg w-full">
+                <button onClick={() => setArticleLanguage('fr')} className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'fr' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}>🇫🇷 Français</button>
+                <button onClick={() => setArticleLanguage('en')} className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'en' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}>🇬🇧 English</button>
+                <button onClick={() => setArticleLanguage('ar')} className={`flex-1 py-1.5 text-xs rounded-md transition-all ${articleLanguage === 'ar' ? 'bg-background shadow-sm font-semibold text-foreground' : 'text-muted-foreground hover:bg-background/50'}`}>🇸🇦 العربية</button>
               </div>
               <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Emoji</Label>
-                <Input
-                  value={articleEmoji}
-                  onChange={(e) => setArticleEmoji(e.target.value)}
-                  placeholder="📝"
-                  className="w-full"
+                <Label className="text-xs text-muted-foreground">{L('العنوان *', 'Title *', 'Titre *')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
+                <Input value={articleLanguage === 'fr' ? articleTitleFr : articleLanguage === 'en' ? articleTitleEn : articleTitleAr} onChange={(e) => { if (articleLanguage === 'fr') setArticleTitleFr(e.target.value); else if (articleLanguage === 'en') setArticleTitleEn(e.target.value); else setArticleTitleAr(e.target.value); }} dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'} placeholder={L('عنوان المقال', 'Article title', "Titre de l'article")} />
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground">{L('التصنيف', 'Category', 'Catégorie')}</Label>
+                  <Select value={articleCategory} onValueChange={setArticleCategory}>
+                    <SelectTrigger className="w-full border-border"><SelectValue /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="gold">🏆 Gold</SelectItem>
+                      <SelectItem value="education">📚 {L('تعليم', 'Education', 'Éducation')}</SelectItem>
+                      <SelectItem value="strategie">🎯 {L('استراتيجية', 'Strategy', 'Stratégie')}</SelectItem>
+                      <SelectItem value="analyse">📊 {L('تحليل', 'Analysis', 'Analyse')}</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground">Emoji</Label>
+                  <Input value={articleEmoji} onChange={(e) => setArticleEmoji(e.target.value)} placeholder="📝" className="w-full" />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground">{L('وقت القراءة', 'Read time', 'Temps de lecture')}</Label>
+                  <Input value={articleReadTime} onChange={(e) => setArticleReadTime(e.target.value)} placeholder="5 min" className="w-full" />
+                </div>
+                <div className="space-y-2">
+                  <Label className="text-xs text-muted-foreground">{L('التاريخ', 'Date', 'Date')}</Label>
+                  <Input type="date" value={articleDate} onChange={(e) => setArticleDate(e.target.value)} className="w-full" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">{L('المقتطف', 'Excerpt', 'Extrait')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
+                <Textarea value={articleLanguage === 'fr' ? articleExcerptFr : articleLanguage === 'en' ? articleExcerptEn : articleExcerptAr} onChange={(e) => { if (articleLanguage === 'fr') setArticleExcerptFr(e.target.value); else if (articleLanguage === 'en') setArticleExcerptEn(e.target.value); else setArticleExcerptAr(e.target.value); }} dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'} placeholder={L('ملخص قصير للمقال...', 'Short article summary...', 'Résumé court de l\'article...')} rows={2} />
+              </div>
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">{L('المحتوى', 'Content', 'Contenu')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
+                <RichTextEditor
+                  markdown={articleLanguage === 'fr' ? articleContentFr : articleLanguage === 'en' ? articleContentEn : articleContentAr}
+                  onChange={(val) => { if (articleLanguage === 'fr') setArticleContentFr(val); else if (articleLanguage === 'en') setArticleContentEn(val); else setArticleContentAr(val); }}
+                  placeholder={L('المحتوى الكامل للمقال...', 'Full article content...', 'Contenu complet de l\'article...')}
+                  dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
                 />
               </div>
             </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">{L('وقت القراءة', 'Read time', 'Temps de lecture')}</Label>
-                <Input
-                  value={articleReadTime}
-                  onChange={(e) => setArticleReadTime(e.target.value)}
-                  placeholder="5 min"
-                  className="w-full"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">{L('التاريخ', 'Date', 'Date')}</Label>
-                <Input
-                  type="date"
-                  value={articleDate}
-                  onChange={(e) => setArticleDate(e.target.value)}
-                  className="w-full"
-                />
-              </div>
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('المقتطف', 'Excerpt', 'Extrait')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
-              <Textarea
-                value={articleLanguage === 'fr' ? articleExcerptFr : articleLanguage === 'en' ? articleExcerptEn : articleExcerptAr}
-                onChange={(e) => {
-                  if (articleLanguage === 'fr') setArticleExcerptFr(e.target.value);
-                  else if (articleLanguage === 'en') setArticleExcerptEn(e.target.value);
-                  else setArticleExcerptAr(e.target.value);
-                }}
-                dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
-                placeholder={L('ملخص قصير للمقال...', 'Short article summary...', 'Résumé court de l\'article...')}
-                rows={2}
-              />
-            </div>
-            <div className="space-y-2">
-              <Label className="text-xs text-muted-foreground">{L('المحتوى', 'Content', 'Contenu')} <span className="uppercase font-bold text-primary ml-1">[{articleLanguage}]</span></Label>
-              <RichTextEditor
-                markdown={articleLanguage === 'fr' ? articleContentFr : articleLanguage === 'en' ? articleContentEn : articleContentAr}
-                onChange={(val) => {
-                  if (articleLanguage === 'fr') setArticleContentFr(val);
-                  else if (articleLanguage === 'en') setArticleContentEn(val);
-                  else setArticleContentAr(val);
-                }}
-                placeholder={L('المحتوى الكامل للمقال...', 'Full article content...', 'Contenu complet de l\'article...')}
-                dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
-              />
-            </div>
-            <div className="flex gap-3 pt-2">
-              <Button
-                variant="outline"
-                className="flex-1 border-border"
-                onClick={() => { setEditArticleOpen(false); setEditingArticle(null); }}
-              >
+            <div className="shrink-0 flex gap-3 px-6 py-4 border-t border-border">
+              <Button variant="outline" className="flex-1 border-border" onClick={() => { setEditArticleOpen(false); setEditingArticle(null); }}>
                 {L('إلغاء', 'Cancel', 'Annuler')}
               </Button>
-              <Button
-                onClick={handleUpdateArticle}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-              >
+              <Button onClick={handleUpdateArticle} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
                 💾 {L('حفظ', 'Save', 'Enregistrer')}
               </Button>
             </div>
           </div>
-        </DialogContent>
-      </Dialog>
+        </div>
+      )}
 
       {/* ===================== ADD FAQ MODAL ===================== */}
       <Dialog open={addFaqOpen} onOpenChange={setAddFaqOpen}>
