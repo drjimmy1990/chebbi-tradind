@@ -37,6 +37,7 @@ export async function POST(request: NextRequest) {
       catLabelFr, catLabelEn, catLabelAr,
       date, readTime,
       emoji = "📊",
+      coverImage,
       catColor = "rgba(16,185,129,.15)",
       catText = "#10b981",
     } = body;
@@ -66,7 +67,7 @@ export async function POST(request: NextRequest) {
         catLabelFr: catLabelFr || 'Analyses', catLabelEn: catLabelEn || 'Analysis', catLabelAr: catLabelAr || 'تحليلات',
         date: date || new Date().toISOString().slice(0, 10),
         readTime: readTime || '5 min',
-        emoji, catColor, catText,
+        emoji, coverImage, catColor, catText,
       },
     });
 
@@ -96,7 +97,7 @@ export async function PUT(request: NextRequest) {
       'excerptFr', 'excerptEn', 'excerptAr',
       'contentFr', 'contentEn', 'contentAr',
       'category', 'catLabelFr', 'catLabelEn', 'catLabelAr',
-      'date', 'readTime', 'emoji', 'catColor', 'catText', 'views', 'slug',
+      'date', 'readTime', 'emoji', 'coverImage', 'catColor', 'catText', 'views', 'slug',
     ];
     for (const key of allowedFields) {
       if (fields[key] !== undefined) updateData[key] = fields[key];

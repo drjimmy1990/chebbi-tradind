@@ -62,6 +62,7 @@ interface BlogArticle {
   contentEn: string;
   contentAr: string;
   emoji: string;
+  coverImage?: string;
   catColor: string;
   catText: string;
 }
@@ -670,9 +671,13 @@ export function BlogPage() {
                                 background: `linear-gradient(135deg, ${catColor.bg}, transparent)`,
                               }}
                             />
-                            <span className="text-6xl relative z-10 group-hover:scale-110 transition-transform duration-300">
-                              {article.emoji}
-                            </span>
+                            {article.coverImage ? (
+                              <img src={article.coverImage} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt={pickLang(article, 'title', language)} />
+                            ) : (
+                              <span className="text-6xl relative z-10 group-hover:scale-110 transition-transform duration-300">
+                                {article.emoji}
+                              </span>
+                            )}
                             <Badge
                               className="absolute top-3 left-3 border-0 font-semibold text-xs"
                               style={{
@@ -787,6 +792,18 @@ export function BlogPage() {
 
                   {/* Article header */}
                   <div className="mb-8">
+                    {/* Cover Image */}
+                    {selectedArticle.coverImage ? (
+                      <div className="w-full aspect-video rounded-xl overflow-hidden mb-6 relative">
+                        <img 
+                          src={selectedArticle.coverImage} 
+                          alt={pickLang(selectedArticle, 'title', language)} 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                    ) : (
+                      <div className="text-6xl mb-6">{selectedArticle.emoji}</div>
+                    )}
                     {/* Category label */}
                     <Badge
                       className="mb-4 border-0 font-semibold text-xs uppercase tracking-wider"

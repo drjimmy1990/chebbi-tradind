@@ -84,6 +84,7 @@ model BlogArticle {
   readTime   String
   views      Int      @default(0)
   emoji      String   @default("📊")
+  coverImage String?
   catColor   String   @default("rgba(16,185,129,.15)")
   catText    String   @default("#10b981")
   createdAt  DateTime @default(now())

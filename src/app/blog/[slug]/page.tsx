@@ -64,6 +64,7 @@ export default async function BlogPostPage({ params }: Props) {
   // Serialize for client component
   const articleData = {
     ...article,
+    coverImage: article.coverImage || undefined,
     createdAt: article.createdAt.toISOString(),
     updatedAt: article.updatedAt.toISOString(),
   };

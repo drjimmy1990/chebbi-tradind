@@ -27,6 +27,7 @@ interface ArticleData {
   readTime: string;
   views: number;
   emoji: string;
+  coverImage?: string;
   catColor: string;
   catText: string;
 }
@@ -127,6 +128,16 @@ export default function BlogPostClient({ article }: { article: ArticleData }) {
 
       {/* Article */}
       <article className="max-w-4xl mx-auto px-5 pt-16 pb-16 lg:pt-20 lg:pb-20">
+        {/* Cover Image */}
+        {article.coverImage && (
+          <div className="w-full aspect-video rounded-3xl overflow-hidden mb-8 shadow-sm">
+            <img 
+              src={article.coverImage} 
+              alt={title}
+              className="w-full h-full object-cover"
+            />
+          </div>
+        )}
         {/* Meta header */}
         <div className="mb-8 space-y-4">
           <div className="flex flex-wrap items-center gap-3">

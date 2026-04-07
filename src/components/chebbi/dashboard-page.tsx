@@ -91,6 +91,7 @@ interface Article {
   contentEn?: string;
   contentAr?: string;
   emoji?: string;
+  coverImage?: string;
 }
 
 interface Faq {
@@ -367,6 +368,7 @@ export function DashboardPage() {
   const [articleCategory, setArticleCategory] = useState('education');
   const [articleLanguage, setArticleLanguage] = useState<'fr' | 'en' | 'ar'>('fr');
   const [articleEmoji, setArticleEmoji] = useState('📝');
+  const [articleCoverImage, setArticleCoverImage] = useState('');
   
   const [articleExcerptFr, setArticleExcerptFr] = useState('');
   const [articleExcerptEn, setArticleExcerptEn] = useState('');
@@ -715,6 +717,7 @@ export function DashboardPage() {
     setArticleTitleAr(article.titleAr || '');
     setArticleCategory(article.category || 'education');
     setArticleEmoji(article.emoji || '📝');
+    setArticleCoverImage(article.coverImage || '');
     setArticleExcerptFr(article.excerptFr || '');
     setArticleExcerptEn(article.excerptEn || '');
     setArticleExcerptAr(article.excerptAr || '');
@@ -2268,14 +2271,47 @@ export function DashboardPage() {
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-2">
-                <Label className="text-xs text-muted-foreground">Emoji</Label>
-                <Input
-                  value={articleEmoji}
-                  onChange={(e) => setArticleEmoji(e.target.value)}
-                  placeholder="📝"
-                  className="w-full"
-                />
+              <div className="space-y-2 flex flex-col">
+                <Label className="text-xs text-muted-foreground w-full">Cover Image / Emoji Fallback</Label>
+                <div className="flex items-center gap-2">
+                  <Input
+                    value={articleEmoji}
+                    onChange={(e) => setArticleEmoji(e.target.value)}
+                    placeholder="📝"
+                    className="w-16"
+                  />
+                  <div className="flex-1 relative">
+                    <Input
+                      value={articleCoverImage}
+                      onChange={(e) => setArticleCoverImage(e.target.value)}
+                      placeholder="Image URL"
+                      className="w-full pr-[80px]"
+                    />
+                    <label className="absolute right-1 top-1 bottom-1 px-2 flex items-center justify-center bg-secondary cursor-pointer text-xs font-semibold rounded-md hover:bg-secondary/80">
+                      Upload
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        onChange={async (e) => {
+                          const file = e.target.files?.[0];
+                          if (!file) return;
+                          try {
+                            const formData = new FormData();
+                            formData.append('file', file);
+                            const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                            if (res.ok) {
+                              const data = await res.json();
+                              setArticleCoverImage(data.url);
+                            }
+                          } catch (err) {
+                            console.error(err);
+                          }
+                        }} 
+                      />
+                    </label>
+                  </div>
+                </div>
               </div>
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -2377,9 +2413,47 @@ export function DashboardPage() {
                     </SelectContent>
                   </Select>
                 </div>
-                <div className="space-y-2">
-                  <Label className="text-xs text-muted-foreground">Emoji</Label>
-                  <Input value={articleEmoji} onChange={(e) => setArticleEmoji(e.target.value)} placeholder="📝" className="w-full" />
+                <div className="space-y-2 flex flex-col">
+                  <Label className="text-xs text-muted-foreground w-full">Cover Image / Emoji Fallback</Label>
+                  <div className="flex items-center gap-2">
+                    <Input
+                      value={articleEmoji}
+                      onChange={(e) => setArticleEmoji(e.target.value)}
+                      placeholder="📝"
+                      className="w-16"
+                    />
+                    <div className="flex-1 relative">
+                      <Input
+                        value={articleCoverImage}
+                        onChange={(e) => setArticleCoverImage(e.target.value)}
+                        placeholder="Image URL"
+                        className="w-full pr-[80px]"
+                      />
+                      <label className="absolute right-1 top-1 bottom-1 px-2 flex items-center justify-center bg-secondary cursor-pointer text-xs font-semibold rounded-md hover:bg-secondary/80">
+                        Upload
+                        <input 
+                          type="file" 
+                          accept="image/*" 
+                          className="hidden" 
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            try {
+                              const formData = new FormData();
+                              formData.append('file', file);
+                              const res = await fetch('/api/upload', { method: 'POST', body: formData });
+                              if (res.ok) {
+                                const data = await res.json();
+                                setArticleCoverImage(data.url);
+                              }
+                            } catch (err) {
+                              console.error(err);
+                            }
+                          }} 
+                        />
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3">
