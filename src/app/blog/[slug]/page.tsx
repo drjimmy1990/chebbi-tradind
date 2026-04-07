@@ -27,7 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chebbitrade.com';
 
   const defaultImage = 'https://i.imgur.com/MrRODMe.png';
-  const ogImage = article.coverImage || defaultImage;
+  const rawImage = article.coverImage || defaultImage;
+  // Social platforms require absolute URLs — convert relative paths like /api/files/... to full URLs
+  const ogImage = rawImage.startsWith('http') ? rawImage : `${siteUrl}${rawImage}`;
 
   return {
     title: `${title} — Chebbi Trading`,
