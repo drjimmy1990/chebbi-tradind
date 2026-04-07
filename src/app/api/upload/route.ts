@@ -4,13 +4,6 @@ import { existsSync, mkdirSync } from 'fs';
 import { join } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-async function ensureAndWrite(dir: string, filename: string, buffer: Buffer) {
-  if (!existsSync(dir)) {
-    mkdirSync(dir, { recursive: true });
-  }
-  await writeFile(join(dir, filename), buffer);
-}
-
 export async function POST(request: NextRequest) {
   try {
     const data = await request.formData();
@@ -30,21 +23,16 @@ export async function POST(request: NextRequest) {
     // Generate unique filename
     const uniqueFilename = `${uuidv4()}${extension}`;
 
-    const cwd = process.cwd();
-
-    // Primary path: project root public/ (dev mode + git tracked)
-    const primaryDir = join(cwd, 'public', 'uploads', 'blog');
-    await ensureAndWrite(primaryDir, uniqueFilename, buffer);
-
-    // Secondary path: Next.js standalone public/ (production standalone mode)
-    // The standalone server serves static files from .next/standalone/public/
-    const standaloneDir = join(cwd, '.next', 'standalone', 'public', 'uploads', 'blog');
-    if (existsSync(join(cwd, '.next', 'standalone'))) {
-      await ensureAndWrite(standaloneDir, uniqueFilename, buffer);
+    // Save to project-root public/uploads/blog/ — this is always accessible
+    // at runtime via the /api/files/ route regardless of standalone mode.
+    const uploadDir = join(process.cwd(), 'public', 'uploads', 'blog');
+    if (!existsSync(uploadDir)) {
+      mkdirSync(uploadDir, { recursive: true });
     }
+    await writeFile(join(uploadDir, uniqueFilename), buffer);
 
-    // Return the public URL
-    const publicUrl = `/uploads/blog/${uniqueFilename}`;
+    // Return URL via the /api/files/ route (works in both dev and standalone production)
+    const publicUrl = `/api/files/blog/${uniqueFilename}`;
     return NextResponse.json({ success: true, url: publicUrl });
   } catch (error) {
     console.error('Error uploading file:', error);
