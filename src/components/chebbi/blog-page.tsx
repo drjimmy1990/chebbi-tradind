@@ -477,13 +477,13 @@ export function BlogPage() {
                     onClick={() => openArticle(featuredArticle)}
                   >
                     {/* Thumbnail */}
-                    <div className="relative h-48 bg-gradient-to-br from-primary/10 to-ct-gold/10 flex items-center justify-center overflow-hidden">
+                    <div className="relative aspect-video bg-gradient-to-br from-primary/10 to-ct-gold/10 flex items-center justify-center overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent group-hover:from-primary/10 transition-colors" />
                       {featuredArticle.coverImage && featuredArticle.coverImage.length > 0 ? (
                         <img
                           src={featuredArticle.coverImage}
                           alt={pickLang(featuredArticle, 'title', language)}
-                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          className="absolute inset-0 w-full h-full object-contain object-center"
                         />
                       ) : (
                         <span className="text-7xl relative z-10 group-hover:scale-110 transition-transform duration-300">
@@ -672,7 +672,7 @@ export function BlogPage() {
                           onClick={() => openArticle(article)}
                         >
                           {/* Thumbnail area */}
-                          <div className="relative h-44 bg-gradient-to-br from-secondary/80 to-secondary/40 flex items-center justify-center overflow-hidden">
+                          <div className="relative aspect-video bg-gradient-to-br from-secondary/80 to-secondary/40 flex items-center justify-center overflow-hidden">
                             <div
                               className="absolute inset-0 opacity-30 group-hover:opacity-50 transition-opacity"
                               style={{
@@ -680,7 +680,7 @@ export function BlogPage() {
                               }}
                             />
                             {article.coverImage && article.coverImage.length > 0 ? (
-                              <img src={article.coverImage} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt={pickLang(article, 'title', language)} />
+                              <img src={article.coverImage} className="absolute inset-0 w-full h-full object-contain object-center" alt={pickLang(article, 'title', language)} />
                             ) : (
                               <span className="text-6xl relative z-10 group-hover:scale-110 transition-transform duration-300">
                                 {article.emoji}
