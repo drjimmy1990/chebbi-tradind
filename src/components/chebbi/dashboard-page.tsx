@@ -2325,6 +2325,7 @@ export function DashboardPage() {
                 dir={articleLanguage === 'ar' ? 'rtl' : 'ltr'}
               />
             </div>
+            </div>
             {/* sticky footer */}
             <div className="shrink-0 flex gap-3 px-6 py-4 border-t border-border">
               <Button variant="outline" className="flex-1 border-border" onClick={() => setAddArticleOpen(false)}>
