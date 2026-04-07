@@ -1,6 +1,6 @@
 'use client';
 
-import { useAppStore } from '@/lib/store';
+import { useAppStore, View } from '@/lib/store';
 import { Navbar } from './navbar';
 import { PriceTicker } from './price-ticker';
 import { ParticleCanvas } from './particle-canvas';
@@ -11,9 +11,14 @@ import { HomePage } from './home-page';
 import { ResultsPage } from './results-page';
 import { BlogPage } from './blog-page';
 import { CryptoPage } from './crypto-page';
+import { useEffect } from 'react';
 
-export function App() {
-  const { currentView } = useAppStore();
+export function App({ defaultView }: { defaultView?: View }) {
+  const { currentView, setCurrentView } = useAppStore();
+
+  useEffect(() => {
+    if (defaultView) setCurrentView(defaultView);
+  }, [defaultView, setCurrentView]);
 
   return (
     <div className="min-h-screen flex flex-col relative">
