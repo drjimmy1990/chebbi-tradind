@@ -760,7 +760,7 @@ export function BlogPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-[100] bg-background/95 backdrop-blur-md"
+              className="fixed inset-0 z-[2000] bg-background/95 backdrop-blur-md"
               onClick={closeModal}
             />
 
@@ -770,7 +770,7 @@ export function BlogPage() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 30 }}
               transition={{ duration: 0.3 }}
-              className="fixed inset-0 z-[101] overflow-y-auto scrollbar-thin"
+              className="fixed inset-0 z-[2001] overflow-y-auto scrollbar-thin"
             >
               <div className="min-h-screen flex flex-col" onClick={closeModal}>
                 <div
@@ -780,7 +780,7 @@ export function BlogPage() {
                   {/* Close button */}
                   <button
                     onClick={closeModal}
-                    className="fixed top-6 right-6 z-[102] w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all shadow-lg"
+                    className="fixed top-6 right-6 z-[2002] w-10 h-10 rounded-full bg-card border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-secondary transition-all shadow-lg"
                   >
                     <X size={18} />
                   </button>
