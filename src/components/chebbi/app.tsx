@@ -22,7 +22,7 @@ export function App() {
       <PriceTicker />
       <ParticleCanvas />
       <Navbar />
-      <main className="flex-1 relative" style={{ zIndex: 1 }}>
+      <main className="flex-1 relative">
         {currentView === 'home' && <HomePage />}
         {currentView === 'results' && <ResultsPage />}
         {currentView === 'blog' && <BlogPage />}
