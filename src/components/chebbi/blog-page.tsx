@@ -671,7 +671,7 @@ export function BlogPage() {
                                 background: `linear-gradient(135deg, ${catColor.bg}, transparent)`,
                               }}
                             />
-                            {article.coverImage ? (
+                            {article.coverImage && article.coverImage.length > 0 ? (
                               <img src={article.coverImage} className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" alt={pickLang(article, 'title', language)} />
                             ) : (
                               <span className="text-6xl relative z-10 group-hover:scale-110 transition-transform duration-300">
@@ -792,8 +792,8 @@ export function BlogPage() {
 
                   {/* Article header */}
                   <div className="mb-8">
-                    {/* Cover Image */}
-                    {selectedArticle.coverImage ? (
+                    {/* Cover Image or Emoji */}
+                    {selectedArticle.coverImage && selectedArticle.coverImage.length > 0 ? (
                       <div className="w-full aspect-video rounded-xl overflow-hidden mb-6 relative">
                         <img 
                           src={selectedArticle.coverImage} 

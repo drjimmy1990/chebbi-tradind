@@ -35,6 +35,23 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
+  // Sync URL -> view on mount and browser back/forward
+  useEffect(() => {
+    const syncFromUrl = () => {
+      const path = window.location.pathname;
+      const viewMap: Record<string, View> = {
+        '/blog': 'blog',
+        '/results': 'results',
+        '/crypto': 'crypto',
+      };
+      const view = viewMap[path];
+      if (view) setCurrentView(view);
+    };
+    syncFromUrl();
+    window.addEventListener('popstate', syncFromUrl);
+    return () => window.removeEventListener('popstate', syncFromUrl);
+  }, [setCurrentView]);
+
   useEffect(() => {
     fetch('/api/settings').then(r => r.json()).then(json => {
       if (json?.data) {
@@ -76,19 +93,25 @@ export function Navbar() {
     if (view === 'faq') {
       if (currentView !== 'home') {
         setCurrentView('home');
+        window.history.pushState({}, '', '/');
       }
       setMobileMenuOpen(false);
-      // Small delay to ensure the home page is rendered before scrolling
       setTimeout(() => {
         const el = document.getElementById('faq-section');
-        if (el) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }, currentView !== 'home' ? 100 : 0);
       return;
     }
     setCurrentView(view);
     setMobileMenuOpen(false);
+    // Update URL to match the view
+    const pathMap: Partial<Record<View, string>> = {
+      blog: '/blog',
+      results: '/results',
+      crypto: '/crypto',
+      home: '/',
+    };
+    window.history.pushState({}, '', pathMap[view] ?? '/');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
