@@ -252,10 +252,26 @@ export function RichTextEditor({
           <span className="w-px h-4 bg-border mx-1" />
           <ToolbarBtn title="Insert link" onClick={link}>🔗</ToolbarBtn>
           <ToolbarBtn
-            title="Upload image"
+            title="Upload image from file"
             onClick={() => fileInputRef.current?.click()}
           >
-            {uploading ? '⏳' : '🖼️'}
+            {uploading ? '⏳' : '🖼️ Upload'}
+          </ToolbarBtn>
+          <ToolbarBtn
+            title="Insert image by URL"
+            onClick={() => {
+              const url = window.prompt('Image URL (must start with http:// or https:// or /):', 'https://');
+              if (!url) return;
+              const textarea = ta();
+              const { selectionStart: s, selectionEnd: e, value } = textarea;
+              const alt = value.slice(s, e) || 'image';
+              const md = `![${alt}](${url})`;
+              const updated = value.slice(0, s) + md + value.slice(e);
+              onChange(updated);
+              setTimeout(() => { textarea.focus(); textarea.setSelectionRange(s + md.length, s + md.length); }, 0);
+            }}
+          >
+            🔗🖼
           </ToolbarBtn>
           <input
             ref={fileInputRef}

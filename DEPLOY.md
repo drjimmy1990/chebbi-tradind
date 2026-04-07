@@ -481,3 +481,15 @@ rm -rf /www/server/nginx/proxy_cache_dir/*
 git pull
 npm run build
 pm2 restart chebbi-trading
+rm -rf /www/server/nginx/proxy_cache_dir/*
+
+
+
+
+
+git checkout package-lock.json
+git pull
+npm install
+npm run build
+pm2 restart chebbi-trading
+rm -rf /www/server/nginx/proxy_cache_dir/*
