@@ -1157,7 +1157,7 @@ function ShareButton({ slug, language }: { slug: string; language: Language }) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
-    const url = `${window.location.origin}/blog/${slug}`;
+    const url = `${window.location.origin}/blog/${slug}?lang=${language}`;
     try {
       await navigator.clipboard.writeText(url);
     } catch {
