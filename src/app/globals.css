@@ -165,6 +165,12 @@
   }
 }
 
+/* Fix for MDXEditor dropdowns and toolbars inside Shadcn UI Dialogs */
+[data-radix-popper-content-wrapper],
+[data-radix-portal] > * {
+  z-index: 9999 !important;
+}
+
 /* FAQ Inner HTML Styles to match legacy HTML */
 .faq-inner-html strong {
   color: var(--primary);
