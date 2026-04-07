@@ -479,9 +479,17 @@ export function BlogPage() {
                     {/* Thumbnail */}
                     <div className="relative h-48 bg-gradient-to-br from-primary/10 to-ct-gold/10 flex items-center justify-center overflow-hidden">
                       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent group-hover:from-primary/10 transition-colors" />
-                      <span className="text-7xl relative z-10 group-hover:scale-110 transition-transform duration-300">
-                        {featuredArticle.emoji}
-                      </span>
+                      {featuredArticle.coverImage && featuredArticle.coverImage.length > 0 ? (
+                        <img
+                          src={featuredArticle.coverImage}
+                          alt={pickLang(featuredArticle, 'title', language)}
+                          className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      ) : (
+                        <span className="text-7xl relative z-10 group-hover:scale-110 transition-transform duration-300">
+                          {featuredArticle.emoji}
+                        </span>
+                      )}
                       <Badge
                         className="absolute top-3 left-3 border-0 font-semibold text-xs"
                         style={{
