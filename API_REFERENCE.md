@@ -1,5 +1,5 @@
 # 📡 Chebbi Trading — Full API Reference
-> **Base URL:** `https://tawriqa-sys.giize.com`  
+> **Base URL:** `https://chebbitrade.com`  
 > **Local dev:** `http://localhost:3000`
 
 ---
@@ -363,18 +363,33 @@ curl -X DELETE "https://tawriqa-sys.giize.com/api/crypto-subscribers?id=SUBSCRIB
 
 ### Get All Articles *(public)*
 ```bash
-curl https://tawriqa-sys.giize.com/api/blog
+curl https://chebbitrade.com/api/blog
 ```
+> Returns all fields including `coverImage`. Response: `{ data: [...], count: N }`
 
 ### Get Articles by Category *(public)*
 ```bash
-curl "https://tawriqa-sys.giize.com/api/blog?category=gold"
+curl "https://chebbitrade.com/api/blog?category=gold"
 ```
 > Categories: `gold` | `education` | `strategie` | `analyse`
 
+### Get a Single Article by ID *(public — also increments view count)*
+```bash
+curl https://chebbitrade.com/api/blog/ARTICLE_ID_HERE
+```
+> Returns the full article including `coverImage`. Used when clicking an article card.
+
+### Get a Single Article by Slug *(used for `/blog/[slug]` SEO pages)*
+Direct page route — not a JSON API. Access via:
+```
+https://chebbitrade.com/blog/YOUR_ARTICLE_SLUG
+```
+> This page sets full `og:image`, `og:title`, `og:description`, and `twitter:card` meta tags.
+> `og:image` uses the article's `coverImage` if set, otherwise falls back to the site default.
+
 ### Create an Article
 ```bash
-curl -X POST https://tawriqa-sys.giize.com/api/blog \
+curl -X POST https://chebbitrade.com/api/blog \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -391,27 +406,34 @@ curl -X POST https://tawriqa-sys.giize.com/api/blog \
     "catLabelFr": "Analyses",
     "catLabelEn": "Analysis",
     "catLabelAr": "تحليلات",
-    "date": "2026-04-02",
+    "date": "2026-04-07",
     "readTime": "5 min",
-    "emoji": "📊"
+    "emoji": "📊",
+    "coverImage": "/api/files/blog/uuid-filename.png"
   }'
 ```
+> **`coverImage`** — optional. Use the URL returned by `POST /api/upload` (see section 13).  
+> **`slug`** — auto-generated from `titleFr`. Unique suffix added if slug already exists.  
+> `titleEn`, `titleAr`, `contentEn`, `contentAr` default to French values if omitted.
 
 ### Update an Article
 ```bash
-curl -X PUT https://tawriqa-sys.giize.com/api/blog \
+curl -X PUT https://chebbitrade.com/api/blog \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
     "id": "ARTICLE_ID_HERE",
     "titleFr": "Titre mis à jour",
+    "coverImage": "/api/files/blog/new-image.png",
     "views": 150
   }'
 ```
+> Only fields included in the body are updated (partial update).  
+> To **clear** the cover image, send `"coverImage": null`.
 
 ### Delete an Article
 ```bash
-curl -X DELETE "https://tawriqa-sys.giize.com/api/blog?id=ARTICLE_ID_HERE" \
+curl -X DELETE "https://chebbitrade.com/api/blog?id=ARTICLE_ID_HERE" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
@@ -421,12 +443,12 @@ curl -X DELETE "https://tawriqa-sys.giize.com/api/blog?id=ARTICLE_ID_HERE" \
 
 ### Get All FAQs *(public)*
 ```bash
-curl https://tawriqa-sys.giize.com/api/faq
+curl https://chebbitrade.com/api/faq
 ```
 
 ### Create a FAQ
 ```bash
-curl -X POST https://tawriqa-sys.giize.com/api/faq \
+curl -X POST https://chebbitrade.com/api/faq \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -444,7 +466,7 @@ curl -X POST https://tawriqa-sys.giize.com/api/faq \
 
 ### Update a FAQ
 ```bash
-curl -X PUT https://tawriqa-sys.giize.com/api/faq \
+curl -X PUT https://chebbitrade.com/api/faq \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{
@@ -455,7 +477,7 @@ curl -X PUT https://tawriqa-sys.giize.com/api/faq \
 
 ### Delete a FAQ
 ```bash
-curl -X DELETE "https://tawriqa-sys.giize.com/api/faq?id=FAQ_ID_HERE" \
+curl -X DELETE "https://chebbitrade.com/api/faq?id=FAQ_ID_HERE" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET"
 ```
 
@@ -465,12 +487,12 @@ curl -X DELETE "https://tawriqa-sys.giize.com/api/faq?id=FAQ_ID_HERE" \
 
 ### Get All Settings *(public)*
 ```bash
-curl https://tawriqa-sys.giize.com/api/settings
+curl https://chebbitrade.com/api/settings
 ```
 
 ### Update a Setting
 ```bash
-curl -X PUT https://tawriqa-sys.giize.com/api/settings \
+curl -X PUT https://chebbitrade.com/api/settings \
   -H "Content-Type: application/json" \
   -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
   -d '{"key": "TELEGRAM_URL", "value": "https://t.me/chebbi_trading"}'
@@ -488,6 +510,32 @@ curl -X PUT https://tawriqa-sys.giize.com/api/settings \
 | `webhookSecret` | Permanent API key for all protected endpoints |
 | `webhookRegister` | n8n webhook URL triggered on registration |
 | `siteUrl` | Production site base URL |
+
+---
+
+## 13. 📤 FILE UPLOAD *(Admin only — for blog cover images)*
+
+### Upload an Image
+```bash
+curl -X POST https://chebbitrade.com/api/upload \
+  -H "Authorization: Bearer YOUR_WEBHOOK_SECRET" \
+  -F "file=@/path/to/your/image.png"
+```
+**Response:**
+```json
+{ "success": true, "url": "/api/files/blog/uuid-filename.png" }
+```
+> The returned `url` is a relative path. Store it in `coverImage` when creating/updating articles.  
+> Supported formats: `jpg`, `jpeg`, `png`, `gif`, `webp`, `svg`  
+> Max upload size: **10 MB** (enforced by Nginx)
+
+### Access an Uploaded File *(public)*
+```bash
+curl https://chebbitrade.com/api/files/blog/uuid-filename.png
+```
+> Files are served with `Cache-Control: public, max-age=31536000` and full CORS headers.  
+> For use in **social sharing** (OG image), the absolute URL is automatically constructed:  
+> `https://chebbitrade.com` + `/api/files/blog/uuid-filename.png`
 
 ---
 
@@ -518,16 +566,44 @@ curl -X PUT https://tawriqa-sys.giize.com/api/settings \
 | `GET` | `/api/crypto-subscribers` | Bearer | List subscribers |
 | `PATCH` | `/api/crypto-subscribers` | Bearer | Update subscriber status |
 | `DELETE` | `/api/crypto-subscribers?id=X` | Bearer | Delete subscriber |
-| `GET` | `/api/blog` | ❌ Public | List articles |
-| `POST` | `/api/blog` | Bearer | Create article |
-| `PUT` | `/api/blog` | Bearer | Update article |
+| `GET` | `/api/blog` | ❌ Public | List all articles (with coverImage) |
+| `POST` | `/api/blog` | Bearer | Create article (supports coverImage) |
+| `PUT` | `/api/blog` | Bearer | Update article (null clears coverImage) |
 | `DELETE` | `/api/blog?id=X` | Bearer | Delete article |
+| `GET` | `/api/blog/[id]` | ❌ Public | Get single article + increment views |
+| `POST` | `/api/upload` | Bearer | Upload cover image → returns URL |
+| `GET` | `/api/files/blog/[filename]` | ❌ Public | Serve uploaded image file |
 | `GET` | `/api/faq` | ❌ Public | List FAQs |
 | `POST` | `/api/faq` | Bearer | Create FAQ |
 | `PUT` | `/api/faq` | Bearer | Update FAQ |
 | `DELETE` | `/api/faq?id=X` | Bearer | Delete FAQ |
 | `GET` | `/api/settings` | ❌ Public | Get all settings |
 | `PUT` | `/api/settings` | Bearer | Update a setting |
+
+---
+
+## 🌐 Public Routes (SEO Pages)
+
+| Route | Description |
+|-------|-------------|
+| `/blog` | Blog listing page (SPA initialized at blog view) |
+| `/blog/[slug]` | Individual blog post with full SEO meta tags |
+| `/results` | Results page (SPA initialized at results view) |
+| `/crypto` | Crypto VIP page (SPA initialized at crypto view) |
+
+> **Open Graph:** `/blog/[slug]` automatically sets `og:image` to the article's `coverImage` (absolute URL).  
+> Falls back to `https://chebbitrade.com` default image if no cover is set.
+
+---
+
+## 🔑 Environment Variables
+
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `DATABASE_URL` | ✅ Yes | Path to SQLite DB, e.g. `file:/www/wwwroot/chebbi-trading/prisma/db/dev.db` |
+| `NEXT_PUBLIC_SITE_URL` | Recommended | Full domain URL, e.g. `https://chebbitrade.com`. Used for OG image absolute URLs. |
+| `NODE_ENV` | ✅ Yes | Set to `production` on server |
+| `PORT` | ✅ Yes | App port, default `3001` |
 
 ---
 

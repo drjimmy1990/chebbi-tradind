@@ -5,6 +5,7 @@ import BlogPostClient from './blog-post-client';
 
 interface Props {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ lang?: string }>;
 }
 
 async function getArticle(slug: string) {
@@ -14,16 +15,30 @@ async function getArticle(slug: string) {
   return article;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
   const { slug } = await params;
+  const { lang } = await searchParams;
   const article = await getArticle(slug);
 
   if (!article) {
     return { title: 'Article non trouvé — Chebbi Trading' };
   }
 
-  const title = article.titleFr;
-  const description = article.excerptFr || article.titleFr;
+  // Pick title/description based on ?lang= param (default: Arabic if filled, else French)
+  let title: string;
+  let description: string;
+  if (lang === 'ar') {
+    title = article.titleAr || article.titleFr;
+    description = article.excerptAr || article.titleAr || article.excerptFr || article.titleFr;
+  } else if (lang === 'en') {
+    title = article.titleEn || article.titleFr;
+    description = article.excerptEn || article.titleEn || article.excerptFr || article.titleFr;
+  } else {
+    // Default: use Arabic if available (most users are Arabic-speaking), else French
+    title = article.titleAr || article.titleFr;
+    description = article.excerptAr || article.excerptFr || article.titleFr;
+  }
+
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://chebbitrade.com';
 
   const defaultImage = 'https://i.imgur.com/MrRODMe.png';
