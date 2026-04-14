@@ -477,7 +477,7 @@ node scripts/migrate-html-to-md.js
 rm -rf /www/server/nginx/proxy_cache_dir/*
 
 
-
+cd /www/wwwroot/chebbi-trading
 git pull
 npm run build
 pm2 restart chebbi-trading
@@ -490,6 +490,18 @@ rm -rf /www/server/nginx/proxy_cache_dir/*
 git checkout package-lock.json
 git pull
 npm install
+npm run build
+pm2 restart chebbi-trading
+rm -rf /www/server/nginx/proxy_cache_dir/*
+
+
+
+
+
+cd /www/wwwroot/chebbi-trading
+git pull
+npx prisma generate
+npx prisma db push
 npm run build
 pm2 restart chebbi-trading
 rm -rf /www/server/nginx/proxy_cache_dir/*

@@ -33,6 +33,9 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   } else if (lang === 'en') {
     title = article.titleEn || article.titleFr;
     description = article.excerptEn || article.titleEn || article.excerptFr || article.titleFr;
+  } else if (lang === 'fr') {
+    title = article.titleFr;
+    description = article.excerptFr || article.titleFr;
   } else {
     // Default: use Arabic if available (most users are Arabic-speaking), else French
     title = article.titleAr || article.titleFr;
