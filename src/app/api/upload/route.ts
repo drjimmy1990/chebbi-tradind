@@ -23,9 +23,14 @@ export async function POST(request: NextRequest) {
     // Generate unique filename
     const uniqueFilename = `${uuidv4()}${extension}`;
 
-    // Save to project-root public/uploads/blog/ — this is always accessible
-    // at runtime via the /api/files/ route regardless of standalone mode.
-    const uploadDir = join(process.cwd(), 'public', 'uploads', 'blog');
+    // If running in standalone mode, process.cwd() is inside .next/standalone
+    // We must traverse up to the real project root, otherwise images get deleted on every 'npm run build'
+    let baseDir = process.cwd();
+    if (baseDir.includes('.next') && baseDir.includes('standalone')) {
+      baseDir = join(baseDir, '..', '..');
+    }
+    
+    const uploadDir = join(baseDir, 'public', 'uploads', 'blog');
     if (!existsSync(uploadDir)) {
       mkdirSync(uploadDir, { recursive: true });
     }

@@ -18,9 +18,16 @@ export async function GET(
   { params }: { params: Promise<{ slug: string[] }> }
 ) {
   const { slug } = await params;
-  // Only allow serving from uploads directory (security: no path traversal)
+  // Prevent path traversal
   const safeParts = slug.map((p) => p.replace(/\.\./g, ''));
-  const filePath = join(process.cwd(), 'public', 'uploads', ...safeParts);
+  
+  // Resolve real project root (escape .next/standalone if deployed that way)
+  let baseDir = process.cwd();
+  if (baseDir.includes('.next') && baseDir.includes('standalone')) {
+    baseDir = join(baseDir, '..', '..');
+  }
+  
+  const filePath = join(baseDir, 'public', 'uploads', ...safeParts);
 
   if (!existsSync(filePath)) {
     return new NextResponse('Not found', { status: 404 });
