@@ -7,9 +7,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { name, email, xmId, proofBase64, proofFile, proofFilename, language } = body;
 
-    if (!email || !xmId) {
+    if (!email || !xmId || !proofBase64) {
       return NextResponse.json(
-        { error: "Email and XM ID are required" },
+        { error: "Email, XM ID, and deposit proof image are required" },
         { status: 400 }
       );
     }

@@ -225,7 +225,7 @@ export function HomePage() {
   }, [language]);
 
   const handleRegister = useCallback(async () => {
-    if (!regEmail.trim() || !regXmId.trim()) {
+    if (!regEmail.trim() || !regXmId.trim() || !proofBase64) {
       setRegError(t('home.reg.required', language));
       return;
     }
